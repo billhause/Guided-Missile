@@ -1,0 +1,613 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		28D8C62F2942AC150067D801 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C62E2942AC150067D801 /* AppDelegate.swift */; };
+		28D8C6312942AC150067D801 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28D8C6302942AC150067D801 /* GameScene.sks */; };
+		28D8C6332942AC150067D801 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28D8C6322942AC150067D801 /* Actions.sks */; };
+		28D8C6352942AC150067D801 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6342942AC150067D801 /* GameScene.swift */; };
+		28D8C6372942AC150067D801 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6362942AC150067D801 /* GameViewController.swift */; };
+		28D8C63A2942AC150067D801 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 28D8C6382942AC150067D801 /* Main.storyboard */; };
+		28D8C63C2942AC160067D801 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28D8C63B2942AC160067D801 /* Assets.xcassets */; };
+		28D8C63F2942AC160067D801 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 28D8C63D2942AC160067D801 /* LaunchScreen.storyboard */; };
+		28D8C6492942AC160067D801 /* Guided_MissileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6482942AC160067D801 /* Guided_MissileTests.swift */; };
+		28D8C6532942AC170067D801 /* Guided_MissileUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6522942AC170067D801 /* Guided_MissileUITests.swift */; };
+		28D8C6552942AC170067D801 /* Guided_MissileUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6542942AC170067D801 /* Guided_MissileUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		28D8C6452942AC160067D801 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28D8C6232942AC150067D801 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 28D8C62A2942AC150067D801;
+			remoteInfo = "Guided Missile";
+		};
+		28D8C64F2942AC170067D801 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28D8C6232942AC150067D801 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 28D8C62A2942AC150067D801;
+			remoteInfo = "Guided Missile";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		28D8C62B2942AC150067D801 /* Guided Missile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Guided Missile.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28D8C62E2942AC150067D801 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		28D8C6302942AC150067D801 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		28D8C6322942AC150067D801 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
+		28D8C6342942AC150067D801 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		28D8C6362942AC150067D801 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		28D8C6392942AC150067D801 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		28D8C63B2942AC160067D801 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		28D8C63E2942AC160067D801 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		28D8C6442942AC160067D801 /* Guided MissileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Guided MissileTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28D8C6482942AC160067D801 /* Guided_MissileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guided_MissileTests.swift; sourceTree = "<group>"; };
+		28D8C64E2942AC170067D801 /* Guided MissileUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Guided MissileUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		28D8C6522942AC170067D801 /* Guided_MissileUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guided_MissileUITests.swift; sourceTree = "<group>"; };
+		28D8C6542942AC170067D801 /* Guided_MissileUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guided_MissileUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		28D8C6282942AC150067D801 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28D8C6412942AC160067D801 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28D8C64B2942AC170067D801 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		28D8C6222942AC150067D801 = {
+			isa = PBXGroup;
+			children = (
+				28D8C62D2942AC150067D801 /* Guided Missile */,
+				28D8C6472942AC160067D801 /* Guided MissileTests */,
+				28D8C6512942AC170067D801 /* Guided MissileUITests */,
+				28D8C62C2942AC150067D801 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		28D8C62C2942AC150067D801 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				28D8C62B2942AC150067D801 /* Guided Missile.app */,
+				28D8C6442942AC160067D801 /* Guided MissileTests.xctest */,
+				28D8C64E2942AC170067D801 /* Guided MissileUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		28D8C62D2942AC150067D801 /* Guided Missile */ = {
+			isa = PBXGroup;
+			children = (
+				28D8C62E2942AC150067D801 /* AppDelegate.swift */,
+				28D8C6302942AC150067D801 /* GameScene.sks */,
+				28D8C6322942AC150067D801 /* Actions.sks */,
+				28D8C6342942AC150067D801 /* GameScene.swift */,
+				28D8C6362942AC150067D801 /* GameViewController.swift */,
+				28D8C6382942AC150067D801 /* Main.storyboard */,
+				28D8C63B2942AC160067D801 /* Assets.xcassets */,
+				28D8C63D2942AC160067D801 /* LaunchScreen.storyboard */,
+			);
+			path = "Guided Missile";
+			sourceTree = "<group>";
+		};
+		28D8C6472942AC160067D801 /* Guided MissileTests */ = {
+			isa = PBXGroup;
+			children = (
+				28D8C6482942AC160067D801 /* Guided_MissileTests.swift */,
+			);
+			path = "Guided MissileTests";
+			sourceTree = "<group>";
+		};
+		28D8C6512942AC170067D801 /* Guided MissileUITests */ = {
+			isa = PBXGroup;
+			children = (
+				28D8C6522942AC170067D801 /* Guided_MissileUITests.swift */,
+				28D8C6542942AC170067D801 /* Guided_MissileUITestsLaunchTests.swift */,
+			);
+			path = "Guided MissileUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		28D8C62A2942AC150067D801 /* Guided Missile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28D8C6582942AC170067D801 /* Build configuration list for PBXNativeTarget "Guided Missile" */;
+			buildPhases = (
+				28D8C6272942AC150067D801 /* Sources */,
+				28D8C6282942AC150067D801 /* Frameworks */,
+				28D8C6292942AC150067D801 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Guided Missile";
+			productName = "Guided Missile";
+			productReference = 28D8C62B2942AC150067D801 /* Guided Missile.app */;
+			productType = "com.apple.product-type.application";
+		};
+		28D8C6432942AC160067D801 /* Guided MissileTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28D8C65B2942AC170067D801 /* Build configuration list for PBXNativeTarget "Guided MissileTests" */;
+			buildPhases = (
+				28D8C6402942AC160067D801 /* Sources */,
+				28D8C6412942AC160067D801 /* Frameworks */,
+				28D8C6422942AC160067D801 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				28D8C6462942AC160067D801 /* PBXTargetDependency */,
+			);
+			name = "Guided MissileTests";
+			productName = "Guided MissileTests";
+			productReference = 28D8C6442942AC160067D801 /* Guided MissileTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		28D8C64D2942AC170067D801 /* Guided MissileUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28D8C65E2942AC170067D801 /* Build configuration list for PBXNativeTarget "Guided MissileUITests" */;
+			buildPhases = (
+				28D8C64A2942AC170067D801 /* Sources */,
+				28D8C64B2942AC170067D801 /* Frameworks */,
+				28D8C64C2942AC170067D801 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				28D8C6502942AC170067D801 /* PBXTargetDependency */,
+			);
+			name = "Guided MissileUITests";
+			productName = "Guided MissileUITests";
+			productReference = 28D8C64E2942AC170067D801 /* Guided MissileUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		28D8C6232942AC150067D801 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1410;
+				LastUpgradeCheck = 1410;
+				TargetAttributes = {
+					28D8C62A2942AC150067D801 = {
+						CreatedOnToolsVersion = 14.1;
+					};
+					28D8C6432942AC160067D801 = {
+						CreatedOnToolsVersion = 14.1;
+						TestTargetID = 28D8C62A2942AC150067D801;
+					};
+					28D8C64D2942AC170067D801 = {
+						CreatedOnToolsVersion = 14.1;
+						TestTargetID = 28D8C62A2942AC150067D801;
+					};
+				};
+			};
+			buildConfigurationList = 28D8C6262942AC150067D801 /* Build configuration list for PBXProject "Guided Missile" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 28D8C6222942AC150067D801;
+			productRefGroup = 28D8C62C2942AC150067D801 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				28D8C62A2942AC150067D801 /* Guided Missile */,
+				28D8C6432942AC160067D801 /* Guided MissileTests */,
+				28D8C64D2942AC170067D801 /* Guided MissileUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		28D8C6292942AC150067D801 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28D8C63A2942AC150067D801 /* Main.storyboard in Resources */,
+				28D8C6312942AC150067D801 /* GameScene.sks in Resources */,
+				28D8C63C2942AC160067D801 /* Assets.xcassets in Resources */,
+				28D8C63F2942AC160067D801 /* LaunchScreen.storyboard in Resources */,
+				28D8C6332942AC150067D801 /* Actions.sks in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28D8C6422942AC160067D801 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28D8C64C2942AC170067D801 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		28D8C6272942AC150067D801 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28D8C6352942AC150067D801 /* GameScene.swift in Sources */,
+				28D8C6372942AC150067D801 /* GameViewController.swift in Sources */,
+				28D8C62F2942AC150067D801 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28D8C6402942AC160067D801 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28D8C6492942AC160067D801 /* Guided_MissileTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28D8C64A2942AC170067D801 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28D8C6532942AC170067D801 /* Guided_MissileUITests.swift in Sources */,
+				28D8C6552942AC170067D801 /* Guided_MissileUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		28D8C6462942AC160067D801 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 28D8C62A2942AC150067D801 /* Guided Missile */;
+			targetProxy = 28D8C6452942AC160067D801 /* PBXContainerItemProxy */;
+		};
+		28D8C6502942AC170067D801 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 28D8C62A2942AC150067D801 /* Guided Missile */;
+			targetProxy = 28D8C64F2942AC170067D801 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		28D8C6382942AC150067D801 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				28D8C6392942AC150067D801 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		28D8C63D2942AC160067D801 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				28D8C63E2942AC160067D801 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		28D8C6562942AC170067D801 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		28D8C6572942AC170067D801 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		28D8C6592942AC170067D801 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.TinyPurpleGrapes.Guided-Missile";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		28D8C65A2942AC170067D801 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.TinyPurpleGrapes.Guided-Missile";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		28D8C65C2942AC170067D801 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.TinyPurpleGrapes.Guided-MissileTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Guided Missile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Guided Missile";
+			};
+			name = Debug;
+		};
+		28D8C65D2942AC170067D801 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.TinyPurpleGrapes.Guided-MissileTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Guided Missile.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Guided Missile";
+			};
+			name = Release;
+		};
+		28D8C65F2942AC170067D801 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.TinyPurpleGrapes.Guided-MissileUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Guided Missile";
+			};
+			name = Debug;
+		};
+		28D8C6602942AC170067D801 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.TinyPurpleGrapes.Guided-MissileUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Guided Missile";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		28D8C6262942AC150067D801 /* Build configuration list for PBXProject "Guided Missile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28D8C6562942AC170067D801 /* Debug */,
+				28D8C6572942AC170067D801 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28D8C6582942AC170067D801 /* Build configuration list for PBXNativeTarget "Guided Missile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28D8C6592942AC170067D801 /* Debug */,
+				28D8C65A2942AC170067D801 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28D8C65B2942AC170067D801 /* Build configuration list for PBXNativeTarget "Guided MissileTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28D8C65C2942AC170067D801 /* Debug */,
+				28D8C65D2942AC170067D801 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28D8C65E2942AC170067D801 /* Build configuration list for PBXNativeTarget "Guided MissileUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28D8C65F2942AC170067D801 /* Debug */,
+				28D8C6602942AC170067D801 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 28D8C6232942AC150067D801 /* Project object */;
+}
