@@ -21,6 +21,7 @@
 		28D8C6622942AF620067D801 /* MyLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6612942AF620067D801 /* MyLog.swift */; };
 		28D8C6642942AF880067D801 /* Motion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6632942AF880067D801 /* Motion.swift */; };
 		28D8C6662942AF930067D801 /* MotionForSpriteKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6652942AF930067D801 /* MotionForSpriteKit.swift */; };
+		28D8C66A294794EE0067D801 /* ShapeNodeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		28D8C6612942AF620067D801 /* MyLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyLog.swift; sourceTree = "<group>"; };
 		28D8C6632942AF880067D801 /* Motion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Motion.swift; sourceTree = "<group>"; };
 		28D8C6652942AF930067D801 /* MotionForSpriteKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionForSpriteKit.swift; sourceTree = "<group>"; };
+		28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeNodeBuilder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 				28D8C6322942AC150067D801 /* Actions.sks */,
 				28D8C62E2942AC150067D801 /* AppDelegate.swift */,
 				28D8C6342942AC150067D801 /* GameScene.swift */,
+				28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */,
 				28D8C6362942AC150067D801 /* GameViewController.swift */,
 				28D8C6652942AF930067D801 /* MotionForSpriteKit.swift */,
 				28D8C6632942AF880067D801 /* Motion.swift */,
@@ -279,6 +282,7 @@
 				28D8C6662942AF930067D801 /* MotionForSpriteKit.swift in Sources */,
 				28D8C6642942AF880067D801 /* Motion.swift in Sources */,
 				28D8C62F2942AC150067D801 /* AppDelegate.swift in Sources */,
+				28D8C66A294794EE0067D801 /* ShapeNodeBuilder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,7 +465,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeRight;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -489,7 +493,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeRight;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

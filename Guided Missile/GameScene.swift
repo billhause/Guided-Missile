@@ -22,15 +22,18 @@
 //    Use this Video Tutorial: https://www.google.com/search?q=game+center+leaderboard+swift+tutorial&newwindow=1&sxsrf=ALeKk01Bg1uOrX6PizEaPXXrfCtJHlbZBA:1600966767114&source=lnms&sa=X&ved=0ahUKEwisus37oYLsAhWYXM0KHV0kBV04ChD8BQgKKAA&biw=1688&bih=1236&dpr=2#kpvalbx=_gdBsX-TSAtaDtQaHtpDoBQ42
 //   Another Leaderboard Example:  https://code.tutsplus.com/tutorials/game-center-and-leaderboards-for-your-ios-app--cms-27488
 //
-
+import SwiftUI // Needed for Image struct
 import SpriteKit
 //import GameplayKit
+
+
+
 
 class GameScene: SKScene {
     
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
-    private var gunSiteNode: SKShapeNode?
+    private var theShapeNode: SKShapeNode?
     private var theYaw2Point = Yaw2Point(minPixel: 0, maxPixel: 100, degreeRange: 25)
     private var theRoll2Point = Roll2Point(minPixel: 0, maxPixel: 100, degreeRange: 25)
 
@@ -87,12 +90,27 @@ class GameScene: SKScene {
         MyLog.debug("Screen Size: \(self.frame.size)")
         
         // Create the gunsite node and add it to the scene
-        gunSiteNode = SKShapeNode(circleOfRadius: 20)
-        gunSiteNode!.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
-        gunSiteNode!.name = "Gunsite"
-        gunSiteNode!.lineWidth = 3
-        gunSiteNode!.strokeColor = UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        self.addChild(gunSiteNode!)
+//        theShapeNode = makeShapeNode.gunSightNode()
+        theShapeNode = ShapeNodeBilder.testNode()
+        theShapeNode!.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
+        self.addChild(theShapeNode!)
+
+        let baseNode = ShapeNodeBilder.starBaseNode()
+        baseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/6)
+        self.addChild(baseNode)
+        
+        let asteroidNode = ShapeNodeBilder.asteroidRandomNode()
+        asteroidNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
+        self.addChild(asteroidNode)
+
+        let missileNode = ShapeNodeBilder.missileNode()
+        missileNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
+        self.addChild(missileNode)
+
+        let spaceShipNode = ShapeNodeBilder.spaceShipNode()
+        spaceShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 5*self.frame.size.height/6)
+        self.addChild(spaceShipNode)
+
 
         // Config display lines for debugging
         mLabel1.position = CGPoint(x: self.frame.width/2, y: 10)
@@ -175,7 +193,7 @@ class GameScene: SKScene {
         // Called before each frame is rendered
         
 
-        gunSiteNode?.run(SKAction.move(to: CGPoint(x:theYaw2Point.getPixel(), y: theRoll2Point.getPixel()), duration: 0.2))
+        theShapeNode?.run(SKAction.move(to: CGPoint(x:theYaw2Point.getPixel(), y: theRoll2Point.getPixel()), duration: 0.2))
 
         // Update site position based on Roll (up/down) and Yaw (left/right)
         let yaw360 = MotionForSpriteKit.yawUnlimited

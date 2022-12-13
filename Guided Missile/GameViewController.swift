@@ -38,7 +38,7 @@ class GameViewController: UIViewController {
         super.viewWillLayoutSubviews()
         MyLog.debug("viewWillLayoutSubview() called")
         let skView = self.view as! SKView
-        if skView.scene == nil { // If the scene is nil, then we need to create oru new Game scene
+        if skView.scene == nil { // If the scene is nil, then we need to create our new Game scene
             MyLog.debug("viewWillLayoutSubview() creating new scene")
             skView.showsFPS = true
             skView.showsNodeCount = true
