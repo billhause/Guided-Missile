@@ -85,6 +85,7 @@ class GameScene: SKScene {
     var mLabel3 = SKLabelNode(fontNamed: "Courier")
 
     override func didMove(to view: SKView) {
+        setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
         MyLog.debug("GameScene.didMove() called wdh")
         
         MyLog.debug("Screen Size: \(self.frame.size)")
@@ -205,4 +206,72 @@ class GameScene: SKScene {
         mLabel3.text = String(format: "wdh Pitch360: %3.0f", pitch360)
 
     }
+    
+    
+    
+    // Add a background to this GameScene based on the number passed in.
+    var mBackgroundImage: SKSpriteNode?
+    func setBackground(gameLevelNumber: Int) {
+        let theGameScene = self
+        theGameScene.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0) // Set background to black
+        
+        // Remove the old background imgae from the GameScene if it exists
+        if mBackgroundImage != nil { // Check optional for existance
+            if mBackgroundImage!.parent != nil {
+                mBackgroundImage!.removeFromParent()
+            }
+        }
+        
+        let imageNumber = gameLevelNumber % 18 // Reduce the mRoundNumber number to something in our range of backgrounds
+
+        switch imageNumber { // wdh
+            case 0:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space1") // OK last image since we start at Round 1 and not Round 0
+            case 1:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space3") // OK - FIRST STAGE - Galaxy black sky start at Round 1 and not Round 0
+            case 2:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space2") // OK
+            case 3:
+                mBackgroundImage = SKSpriteNode(imageNamed: "barnard_3") // OK
+            case 4:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space4") // OK - Shows up well
+            case 5:
+                mBackgroundImage = SKSpriteNode(imageNamed: "HubbleStellarBlast") // OK
+            case 6:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space5") // OK - Pretty but bright
+            case 7:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space6") // OK - Pretty but bright
+            case 8:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space7") // OK - Pretty But bright
+            case 9:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space8") // OK
+            case 10:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space9") // OK - Pretty but Bright
+            case 11:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space10") // Low Res
+            case 12:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space11") // Low Res
+            case 13:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space12") // Low Res
+            case 14:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space13") // Too low resoltuion
+            case 15:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space14") // Too low res
+            case 16:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space15") // Low Res
+            case 17:
+                mBackgroundImage = SKSpriteNode(imageNamed: "Space16") // Low Res
+            default:
+                mBackgroundImage = SKSpriteNode(imageNamed: "barnard_3")
+        }
+
+        mBackgroundImage!.zPosition = -1000 // Default zPosition is 0.0 so -1000 will put this behind the other nodes as long as they are above -1000
+        mBackgroundImage!.position = CGPoint(x: theGameScene.frame.size.width/2, y: theGameScene.frame.size.height/2)
+        mBackgroundImage!.scale(to: CGSize(width: theGameScene.frame.size.width, height: theGameScene.frame.size.height))
+        mBackgroundImage!.alpha = 0.5
+        theGameScene.addChild(mBackgroundImage!)
+    }
+    
+
+    
 }

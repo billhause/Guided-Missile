@@ -359,11 +359,17 @@ struct ShapeNodeBilder {
         let scale = 1.0 // Change this to change the size of the object
         
         // Cyan Theme
-        let domeStrokeColor      = UIColor(red: 0.8, green: 0.8, blue: 0.0, alpha: 1.0)
-        let domeFillColor      = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.4)
-        let upperBodyColor = UIColor(red: 0.0, green: 0.5, blue: 0.6, alpha: 1.0)
-        let lowerBodyColor = UIColor(red: 0.0, green: 0.4, blue: 0.5, alpha: 1.0)
+//        let domeStrokeColor      = UIColor(red: 0.8, green: 0.8, blue: 0.0, alpha: 1.0)
+//        let domeFillColor      = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.4)
+//        let upperBodyColor = UIColor(red: 0.0, green: 0.5, blue: 0.6, alpha: 1.0)
+//        let lowerBodyColor = UIColor(red: 0.0, green: 0.4, blue: 0.5, alpha: 1.0)
         
+        // Red Theme
+        let domeStrokeColor = UIColor(red: 0.8, green: 0.8, blue: 0.0, alpha: 1.0)
+        let domeFillColor   = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.4)
+        let upperBodyColor  = UIColor(red: 0.7, green: 0.3, blue: 0.3, alpha: 1.0)
+        let lowerBodyColor  = UIColor(red: 0.6, green: 0.2, blue: 0.2, alpha: 1.0)
+
         // Ship Upper Body
         let upperBodyBez = UIBezierPath()
         upperBodyBez.move(to:    CGPoint(x:   5, y: 5)) // 1
