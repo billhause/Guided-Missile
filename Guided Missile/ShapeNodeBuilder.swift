@@ -110,11 +110,19 @@ struct ShapeNodeBilder {
         shape.addChild(circle4)
         
         let band = SKShapeNode(circleOfRadius: 27)
-        band.strokeColor = UIColor(red: 0.0, green: 0.5, blue: 0.5, alpha: 1.0)
+        band.strokeColor = UIColor(red: 0.5, green: 0.3, blue: 0.3, alpha: 1.0)
         band.fillColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0) // Transparent fill color
         band.lineWidth = 5
         band.zPosition = -2.0
         shape.addChild(band)
+        
+        // Add Shield
+        let shield = SKShapeNode(circleOfRadius: 40)
+        shield.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
+        shield.glowWidth = 2.0
+        shield.lineWidth = 1
+        shape.addChild(shield)
+
         
         shape.setScale(scale)
         
@@ -232,6 +240,140 @@ struct ShapeNodeBilder {
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     
+    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // vvvvvvvvv    Supply Ship     vvvvvvvvvvv
+    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    static func supplyShipNode() -> SKShapeNode {
+        let scale = 0.6 // Change this to change the size of the missile
+        
+        // Cyan Rocket
+        let noseConeColor   = UIColor(red: 0.0, green: 0.5, blue: 0.6, alpha: 1.0)
+        let stripeColor     = UIColor(red: 0.9, green: 0.9, blue: 0.0, alpha: 1.0)
+        let fuselageColor   = UIColor(red: 0.0, green: 0.4, blue: 0.5, alpha: 1.0)
+        let finColor        = UIColor(red: 0.0, green: 0.5, blue: 0.6, alpha: 1.0)
+
+//        // Brown Rocket
+//        let noseConeColor   = UIColor(red: 0.6, green: 0.5, blue: 0.0, alpha: 1.0)
+//        let stripeColor     = UIColor(red: 0.9, green: 0.9, blue: 0.0, alpha: 1.0)
+//        let fuselageColor   = UIColor(red: 0.5, green: 0.4, blue: 0.0, alpha: 1.0)
+//        let finColor        = UIColor(red: 0.6, green: 0.5, blue: 0.0, alpha: 1.0)
+
+
+        
+        let exaustColor     = UIColor(red: 0.8, green: 0.2, blue: 0.2, alpha: 1.0)
+        let shape = SKShapeNode()
+
+        // Nose Cone
+        let noseConeBez = UIBezierPath()
+        noseConeBez.addArc(withCenter: CGPoint(x: 0, y: 15), radius: 5, startAngle: 0.0, endAngle: Double.pi, clockwise: true)
+        let noseCone = SKShapeNode()
+        noseCone.path = noseConeBez.cgPath
+        noseCone.strokeColor = noseConeColor
+        noseCone.fillColor = noseConeColor
+
+        shape.addChild(noseCone)
+
+
+        // Stripes
+        let stripesBez = UIBezierPath()
+        stripesBez.move(to: CGPoint(x: -3, y: -5))
+        stripesBez.addLine(to: CGPoint(x: 3, y: -5))
+        stripesBez.move(to: CGPoint(x: -3, y: 0))
+        stripesBez.addLine(to: CGPoint(x: 3, y: 0))
+        stripesBez.move(to: CGPoint(x: -3, y: 5))
+        stripesBez.addLine(to: CGPoint(x: 3, y: 5))
+        stripesBez.move(to: CGPoint(x: -3, y: 10))
+        stripesBez.addLine(to: CGPoint(x: 3, y: 10))
+        let stripes = SKShapeNode()
+        stripes.path = stripesBez.cgPath
+        stripes.strokeColor = stripeColor
+        stripes.lineWidth = 2
+        stripes.zPosition = 1.0
+        shape.addChild(stripes)
+        
+//
+//
+//        let noseConeBez = UIBezierPath()
+//        noseConeBez.move(to: CGPoint(x:0, y:25)) // Peak
+//        noseConeBez.addLine(to: CGPoint(x: -5, y:15))
+//        noseConeBez.addLine(to: CGPoint(x: 5, y:15))
+//        noseConeBez.close()
+//        let noseCone = SKShapeNode()
+//        noseCone.path = noseConeBez.cgPath
+//        noseCone.strokeColor = noseConeColor
+//        noseCone.fillColor = noseConeColor
+//        shape.addChild(noseCone)
+        
+        // Fuselage
+        let fuselageBez = UIBezierPath()
+        fuselageBez.move(to: CGPoint(x:5, y:15)) // Peak
+        fuselageBez.addLine(to: CGPoint(x: -5,  y:  15))
+        fuselageBez.addLine(to: CGPoint(x: -5,  y:  -10))
+        fuselageBez.addLine(to: CGPoint(x:  5,  y:  -10))
+        fuselageBez.close()
+        let bodyNode = SKShapeNode()
+        bodyNode.path = fuselageBez.cgPath
+        bodyNode.strokeColor = fuselageColor
+        bodyNode.fillColor = fuselageColor
+        shape.addChild(bodyNode)
+        
+        
+        // TailFin1
+        let finBez1 = UIBezierPath()
+        finBez1.move(to:    CGPoint(x:   5, y:10)) // Peak
+        finBez1.addLine(to: CGPoint(x:  15,  y:  -5))
+        finBez1.addLine(to: CGPoint(x:  15,  y: -10))
+        finBez1.addLine(to: CGPoint(x:   5,  y: -10))
+        finBez1.close()
+        let finNode1 = SKShapeNode()
+        finNode1.path = finBez1.cgPath
+        finNode1.strokeColor = finColor
+        finNode1.fillColor = finColor
+        finNode1.zPosition = -1.0 // Put behind fuselage
+        shape.addChild(finNode1)
+
+        // TailFin2
+        let finBez2 = UIBezierPath()
+        finBez2.move(to:    CGPoint(x:   -5, y:10)) // Peak
+        finBez2.addLine(to: CGPoint(x:  -15,  y:  -5))
+        finBez2.addLine(to: CGPoint(x:  -15,  y: -10))
+        finBez2.addLine(to: CGPoint(x:   -5,  y: -10))
+        finBez2.close()
+        let finNode2 = SKShapeNode()
+        finNode2.path = finBez2.cgPath
+        finNode2.strokeColor = finColor
+        finNode2.fillColor = finColor
+        finNode2.zPosition = -1.0 // Put behind fuselage
+        shape.addChild(finNode2)
+
+        // Exaust Port
+        let bez = UIBezierPath()
+        bez.move(to:    CGPoint(x:   2,  y: -11)) // Peak
+        bez.addLine(to: CGPoint(x:  -2,  y: -11))
+        bez.addLine(to: CGPoint(x:  -2,  y: -11))
+        bez.addLine(to: CGPoint(x:  -2,  y: -12))
+        bez.addLine(to: CGPoint(x:   2,  y: -12))
+        bez.close()
+        let exaust = SKShapeNode()
+        exaust.path = bez.cgPath
+        exaust.strokeColor = exaustColor
+        exaust.fillColor = exaustColor
+        exaust.glowWidth = 2.0
+        shape.addChild(exaust)
+        
+        // Set Scale for entire Missile
+        shape.setScale(scale)
+        
+        // Must have a parent node so that it's scale can be changed independant of it's child node's scales
+        let parentNode = SKShapeNode()
+        parentNode.addChild(shape)
+
+        return parentNode
+    }
+    
+    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // vvvvvvvvv     Asteroid 1     vvvvvvvvvvv
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -443,7 +585,8 @@ struct ShapeNodeBilder {
 //        let shape = fullStarBaseNode()
 //        let shape = missileNode()
 //        let shape = asteroidNode1()
-        let shape = spaceShipNode()
+//        let shape = spaceShipNode()
+        let shape = supplyShipNode()
         return shape
     }
 }
