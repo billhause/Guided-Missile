@@ -91,7 +91,6 @@ class GameScene: SKScene {
         MyLog.debug("Screen Size: \(self.frame.size)")
         
         // Create the gunsite node and add it to the scene
-//        theShapeNode = makeShapeNode.gunSightNode()
         theShapeNode = ShapeNodeBilder.testNode()
         theShapeNode!.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         self.addChild(theShapeNode!)
