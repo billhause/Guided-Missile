@@ -31,7 +31,8 @@ import SpriteKit
 
 class GameScene: SKScene {
     private var mGameVM = GameViewModel()
-    
+    private var lastUpdateTime : TimeInterval = 0 // track time between frame updates in case it's needed
+
     private var label : SKLabelNode?
     private var theShapeNode: SKShapeNode?
 
@@ -137,16 +138,35 @@ class GameScene: SKScene {
     
     // FRAME UPDATE
     // This gets called each frame update
+    var gUpdateCount = 0
     override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
         
+        // vvvvv Time Management vvvvv
+        // Initialize _lastUpdateTime if it has not already been
+        if (self.lastUpdateTime == 0) {
+            self.lastUpdateTime = currentTime
+        }
+        // Calculate time since last update
+        let dt = currentTime - self.lastUpdateTime
+        self.lastUpdateTime = currentTime
+        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        
+        
+        
+        
+        // Called before each frame is rendered
+        gUpdateCount += 1
 
 //        theShapeNode?.run(SKAction.move(to: CGPoint(x:theYaw2Point.getPixel(), y: theRoll2Point.getPixel()), duration: 0.2))
 
-        mLabel1.text = String(format: "Debug 1: %3.0f", 0.1)
+        mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
         mLabel2.text = String(format: "Debug 2: %3.0f", 0.2)
         mLabel3.text = String(format: "Debug 3: %3.0f", 0.3)
 
+        
+                
+        
+        
     }
     
     
