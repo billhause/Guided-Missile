@@ -30,12 +30,10 @@ import SpriteKit
 
 
 class GameScene: SKScene {
+    private var mGameVM = GameViewModel()
     
     private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
     private var theShapeNode: SKShapeNode?
-    private var theYaw2Point = Yaw2Point(minPixel: 0, maxPixel: 100, degreeRange: 25)
-    private var theRoll2Point = Roll2Point(minPixel: 0, maxPixel: 100, degreeRange: 25)
 
     // vvvvvvvvvvvvvv
     // This code is needed because isPaused automatically sets to true when returning from the background.
@@ -88,28 +86,9 @@ class GameScene: SKScene {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
         MyLog.debug("GameScene.didMove() called wdh")
         
-        MyLog.debug("Screen Size: \(self.frame.size)")
-        
-        // Create the gunsite node and add it to the scene
-        theShapeNode = ShapeNodeBilder.testNode()
-        theShapeNode!.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
-        self.addChild(theShapeNode!)
-
-        let baseNode = ShapeNodeBilder.starBaseNode()
-        baseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/6)
-        self.addChild(baseNode)
-        
-        let asteroidNode = ShapeNodeBilder.asteroidRandomNode()
-        asteroidNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
-        self.addChild(asteroidNode)
-
         let missileNode = ShapeNodeBilder.missileNode()
         missileNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
         self.addChild(missileNode)
-
-        let spaceShipNode = ShapeNodeBilder.spaceShipNode()
-        spaceShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 5*self.frame.size.height/6)
-        self.addChild(spaceShipNode)
 
 
         // Config display lines for debugging
@@ -123,52 +102,19 @@ class GameScene: SKScene {
         mLabel3.fontSize = CGFloat(9.0)
         self.addChild(mLabel3)
 
-        // Replace the dummy Yaw2Point and Roll2Point with a correct one
-        theYaw2Point = Yaw2Point(minPixel: 0.0, maxPixel: self.size.width, degreeRange: 45) // left/right
-        theRoll2Point = Roll2Point(minPixel: 0.0, maxPixel: self.size.height, degreeRange: -45) // top/bottom
-
-        
-        // TODO: Remove this code that creates the spinnyNode
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
     }
     
     
     func touchDown(atPoint pos : CGPoint) {
         MyLog.debug("GameScene.touchDown() called")
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
     }
     
     func touchMoved(toPoint pos : CGPoint) {
         MyLog.debug("GameScene.touchMoved() called")
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
     }
     
     func touchUp(atPoint pos : CGPoint) {
         MyLog.debug("GameScene.touchUp() called")
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -193,16 +139,11 @@ class GameScene: SKScene {
         // Called before each frame is rendered
         
 
-        theShapeNode?.run(SKAction.move(to: CGPoint(x:theYaw2Point.getPixel(), y: theRoll2Point.getPixel()), duration: 0.2))
+//        theShapeNode?.run(SKAction.move(to: CGPoint(x:theYaw2Point.getPixel(), y: theRoll2Point.getPixel()), duration: 0.2))
 
-        // Update site position based on Roll (up/down) and Yaw (left/right)
-        let yaw360 = MotionForSpriteKit.yawUnlimited
-        let roll360 = MotionForSpriteKit.rollUnlimited
-        let pitch360 = MotionForSpriteKit.pitchUnlimited
-
-        mLabel1.text = String(format: "wdh Yaw360:   %3.0f", yaw360)
-        mLabel2.text = String(format: "wdh Roll360:  %3.0f", roll360)
-        mLabel3.text = String(format: "wdh Pitch360: %3.0f", pitch360)
+        mLabel1.text = String(format: "Debug 1: %3.0f", 0.1)
+        mLabel2.text = String(format: "Debug 2: %3.0f", 0.2)
+        mLabel3.text = String(format: "Debug 3: %3.0f", 0.3)
 
     }
     
@@ -214,7 +155,7 @@ class GameScene: SKScene {
         let theGameScene = self
         theGameScene.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0) // Set background to black
         
-        // Remove the old background imgae from the GameScene if it exists
+        // Remove the old background image from the GameScene if it exists
         if mBackgroundImage != nil { // Check optional for existance
             if mBackgroundImage!.parent != nil {
                 mBackgroundImage!.removeFromParent()
@@ -222,52 +163,11 @@ class GameScene: SKScene {
         }
         
         let imageNumber = gameLevelNumber % 18 // Reduce the mRoundNumber number to something in our range of backgrounds
-
-        switch imageNumber { // wdh
-            case 0:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space1") // OK last image since we start at Round 1 and not Round 0
-            case 1:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space3") // OK - FIRST STAGE - Galaxy black sky start at Round 1 and not Round 0
-            case 2:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space2") // OK
-            case 3:
-                mBackgroundImage = SKSpriteNode(imageNamed: "barnard_3") // OK
-            case 4:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space4") // OK - Shows up well
-            case 5:
-                mBackgroundImage = SKSpriteNode(imageNamed: "HubbleStellarBlast") // OK
-            case 6:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space5") // OK - Pretty but bright
-            case 7:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space6") // OK - Pretty but bright
-            case 8:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space7") // OK - Pretty But bright
-            case 9:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space8") // OK
-            case 10:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space9") // OK - Pretty but Bright
-            case 11:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space10") // Low Res
-            case 12:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space11") // Low Res
-            case 13:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space12") // Low Res
-            case 14:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space13") // Too low resoltuion
-            case 15:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space14") // Too low res
-            case 16:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space15") // Low Res
-            case 17:
-                mBackgroundImage = SKSpriteNode(imageNamed: "Space16") // Low Res
-            default:
-                mBackgroundImage = SKSpriteNode(imageNamed: "barnard_3")
-        }
+        mBackgroundImage = mGameVM.getBackgroundNode(gameLevelNumber: imageNumber)
 
         mBackgroundImage!.zPosition = -1000 // Default zPosition is 0.0 so -1000 will put this behind the other nodes as long as they are above -1000
         mBackgroundImage!.position = CGPoint(x: theGameScene.frame.size.width/2, y: theGameScene.frame.size.height/2)
         mBackgroundImage!.scale(to: CGSize(width: theGameScene.frame.size.width, height: theGameScene.frame.size.height))
-        mBackgroundImage!.alpha = 0.5
         theGameScene.addChild(mBackgroundImage!)
     }
     

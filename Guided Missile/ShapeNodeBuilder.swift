@@ -234,6 +234,22 @@ struct ShapeNodeBilder {
         let parentNode = SKShapeNode()
         parentNode.addChild(shape)
 
+        
+        // Physics & Other Attributes
+        //
+        Must make the physicsBody from an array of the body parts -
+        create an array of the physics bodies of the children.  Each child must have a physics body from its polygons
+        parentNode.physicsBody = SKPhysicsBody(bodies: <#T##[SKPhysicsBody]#>)
+        parentNode.physicsBody = SKPhysicsBody(polygonFrom: parentNode.path!) // Use the node's polygon for it's physical body
+        
+        parentNode.zPosition = 1.0 // at or above the other nodes in the game
+        parentNode.name = "Missile"
+        parentNode.physicsBody?.friction = 0.0 // No friction in space
+        parentNode.physicsBody?.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
+        parentNode.physicsBody?.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
+        parentNode.physicsBody?.allowsRotation = false // don't spin when bouncing off other objects
+        
+        
         return parentNode
     }
     

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28C70BC9294D2C5600ADAC9A /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */; };
 		28D8C62F2942AC150067D801 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C62E2942AC150067D801 /* AppDelegate.swift */; };
 		28D8C6312942AC150067D801 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28D8C6302942AC150067D801 /* GameScene.sks */; };
 		28D8C6332942AC150067D801 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28D8C6322942AC150067D801 /* Actions.sks */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		28D8C62B2942AC150067D801 /* Guided Missile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Guided Missile.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		28D8C62E2942AC150067D801 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		28D8C6302942AC150067D801 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 				28D8C6322942AC150067D801 /* Actions.sks */,
 				28D8C62E2942AC150067D801 /* AppDelegate.swift */,
 				28D8C6342942AC150067D801 /* GameScene.swift */,
+				28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */,
 				28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */,
 				28D8C6362942AC150067D801 /* GameViewController.swift */,
 				28D8C6652942AF930067D801 /* MotionForSpriteKit.swift */,
@@ -276,6 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28C70BC9294D2C5600ADAC9A /* GameViewModel.swift in Sources */,
 				28D8C6352942AC150067D801 /* GameScene.swift in Sources */,
 				28D8C6372942AC150067D801 /* GameViewController.swift in Sources */,
 				28D8C6622942AF620067D801 /* MyLog.swift in Sources */,
