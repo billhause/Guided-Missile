@@ -86,8 +86,10 @@ class GameScene: SKScene {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
         MyLog.debug("GameScene.didMove() called wdh")
         
+        self.physicsWorld.gravity = CGVector(dx: 0, dy: 0) // Set gravity to 0
+        
         let missileNode = ShapeNodeBilder.missileNode()
-        missileNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
+        missileNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
         self.addChild(missileNode)
 
 

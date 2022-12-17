@@ -168,6 +168,7 @@ struct ShapeNodeBilder {
         noseCone.path = noseConeBez.cgPath
         noseCone.strokeColor = noseConeColor
         noseCone.fillColor = noseConeColor
+//        noseCone.physicsBody = SKPhysicsBody(polygonFrom: noseCone.path) // Use the node's polygon for it's physical body
         shape.addChild(noseCone)
         
         // Fuselage
@@ -181,6 +182,7 @@ struct ShapeNodeBilder {
         bodyNode.path = fuselageBez.cgPath
         bodyNode.strokeColor = fuselageColor
         bodyNode.fillColor = fuselageColor
+//        bodyNode.physicsBody = SKPhysicsBody(polygonFrom: bodyNode.path!) // Use the node's polygon for it's physical body
         shape.addChild(bodyNode)
         
         
@@ -196,6 +198,7 @@ struct ShapeNodeBilder {
         finNode1.strokeColor = finColor
         finNode1.fillColor = finColor
         finNode1.zPosition = -1.0 // Put behind fuselage
+//        finNode1.physicsBody = SKPhysicsBody(polygonFrom: finNode1.path!) // Use the node's polygon for it's physical body
         shape.addChild(finNode1)
 
         // TailFin2
@@ -210,6 +213,7 @@ struct ShapeNodeBilder {
         finNode2.strokeColor = finColor
         finNode2.fillColor = finColor
         finNode2.zPosition = -1.0 // Put behind fuselage
+//        finNode2.physicsBody = SKPhysicsBody(polygonFrom: finNode2.path!) // Use the node's polygon for it's physical body
         shape.addChild(finNode2)
 
         // Exaust Port
@@ -237,18 +241,21 @@ struct ShapeNodeBilder {
         
         // Physics & Other Attributes
         //
-        Must make the physicsBody from an array of the body parts -
-        create an array of the physics bodies of the children.  Each child must have a physics body from its polygons
-        parentNode.physicsBody = SKPhysicsBody(bodies: <#T##[SKPhysicsBody]#>)
-        parentNode.physicsBody = SKPhysicsBody(polygonFrom: parentNode.path!) // Use the node's polygon for it's physical body
+//        Must make the physicsBody from an array of the body parts -
+//        create an array of the physics bodies of the children.  Each child must have a physics body from its polygons
+//        parentNode.physicsBody = SKPhysicsBody(bodies: <#T##[SKPhysicsBody]#>)
+//        parentNode.physicsBody = SKPhysicsBody(polygonFrom: parentNode.path!) // Use the node's polygon for it's physical body
         
         parentNode.zPosition = 1.0 // at or above the other nodes in the game
         parentNode.name = "Missile"
-        parentNode.physicsBody?.friction = 0.0 // No friction in space
-        parentNode.physicsBody?.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
-        parentNode.physicsBody?.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
-        parentNode.physicsBody?.allowsRotation = false // don't spin when bouncing off other objects
-        
+        parentNode.physicsBody = SKPhysicsBody(circleOfRadius: 18.0)
+        parentNode.physicsBody!.friction = 0.0 // No friction in space
+        parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
+        parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
+        parentNode.physicsBody!.allowsRotation = false // don't spin when bouncing off other objects
+        parentNode.position = CGPoint(x: 0, y: 0)
+        parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
+
         
         return parentNode
     }
