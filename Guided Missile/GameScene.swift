@@ -29,7 +29,7 @@ import SpriteKit
 
 
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     private var mGameVM = GameViewModel()
     private var lastUpdateTime : TimeInterval = 0 // track time between frame updates in case it's needed
 
@@ -59,6 +59,9 @@ class GameScene: SKScene {
     override init(size: CGSize) {
         MyLog.debug("GameScene.init(size:) called wdh")
         super.init(size: size)
+        
+        self.physicsWorld.contactDelegate = self // IMPORTANT - cant detect colisions without this
+
     }
     
     
@@ -92,6 +95,10 @@ class GameScene: SKScene {
         let missileNode = ShapeNodeBilder.missileNode()
         missileNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
         self.addChild(missileNode)
+        
+        let starBaseNode = ShapeNodeBilder.starBaseNode()
+        starBaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
+        self.addChild(starBaseNode)
 
 
         // Config display lines for debugging
@@ -141,27 +148,30 @@ class GameScene: SKScene {
     var gUpdateCount = 0
     override func update(_ currentTime: TimeInterval) {
         
-        // vvvvv Time Management vvvvv
-        // Initialize _lastUpdateTime if it has not already been
+        // vvvvv Time Management - Time Between Frames vvvvv
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime
         }
         // Calculate time since last update
         let dt = currentTime - self.lastUpdateTime
         self.lastUpdateTime = currentTime
-        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         
-        
-        
+        // Update Gravity based on phone orientation
+        let magFactor = 1.0
+        let dx = Motion.shared.xGravity * magFactor
+        let dy = Motion.shared.yGravity * magFactor
+        self.physicsWorld.gravity = CGVector(dx: dx, dy: dy) // Update PhysicsWorld gravity
+
         
         // Called before each frame is rendered
         gUpdateCount += 1
 
 //        theShapeNode?.run(SKAction.move(to: CGPoint(x:theYaw2Point.getPixel(), y: theRoll2Point.getPixel()), duration: 0.2))
 
-        mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
-        mLabel2.text = String(format: "Debug 2: %3.0f", 0.2)
         mLabel3.text = String(format: "Debug 3: %3.0f", 0.3)
+        mLabel2.text = String(format: "Debug 2: %3.0f", 0.2)
+        mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
 
         
                 

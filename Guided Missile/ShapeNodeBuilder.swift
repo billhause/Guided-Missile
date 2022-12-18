@@ -92,6 +92,7 @@ struct ShapeNodeBilder {
         let delta = 18.0
         let smallRad = 10.0
         let largeRad = 17.0
+        let shieldRad = 40.0
 
         let shape = starBaseCircleNode(name: "mainCircle", posX: 0, posY: 0, radius: largeRad)
         
@@ -117,7 +118,7 @@ struct ShapeNodeBilder {
         shape.addChild(band)
         
         // Add Shield
-        let shield = SKShapeNode(circleOfRadius: 40)
+        let shield = SKShapeNode(circleOfRadius: shieldRad)
         shield.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
         shield.glowWidth = 2.0
         shield.lineWidth = 1
@@ -129,6 +130,10 @@ struct ShapeNodeBilder {
         // Must have a parent node so that it's scale can be changed independant of it's child node's scales
         let parentNode = SKShapeNode()
         parentNode.addChild(shape)
+        
+        parentNode.physicsBody = SKPhysicsBody(circleOfRadius: shieldRad * scale)
+        parentNode.physicsBody?.isDynamic = false // does not move due to gravity
+
         
         // Make it spin
         parentNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 20)))
@@ -143,6 +148,8 @@ struct ShapeNodeBilder {
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     static func missileNode() -> SKShapeNode {
         let scale = 0.4 // Change this to change the size of the missile
+        let bodyRadius = 37.0/2 * scale
+        let bodyOffset = CGPoint(x: 0, y: (25.0-12)/2 * scale) // rocket length is 37 with 25 above center point
         
         // Cyan Rocket
 //        let noseConeColor   = UIColor(red: 0.0, green: 0.5, blue: 0.6, alpha: 1.0)
@@ -168,7 +175,6 @@ struct ShapeNodeBilder {
         noseCone.path = noseConeBez.cgPath
         noseCone.strokeColor = noseConeColor
         noseCone.fillColor = noseConeColor
-//        noseCone.physicsBody = SKPhysicsBody(polygonFrom: noseCone.path) // Use the node's polygon for it's physical body
         shape.addChild(noseCone)
         
         // Fuselage
@@ -182,7 +188,6 @@ struct ShapeNodeBilder {
         bodyNode.path = fuselageBez.cgPath
         bodyNode.strokeColor = fuselageColor
         bodyNode.fillColor = fuselageColor
-//        bodyNode.physicsBody = SKPhysicsBody(polygonFrom: bodyNode.path!) // Use the node's polygon for it's physical body
         shape.addChild(bodyNode)
         
         
@@ -198,7 +203,6 @@ struct ShapeNodeBilder {
         finNode1.strokeColor = finColor
         finNode1.fillColor = finColor
         finNode1.zPosition = -1.0 // Put behind fuselage
-//        finNode1.physicsBody = SKPhysicsBody(polygonFrom: finNode1.path!) // Use the node's polygon for it's physical body
         shape.addChild(finNode1)
 
         // TailFin2
@@ -213,7 +217,6 @@ struct ShapeNodeBilder {
         finNode2.strokeColor = finColor
         finNode2.fillColor = finColor
         finNode2.zPosition = -1.0 // Put behind fuselage
-//        finNode2.physicsBody = SKPhysicsBody(polygonFrom: finNode2.path!) // Use the node's polygon for it's physical body
         shape.addChild(finNode2)
 
         // Exaust Port
@@ -248,7 +251,7 @@ struct ShapeNodeBilder {
         
         parentNode.zPosition = 1.0 // at or above the other nodes in the game
         parentNode.name = "Missile"
-        parentNode.physicsBody = SKPhysicsBody(circleOfRadius: 18.0)
+        parentNode.physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: bodyOffset)
         parentNode.physicsBody!.friction = 0.0 // No friction in space
         parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
         parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
@@ -314,18 +317,6 @@ struct ShapeNodeBilder {
         stripes.zPosition = 1.0
         shape.addChild(stripes)
         
-//
-//
-//        let noseConeBez = UIBezierPath()
-//        noseConeBez.move(to: CGPoint(x:0, y:25)) // Peak
-//        noseConeBez.addLine(to: CGPoint(x: -5, y:15))
-//        noseConeBez.addLine(to: CGPoint(x: 5, y:15))
-//        noseConeBez.close()
-//        let noseCone = SKShapeNode()
-//        noseCone.path = noseConeBez.cgPath
-//        noseCone.strokeColor = noseConeColor
-//        noseCone.fillColor = noseConeColor
-//        shape.addChild(noseCone)
         
         // Fuselage
         let fuselageBez = UIBezierPath()
