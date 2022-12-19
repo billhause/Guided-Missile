@@ -30,12 +30,13 @@ import SpriteKit
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    
     private var mGameVM = GameViewModel()
     private var lastUpdateTime : TimeInterval = 0 // track time between frame updates in case it's needed
 
     private var label : SKLabelNode?
-    private var theShapeNode: SKShapeNode?
-
+    private var theShapeNode: SKShapeNode?    
+    
     // vvvvvvvvvvvvvv
     // This code is needed because isPaused automatically sets to true when returning from the background.
     // If the users pauses before going to the background, I want it paused when returning from the backround
@@ -72,7 +73,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         super.init(coder: aDecoder)
     }
 
+    // SKPhysicsContactDelegate interface callback function
+    func didBegin(_ contact: SKPhysicsContact) {
+        MyLog.debug("didBegin(contact:) called \(contact.bodyA.categoryBitMask)")
+        var firstBody = SKPhysicsBody()
+        var secondBody = SKPhysicsBody()
+                
+        // Sort the two bodies by the categoryBitMask so that we can make assumptions
+        // about what object they must be and what we must do.
+        //
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+            firstBody = contact.bodyA  // missile?
+            secondBody = contact.bodyB // Asteroid, Enemy Ship, Star Base or supply ship
+        } else {
+            firstBody = contact.bodyB  // missile?
+            secondBody = contact.bodyA // Asteroid, Enemy Ship, Star Base or supply ship
+        }
+        
+        // Is the firstBody the Missile? - I.e. did the missile hit something?
+        if firstBody.categoryBitMask == gCategoryMissile {
+            MyLog.debug("Missile Hit Something")
+        }
 
+
+    }
+    
+    // SKPhysicsContactDelegate interface callback function
+    func didEnd(_ contact: SKPhysicsContact) {
+        MyLog.debug("didEnd(contact:) called")
+    }
     
     // Tells you when the scene is presented by a view.
     //
@@ -92,13 +121,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0) // Set gravity to 0
         
-        let missileNode = ShapeNodeBilder.missileNode()
+        let missileNode = ShapeNodeBuilder.missileNode()
         missileNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
         self.addChild(missileNode)
         
-        let starBaseNode = ShapeNodeBilder.starBaseNode()
+        let starBaseNode = ShapeNodeBuilder.starBaseNode()
         starBaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         self.addChild(starBaseNode)
+
+//        let asteroidNode = ShapeNodeBuilder.asteroidRandomNode()
+//        asteroidNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
+//        self.addChild(asteroidNode)
+
+//        let supplyShipNode = ShapeNodeBuilder.supplyShipNode()
+//        supplyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
+//        self.addChild(supplyShipNode)
+
+        let enemyShipNode = ShapeNodeBuilder.enemySpaceShipNode()
+        enemyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
+        self.addChild(enemyShipNode)
+
 
 
         // Config display lines for debugging

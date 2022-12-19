@@ -8,7 +8,16 @@
 import Foundation
 import SpriteKit
 
-struct ShapeNodeBilder {
+// vvvv Object Category Bit Masks vvvv
+let gCategoryMissile:    UInt32 = 0x1 << 0  // 1
+let gCategoryAsteroid:   UInt32 = 0x1 << 1  // 2
+let gCategoryStarBase:   UInt32 = 0x1 << 2  // 4
+let gCategorySupplyShip: UInt32 = 0x1 << 3  // 8
+let gCategoryEnemyShip:  UInt32 = 0x1 << 4  // 16
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+struct ShapeNodeBuilder {
+        
     static func gunSightNode() -> SKShapeNode {
         let shapeNode = SKShapeNode(circleOfRadius: 20)
         shapeNode.name = "Gunsite"
@@ -134,6 +143,11 @@ struct ShapeNodeBilder {
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: shieldRad * scale)
         parentNode.physicsBody?.isDynamic = false // does not move due to gravity
 
+        parentNode.physicsBody?.categoryBitMask = gCategoryStarBase
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip
+        parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with the star base. E.g. bounce off it.
+        
+        
         
         // Make it spin
         parentNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 20)))
@@ -259,6 +273,10 @@ struct ShapeNodeBilder {
         parentNode.position = CGPoint(x: 0, y: 0)
         parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
 
+        parentNode.physicsBody?.categoryBitMask = gCategoryMissile
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategorySupplyShip | gCategoryEnemyShip
+        parentNode.physicsBody?.collisionBitMask = 0 // CategoryEnemyShip // Nothing will interact with the missile. E.g. bounce off it.
+
         
         return parentNode
     }
@@ -271,7 +289,9 @@ struct ShapeNodeBilder {
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     static func supplyShipNode() -> SKShapeNode {
         let scale = 0.6 // Change this to change the size of the missile
-        
+        let bodyRadius = 32.0/2 * scale
+        let bodyOffset = CGPoint(x: 0, y: (20.0-12)/2 * scale) // rocket length is 37 with 25 above center point
+
         // Cyan Rocket
         let noseConeColor   = UIColor(red: 0.0, green: 0.5, blue: 0.6, alpha: 1.0)
         let stripeColor     = UIColor(red: 0.9, green: 0.9, blue: 0.0, alpha: 1.0)
@@ -382,52 +402,28 @@ struct ShapeNodeBilder {
         let parentNode = SKShapeNode()
         parentNode.addChild(shape)
 
+
+        
+        parentNode.zPosition = 1.0 // at or above the other nodes in the game
+        parentNode.name = "SupplyShip"
+        parentNode.physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: bodyOffset)
+        parentNode.physicsBody?.isDynamic = false // does not move due to gravity
+        parentNode.physicsBody!.friction = 0.0 // No friction in space
+        parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
+        parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
+        parentNode.physicsBody!.allowsRotation = false // don't spin when bouncing off other objects
+        parentNode.position = CGPoint(x: 0, y: 0)
+        parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
+
+        parentNode.physicsBody?.categoryBitMask = gCategorySupplyShip
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip | gCategoryStarBase
+        parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with this object. E.g. bounce off it.
+
+
+        
         return parentNode
     }
     
-    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    // vvvvvvvvv     Asteroid 1     vvvvvvvvvvv
-    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    static func asteroidNode1() -> SKShapeNode {
-        let scale = 3.0 // Change this to change the size of the asteroid
-        
-        let asteroidColor   = UIColor(red: 0.6, green: 0.5, blue: 0.6, alpha: 1.0)
-        
-        // Asteroid
-        let asteroidBez = UIBezierPath()
-        asteroidBez.move(to:       CGPoint(x:  5, y: 0)) // 1
-        asteroidBez.addLine(to:    CGPoint(x:  3, y: 1)) // 2
-        asteroidBez.addLine(to:    CGPoint(x:  4, y: 4)) // 3
-        asteroidBez.addLine(to:    CGPoint(x:  0, y: 5)) // 4
-        asteroidBez.addLine(to:    CGPoint(x: -1, y: 3)) // 5
-        asteroidBez.addLine(to:    CGPoint(x: -3, y: 3)) // 6
-        asteroidBez.addLine(to:    CGPoint(x: -5, y: 0)) // 7
-        asteroidBez.addLine(to:    CGPoint(x: -4, y:-2)) // 8
-        asteroidBez.addLine(to:    CGPoint(x: -4, y:-4)) // 9
-        asteroidBez.addLine(to:    CGPoint(x:  0, y:-5)) // 10
-        asteroidBez.addLine(to:    CGPoint(x:  2, y:-3)) // 11
-        asteroidBez.addLine(to:    CGPoint(x:  4, y:-4)) // 11
-        asteroidBez.close()
-        let shape = SKShapeNode()
-        shape.path = asteroidBez.cgPath
-        shape.strokeColor = asteroidColor
-        shape.fillColor = asteroidColor
-
-        // Set Scale for entire asteroid
-        shape.setScale(scale)
-        
-        // Must have a parent node so that it's scale can be changed independant of it's child node's scales
-        let parentNode = SKShapeNode()
-        parentNode.addChild(shape)
-        
-        // Make it spin
-        parentNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 10)))
-
-        return parentNode
-    }
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     
     
@@ -497,6 +493,13 @@ struct ShapeNodeBilder {
         let parentNode = SKShapeNode()
         parentNode.addChild(shape)
 
+        parentNode.physicsBody = SKPhysicsBody(circleOfRadius: 5 * scale)
+        parentNode.physicsBody?.isDynamic = false // does not move due to gravity
+
+        parentNode.physicsBody?.categoryBitMask = gCategoryAsteroid
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip | gCategorySupplyShip
+        parentNode.physicsBody?.collisionBitMask = gCategoryAsteroid // Asteroids will bounce off each other
+
         // Make it spin
         let spinDuration = Double.random(in: 1...10)
         let direction = Bool.random() // Clockwise or counter clockwise
@@ -511,9 +514,11 @@ struct ShapeNodeBilder {
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // vvvvvvvvv     SpaceShip      vvvvvvvvvvv
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    static func spaceShipNode() -> SKShapeNode {
+    static func enemySpaceShipNode() -> SKShapeNode {
         let scale = 1.0 // Change this to change the size of the object
-        
+        let bodyRadius = 24/2 * scale // The ship is 17 high and 30 wide
+        let bodyOffset = CGPoint(x: 0, y: (10.0-7)/2 * scale) // ship height is 17 with 10 above center and 7 below
+
         // Cyan Theme
 //        let domeStrokeColor      = UIColor(red: 0.8, green: 0.8, blue: 0.0, alpha: 1.0)
 //        let domeFillColor      = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.4)
@@ -589,6 +594,22 @@ struct ShapeNodeBilder {
         // Must have a parent node so that it's scale can be changed independant of it's child node's scales
         let parentNode = SKShapeNode()
         parentNode.addChild(shape)
+        
+        parentNode.zPosition = 1.0 // at or above the other nodes in the game
+        parentNode.name = "EnemySpaceShip"
+        parentNode.physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: bodyOffset)
+        parentNode.physicsBody?.isDynamic = false // does not move due to gravity
+        parentNode.physicsBody!.friction = 0.0 // No friction in space
+        parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
+        parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
+        parentNode.physicsBody!.allowsRotation = false // don't spin when bouncing off other objects
+        parentNode.position = CGPoint(x: 0, y: 0)
+        parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
+
+        parentNode.physicsBody?.categoryBitMask = gCategoryEnemyShip
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryStarBase
+        parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with this object. E.g. bounce off it.
+
         
         return parentNode
     }
