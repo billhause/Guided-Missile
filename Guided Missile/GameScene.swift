@@ -75,12 +75,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // SKPhysicsContactDelegate interface callback function
     func didBegin(_ contact: SKPhysicsContact) {
-        MyLog.debug("didBegin(contact:) called \(contact.bodyA.categoryBitMask)")
         var firstBody = SKPhysicsBody()
         var secondBody = SKPhysicsBody()
                 
         // Sort the two bodies by the categoryBitMask so that we can make assumptions
         // about what object they must be and what we must do.
+        // Note, the Missile is the smallest BitMask so it will always be firstBody
         //
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             firstBody = contact.bodyA  // missile?
@@ -92,16 +92,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Is the firstBody the Missile? - I.e. did the missile hit something?
         if firstBody.categoryBitMask == gCategoryMissile {
-            MyLog.debug("Missile Hit Something")
+            // Hit Asteroid
+            if secondBody.categoryBitMask == gCategoryAsteroid {
+                MyLog.debug("Missile hit Asteroid")
+            } else if secondBody.categoryBitMask == gCategoryEnemyShip { // Hit Enemy Space Ship
+                MyLog.debug("Missile hit Enemy Space Ship")
+            } else if secondBody.categoryBitMask == gCategoryStarBase {  // Hit Star Base
+                MyLog.debug("Missile hit Star Base")
+            } else if secondBody.categoryBitMask == gCategorySupplyShip { // Hit Friendly Supply Ship
+                MyLog.debug("Missile hit Friendly Supply Ship")
+            } else { // Hit something unknown
+                MyLog.debug("ERROR Missile Hit and UNKNOWN OBJECT - This should not happen")
+            }
+        } else { // Something other than a missile
+            MyLog.debug("Objects Collided and neither was a missile")
         }
 
 
     }
     
-    // SKPhysicsContactDelegate interface callback function
+    // This gets called when the colliding objects separate
+    // Callback Function for SKPhysicsContactDelegate
     func didEnd(_ contact: SKPhysicsContact) {
-        MyLog.debug("didEnd(contact:) called")
+        // MyLog.debug("didEnd(contact:) called")
     }
+    
     
     // Tells you when the scene is presented by a view.
     //
@@ -114,32 +129,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var mLabel1 = SKLabelNode(fontNamed: "Courier") // label for debugging
     var mLabel2 = SKLabelNode(fontNamed: "Courier")
     var mLabel3 = SKLabelNode(fontNamed: "Courier")
-
+    let mMissileNode = ShapeNodeBuilder.missileNode()
+    let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
+    let mStarBaseNode = ShapeNodeBuilder.starBaseNode()
+    let mEnemyShipNode = ShapeNodeBuilder.enemySpaceShipNode()
+    let mAsteroidNode = ShapeNodeBuilder.asteroidRandomNode()
     override func didMove(to view: SKView) {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
         MyLog.debug("GameScene.didMove() called wdh")
         
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0) // Set gravity to 0
         
-        let missileNode = ShapeNodeBuilder.missileNode()
-        missileNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
-        self.addChild(missileNode)
+        mMissileNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/4)
+        self.addChild(mMissileNode)
         
-        let starBaseNode = ShapeNodeBuilder.starBaseNode()
-        starBaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
-        self.addChild(starBaseNode)
+        mSupplyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
+        self.addChild(mSupplyShipNode)
 
-//        let asteroidNode = ShapeNodeBuilder.asteroidRandomNode()
-//        asteroidNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
-//        self.addChild(asteroidNode)
+        mStarBaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
+        self.addChild(mStarBaseNode)
 
-//        let supplyShipNode = ShapeNodeBuilder.supplyShipNode()
-//        supplyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
-//        self.addChild(supplyShipNode)
+        mAsteroidNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 3*self.frame.size.height/4)
+        self.addChild(mAsteroidNode)
 
-        let enemyShipNode = ShapeNodeBuilder.enemySpaceShipNode()
-        enemyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
-        self.addChild(enemyShipNode)
+        mEnemyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
+        self.addChild(mEnemyShipNode)
 
 
 
@@ -187,6 +201,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // FRAME UPDATE
     // This gets called each frame update
+    // Called before each frame is rendered
     var gUpdateCount = 0
     override func update(_ currentTime: TimeInterval) {
         
@@ -199,33 +214,70 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.lastUpdateTime = currentTime
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         
-        // Update Gravity based on phone orientation
-        let magFactor = 1.0
-        let dx = Motion.shared.xGravity * magFactor
-        let dy = Motion.shared.yGravity * magFactor
-        self.physicsWorld.gravity = CGVector(dx: dx, dy: dy) // Update PhysicsWorld gravity
-
         
-        // Called before each frame is rendered
+        // Update Missile Velocity based on phone orientation gravity
+        let thrustMultiplier = 1.0 // Higher numbers make thrust more sensitive
+        let dx = Motion.shared.xGravity * thrustMultiplier // Change in velocity
+        let dy = Motion.shared.yGravity * thrustMultiplier
+        mMissileNode.physicsBody!.velocity.dx += dx // Add change to velocity
+        mMissileNode.physicsBody!.velocity.dy += dy
+
+
+        // Only change direction and show Thrust if the acceleration is > minThrust
+        let minThrust = 0.02
+        var thrust = sqrt(dx*dx+dy*dy)
+        if thrust > minThrust {
+            // Update Missile image orientation and velocity
+            var angleRad = atan2(dy, dx)
+            angleRad -= Double.pi/2 // Convert to clockwise with 0 radians pointing up
+            mMissileNode.run(SKAction.rotate(toAngle: angleRad, duration: 0.2, shortestUnitArc: true))
+            
+            // Limit thrust to 1 (which should be max anyway) because we use it for alpha
+            if thrust > 1 {
+                thrust = 1.0
+            }
+            // Show Exaust
+            let pos = mMissileNode.position
+            let exaustBall = SKShapeNode.init(circleOfRadius: 1)
+            exaustBall.position = pos
+            exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: thrust/3)
+            exaustBall.glowWidth = 5.0
+            exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: thrust)
+    //        exaustBall.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.3)
+            exaustBall.physicsBody = SKPhysicsBody()
+            exaustBall.physicsBody?.isDynamic = true // can move
+            
+            
+            // Calc exaust velocity (Total V = Missile velocity + thrust velocity)
+            let missileVx = (mMissileNode.physicsBody!.velocity.dx)
+            let missileVy = mMissileNode.physicsBody!.velocity.dy
+            let exaustVx = missileVx + -dx*500
+            let exaustVy = missileVy + -dy*500
+            exaustBall.physicsBody!.velocity = CGVector(dx: exaustVx, dy: exaustVy)
+            self.addChild(exaustBall)
+            let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 5.0, duration: 0.8),
+                                                      SKAction.fadeOut(withDuration: 0.8)])
+            exaustBall.run(SKAction.sequence([shrinkAndFadeAction,
+                                             SKAction.removeFromParent()]))
+        }
+        
+        
+ 
+        
+        
+        
+        
         gUpdateCount += 1
-
-//        theShapeNode?.run(SKAction.move(to: CGPoint(x:theYaw2Point.getPixel(), y: theRoll2Point.getPixel()), duration: 0.2))
-
-        mLabel3.text = String(format: "Debug 3: %3.0f", 0.3)
-        mLabel2.text = String(format: "Debug 2: %3.0f", 0.2)
+        mLabel3.text = String(format: "thrust: %3.4f", thrust)
+        mLabel2.text = String(format: "dy: %3.4f", dy)
         mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
-
-        
-                
-        
-        
     }
     
     
     
     // Add a background to this GameScene based on the number passed in.
-    var mBackgroundImage: SKSpriteNode?
-    func setBackground(gameLevelNumber: Int) {
+    private var mBackgroundImage: SKSpriteNode?
+    private func setBackground(gameLevelNumber: Int) {
         let theGameScene = self
         theGameScene.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0) // Set background to black
         
