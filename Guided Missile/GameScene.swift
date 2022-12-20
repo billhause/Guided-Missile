@@ -95,6 +95,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // Hit Asteroid
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 MyLog.debug("Missile hit Asteroid")
+                
+                //   Explosion Tutorial
+                //   https://www.youtube.com/watch?v=cJy61bOqQpg
+                //   Explostions at 32:30-35:22 - https://www.youtube.com/watch?v=cJy61bOqQpg
+                //   Particl Emmiter creation : 2:43 Settings at 3:58
+                let explosion = SKEmitterNode(fileNamed: "ExplosionParticles")!
+                explosion.position = mAsteroidNode.position
+                self.addChild(explosion)
+                self.run(SKAction.wait(forDuration: 2.0)) {
+                    explosion.removeFromParent() // Remove the explosion after it runs
+                }
+                
+                // Reset the missile
+                Why can't i update the position?'
+//                mMissileNode.position = mStarBaseNode.position
+                mMissileNode.position.x = 0.0
+                mMissileNode.position.y = 0.0
+                mMissileNode.physicsBody?.velocity.dy = 0
+                mMissileNode.physicsBody?.velocity.dx = 0
+                
+                
+                
+                
             } else if secondBody.categoryBitMask == gCategoryEnemyShip { // Hit Enemy Space Ship
                 MyLog.debug("Missile hit Enemy Space Ship")
             } else if secondBody.categoryBitMask == gCategoryStarBase {  // Hit Star Base
@@ -260,11 +283,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             exaustBall.run(SKAction.sequence([shrinkAndFadeAction,
                                              SKAction.removeFromParent()]))
         }
-        
-        
- 
-        
-        
         
         
         gUpdateCount += 1
