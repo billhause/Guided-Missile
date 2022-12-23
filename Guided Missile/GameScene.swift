@@ -30,6 +30,7 @@ import SpriteKit
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    private var mResetMissileFlag = false // set to true to reset the missile at the starbase
     
     private var mGameVM = GameViewModel()
     private var lastUpdateTime : TimeInterval = 0 // track time between frame updates in case it's needed
@@ -75,6 +76,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // SKPhysicsContactDelegate interface callback function
     func didBegin(_ contact: SKPhysicsContact) {
+        MyLog.debug("didBegin() called - collision processing")
         var firstBody = SKPhysicsBody()
         var secondBody = SKPhysicsBody()
                 
@@ -108,13 +110,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 
                 // Reset the missile
-                Why can't i update the position?'
-//                mMissileNode.position = mStarBaseNode.position
-                mMissileNode.position.x = 0.0
-                mMissileNode.position.y = 0.0
-                mMissileNode.physicsBody?.velocity.dy = 0
-                mMissileNode.physicsBody?.velocity.dx = 0
-                
+                mResetMissileFlag = true // trigger missile reset later in the frame update
                 
                 
                 
@@ -226,8 +222,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // This gets called each frame update
     // Called before each frame is rendered
     var gUpdateCount = 0
+//    var temp = 0.0
     override func update(_ currentTime: TimeInterval) {
-        
+
         // vvvvv Time Management - Time Between Frames vvvvv
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime
@@ -244,7 +241,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let dy = Motion.shared.yGravity * thrustMultiplier
         mMissileNode.physicsBody!.velocity.dx += dx // Add change to velocity
         mMissileNode.physicsBody!.velocity.dy += dy
-
+        
 
         // Only change direction and show Thrust if the acceleration is > minThrust
         let minThrust = 0.02
@@ -282,6 +279,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                                       SKAction.fadeOut(withDuration: 0.8)])
             exaustBall.run(SKAction.sequence([shrinkAndFadeAction,
                                              SKAction.removeFromParent()]))
+            
+
         }
         
         
@@ -290,6 +289,51 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mLabel2.text = String(format: "dy: %3.4f", dy)
         mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
     }
+    
+    
+    /**
+     Override this to perform game logic. Called exactly once per frame after any actions have been evaluated but before any physics are simulated. Any additional actions applied is not evaluated until the next update.
+     */
+    // Called every frame update after update() function is called
+    override func didEvaluateActions() {
+//        MyLog.debug("didEvaluateActions() called")
+        if mResetMissileFlag { // reset the missile back at the starbase
+            mMissileNode.position = mStarBaseNode.position
+            mMissileNode.physicsBody?.velocity.dy = 0
+            mMissileNode.physicsBody?.velocity.dx = 0
+            mResetMissileFlag = false
+        }
+
+    }
+    
+    
+    /**
+     Override this to perform game logic. Called exactly once per frame after any actions have been evaluated and any physics have been simulated. Any additional actions applied is not evaluated until the next update. Any changes to physics bodies is not simulated until the next update.
+     */
+    // Called every frame update after didEvaluateActions() function is called
+    override func didSimulatePhysics() {
+//        MyLog.debug("didSimulatePhysics() called")
+    }
+    
+    
+    /**
+     Override this to perform game logic. Called exactly once per frame after any enabled constraints have been applied. Any additional actions applied is not evaluated until the next update. Any changes to physics bodies is not simulated until the next update. Any changes to constraints will not be applied until the next update.
+     */
+    // Called every frame update after didApplyConstraints() function is called
+    override func didApplyConstraints() {
+//        MyLog.debug("didApplyConstraints() called")
+    }
+    
+    /**
+     Override this to perform game logic. Called after all update logic has been completed. Any additional actions applied are not evaluated until the next update. Any changes to physics bodies are not simulated until the next update. Any changes to constraints will not be applied until the next update.
+     
+     No futher update logic will be applied to the scene after this call. Any values set on nodes here will be used when the scene is rendered for the current frame.
+     */
+    // Called every frame update after didApplyConstraints() function is called
+    override func didFinishUpdate() {
+//        MyLog.debug("didFinishUpdate() called")
+    }
+    
     
     
     
