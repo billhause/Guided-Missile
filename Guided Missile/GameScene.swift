@@ -295,6 +295,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      Override this to perform game logic. Called exactly once per frame after any actions have been evaluated but before any physics are simulated. Any additional actions applied is not evaluated until the next update.
      */
     // Called every frame update after update() function is called
+    let xBuffer = 20.0
+    let yBuffer = 20.0
     override func didEvaluateActions() {
 //        MyLog.debug("didEvaluateActions() called")
         if mResetMissileFlag { // reset the missile back at the starbase
@@ -303,7 +305,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             mMissileNode.physicsBody?.velocity.dx = 0
             mResetMissileFlag = false
         }
+        
+        
+        // Move back on screen if out of bounds in X direction
+        let maxX = self.frame.size.width
+        if mMissileNode.position.x > maxX + xBuffer {
+            mMissileNode.position.x = 0
+        } else if mMissileNode.position.x < -xBuffer {
+            mMissileNode.position.x = maxX
+        }
 
+        // Move back on screen if out of bounds in X direction
+        let maxY = self.frame.size.height
+        if mMissileNode.position.y > maxY + yBuffer {
+            mMissileNode.position.y = 0
+        } else if mMissileNode.position.y < -yBuffer {
+            mMissileNode.position.y = maxY
+        }
     }
     
     
