@@ -493,8 +493,14 @@ struct ShapeNodeBuilder {
         let parentNode = SKShapeNode()
         parentNode.addChild(shape)
 
+        
+        
+        
+        
+        
+        
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: 5 * scale)
-        parentNode.physicsBody?.isDynamic = false // does not move due to gravity
+        parentNode.physicsBody?.isDynamic = true // false means does not move due to gravity
 
         parentNode.physicsBody?.categoryBitMask = gCategoryAsteroid
         parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip | gCategorySupplyShip
@@ -504,6 +510,31 @@ struct ShapeNodeBuilder {
         let spinDuration = Double.random(in: 1...10)
         let direction = Bool.random() // Clockwise or counter clockwise
         parentNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: direction ? CGFloat(Double.pi) : -CGFloat(Double.pi), duration: spinDuration)))
+
+        
+        //        parentNode.zPosition = 1.0 // at or above the other nodes in the game
+                parentNode.name = "Asteroid"
+        //        parentNode.physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: bodyOffset)
+                parentNode.physicsBody!.friction = 0.0 // No friction in space
+                parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
+                parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
+                parentNode.physicsBody!.allowsRotation = false // don't spin when bouncing off other objects
+        //        parentNode.position = CGPoint(x: 0, y: 0)
+                parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
+
+        //        parentNode.physicsBody?.categoryBitMask = gCategoryMissile
+        //        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategorySupplyShip | gCategoryEnemyShip
+        //        parentNode.physicsBody?.collisionBitMask = 0 // CategoryEnemyShip // Nothing will interact with the missile. E.g. bounce off it.
+
+                
+                
+                
+                
+                
+                
+                
+                
+                
 
         
         return parentNode

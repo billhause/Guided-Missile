@@ -30,8 +30,9 @@ import SpriteKit
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    private var mResetMissileFlag = false // set to true to reset the missile at the starbase
-    
+    private var mResetAsteroidFlag = false
+    private var mResetMissileFlag = false  // set to true to reset the missile at the starbase
+
     private var mGameVM = GameViewModel()
     private var lastUpdateTime : TimeInterval = 0 // track time between frame updates in case it's needed
 
@@ -111,6 +112,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 // Reset the missile
                 mResetMissileFlag = true // trigger missile reset later in the frame update
+                mResetAsteroidFlag = true
                 
                 
                 
@@ -291,22 +293,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-    /**
-     Override this to perform game logic. Called exactly once per frame after any actions have been evaluated but before any physics are simulated. Any additional actions applied is not evaluated until the next update.
-     */
-    // Called every frame update after update() function is called
-    let xBuffer = 20.0
-    let yBuffer = 20.0
-    override func didEvaluateActions() {
-//        MyLog.debug("didEvaluateActions() called")
+
+    func correctMissilePosition() {
         if mResetMissileFlag { // reset the missile back at the starbase
             mMissileNode.position = mStarBaseNode.position
             mMissileNode.physicsBody?.velocity.dy = 0
             mMissileNode.physicsBody?.velocity.dx = 0
             mResetMissileFlag = false
         }
-        
-        
+
         // Move back on screen if out of bounds in X direction
         let maxX = self.frame.size.width
         if mMissileNode.position.x > maxX + xBuffer {
@@ -322,6 +317,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if mMissileNode.position.y < -yBuffer {
             mMissileNode.position.y = maxY
         }
+    }
+    
+    private let MAX_ASTEROID_VELOCITY = 50.0
+    func correctAsteroidPositions() {
+        let maxX = self.frame.size.width
+        let maxY = self.frame.size.height
+        if mResetAsteroidFlag { // reset the missile back at the starbase
+            mAsteroidNode.position.y = 0
+            mAsteroidNode.position.x = Double.random(in: 0.0...maxX)
+            mAsteroidNode.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            mAsteroidNode.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            mResetAsteroidFlag = false
+        }
+        
+        // Move back on screen if out of bounds in X direction
+        if mAsteroidNode.position.x > maxX + xBuffer {
+            mAsteroidNode.position.x = 0
+        } else if mAsteroidNode.position.x < -xBuffer {
+            mAsteroidNode.position.x = maxX
+        }
+
+        // Move back on screen if out of bounds in X direction
+        if mAsteroidNode.position.y > maxY + yBuffer {
+            mAsteroidNode.position.y = 0
+        } else if mAsteroidNode.position.y < -yBuffer {
+            mAsteroidNode.position.y = maxY
+        }
+    }
+
+    /**
+     Override this to perform game logic. Called exactly once per frame after any actions have been evaluated but before any physics are simulated. Any additional actions applied is not evaluated until the next update.
+     */
+    // Called every frame update after update() function is called
+    let xBuffer = 20.0
+    let yBuffer = 20.0
+    override func didEvaluateActions() {
+//        MyLog.debug("didEvaluateActions() called")
+        
+        correctMissilePosition()
+        correctAsteroidPositions()
+        
     }
     
     
