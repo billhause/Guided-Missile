@@ -189,6 +189,7 @@ struct ShapeNodeBuilder {
         noseCone.path = noseConeBez.cgPath
         noseCone.strokeColor = noseConeColor
         noseCone.fillColor = noseConeColor
+        noseCone.zPosition = 3.0
         shape.addChild(noseCone)
         
         // Fuselage
@@ -202,6 +203,7 @@ struct ShapeNodeBuilder {
         bodyNode.path = fuselageBez.cgPath
         bodyNode.strokeColor = fuselageColor
         bodyNode.fillColor = fuselageColor
+        bodyNode.zPosition = 3.0
         shape.addChild(bodyNode)
         
         
@@ -216,7 +218,7 @@ struct ShapeNodeBuilder {
         finNode1.path = finBez1.cgPath
         finNode1.strokeColor = finColor
         finNode1.fillColor = finColor
-        finNode1.zPosition = -1.0 // Put behind fuselage
+        finNode1.zPosition = 2.0 // Put behind fuselage
         shape.addChild(finNode1)
 
         // TailFin2
@@ -230,7 +232,7 @@ struct ShapeNodeBuilder {
         finNode2.path = finBez2.cgPath
         finNode2.strokeColor = finColor
         finNode2.fillColor = finColor
-        finNode2.zPosition = -1.0 // Put behind fuselage
+        finNode2.zPosition = 2.0 // Put behind fuselage
         shape.addChild(finNode2)
 
         // Exaust Port
@@ -246,6 +248,7 @@ struct ShapeNodeBuilder {
         exaust.strokeColor = exaustColor
         exaust.fillColor = exaustColor
         exaust.glowWidth = 2.0
+        exaust.zPosition = 3.0 // Put behind fuselage
         shape.addChild(exaust)
         
         // Set Scale for entire Missile

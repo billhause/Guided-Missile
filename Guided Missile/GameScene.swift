@@ -224,8 +224,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // This gets called each frame update
     // Called before each frame is rendered
     var gUpdateCount = 0
-//    var temp = 0.0
     override func update(_ currentTime: TimeInterval) {
+        let THRUST_MULTIPLIER = 3.0
+        let MINIMUM_THRUST = 0.15 * THRUST_MULTIPLIER // How much thrust is needed before we start applying thrust
+        let ROTATION_SENSITIVITY = 0.05 // How much phone tilt is needed to change missile orientation
+        let EXAUST_MULTIPLIER = 100.0 // How fast should the exaust come out
 
         // vvvvv Time Management - Time Between Frames vvvvv
         if (self.lastUpdateTime == 0) {
@@ -238,34 +241,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         // Update Missile Velocity based on phone orientation gravity
-        let thrustMultiplier = 1.0 // Higher numbers make thrust more sensitive
-        let dx = Motion.shared.xGravity * thrustMultiplier // Chanxe in velocity
+        let dx = Motion.shared.xGravity * THRUST_MULTIPLIER // Change in velocity
         
-        let dy = (Motion.shared.yGravity + 0.3) * thrustMultiplier
-        mMissileNode.physicsBody!.velocity.dx += dx // Add change to velocity
-        mMissileNode.physicsBody!.velocity.dy += dy
+        let dy = (Motion.shared.yGravity + 0.3) * THRUST_MULTIPLIER // TODO use inverse sine to adjust the angle, then convert back instead of just adding something to the dy
         
 
         // Only change direction and show Thrust if the acceleration is > minThrust
-        let minThrust = 0.02
         var thrust = sqrt(dx*dx+dy*dy)
-        if thrust > minThrust {
-            // Update Missile image orientation and velocity
+        
+        // Update Missile image orientation and velocity
+        if thrust > ROTATION_SENSITIVITY {
             var angleRad = atan2(dy, dx)
             angleRad -= Double.pi/2 // Convert to clockwise with 0 radians pointing up
             mMissileNode.run(SKAction.rotate(toAngle: angleRad, duration: 0.2, shortestUnitArc: true))
-            
+        }
+
+        if thrust > MINIMUM_THRUST {
+            // Apply thrust to the missile
+            mMissileNode.physicsBody!.velocity.dx += dx // Add change to velocity
+            mMissileNode.physicsBody!.velocity.dy += dy
+
             // Limit thrust to 1 (which should be max anyway) because we use it for alpha
             if thrust > 1 {
                 thrust = 1.0
             }
+            
+
             // Show Exaust
             let pos = mMissileNode.position
             let exaustBall = SKShapeNode.init(circleOfRadius: 1)
             exaustBall.position = pos
-            exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: thrust/3)
+            exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: thrust/5)
             exaustBall.glowWidth = 5.0
-            exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: thrust)
+            exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: thrust/2)
     //        exaustBall.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.3)
             exaustBall.physicsBody = SKPhysicsBody()
             exaustBall.physicsBody?.isDynamic = true // can move
@@ -274,8 +282,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // Calc exaust velocity (Total V = Missile velocity + thrust velocity)
             let missileVx = (mMissileNode.physicsBody!.velocity.dx)
             let missileVy = mMissileNode.physicsBody!.velocity.dy
-            let exaustVx = missileVx + -dx*500
-            let exaustVy = missileVy + -dy*500
+            let exaustVx = missileVx + -dx*EXAUST_MULTIPLIER
+            let exaustVy = missileVy + -dy*EXAUST_MULTIPLIER
             exaustBall.physicsBody!.velocity = CGVector(dx: exaustVx, dy: exaustVy)
             self.addChild(exaustBall)
             let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 5.0, duration: 0.8),
