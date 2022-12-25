@@ -154,7 +154,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
     let mStarBaseNode = ShapeNodeBuilder.starBaseNode()
     let mEnemyShipNode = ShapeNodeBuilder.enemySpaceShipNode()
-    let mAsteroidNode = ShapeNodeBuilder.asteroidRandomNode()
+    var mAsteroidNode = ShapeNodeBuilder.asteroidRandomNode()
     override func didMove(to view: SKView) {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
         MyLog.debug("GameScene.didMove() called wdh")
@@ -239,8 +239,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Update Missile Velocity based on phone orientation gravity
         let thrustMultiplier = 1.0 // Higher numbers make thrust more sensitive
-        let dx = Motion.shared.xGravity * thrustMultiplier // Change in velocity
-        let dy = Motion.shared.yGravity * thrustMultiplier
+        let dx = Motion.shared.xGravity * thrustMultiplier // Chanxe in velocity
+        
+        let dy = (Motion.shared.yGravity + 0.3) * thrustMultiplier
         mMissileNode.physicsBody!.velocity.dx += dx // Add change to velocity
         mMissileNode.physicsBody!.velocity.dy += dy
         
@@ -323,12 +324,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func correctAsteroidPositions() {
         let maxX = self.frame.size.width
         let maxY = self.frame.size.height
-        if mResetAsteroidFlag { // reset the missile back at the starbase
+        if mResetAsteroidFlag { // reset the asteroid
+            mAsteroidNode.removeFromParent()
+            mAsteroidNode = ShapeNodeBuilder.asteroidRandomNode()
             mAsteroidNode.position.y = 0
             mAsteroidNode.position.x = Double.random(in: 0.0...maxX)
             mAsteroidNode.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
             mAsteroidNode.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
             mResetAsteroidFlag = false
+            self.addChild(mAsteroidNode)
         }
         
         // Move back on screen if out of bounds in X direction
