@@ -433,6 +433,7 @@ struct ShapeNodeBuilder {
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     // vvvvvvvvv   Asteroid Random  vvvvvvvvvvv
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    private static var mAsteroidNumber = 1 // used to create unique names
     static func asteroidRandomNode() -> SKShapeNode {
         let scale = 3.0 // Change this to change the size of the asteroid
         
@@ -497,11 +498,6 @@ struct ShapeNodeBuilder {
         parentNode.addChild(shape)
 
         
-        
-        
-        
-        
-        
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: 5 * scale)
         parentNode.physicsBody?.isDynamic = true // false means does not move due to gravity
 
@@ -514,31 +510,13 @@ struct ShapeNodeBuilder {
         let direction = Bool.random() // Clockwise or counter clockwise
         parentNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: direction ? CGFloat(Double.pi) : -CGFloat(Double.pi), duration: spinDuration)))
 
-        
-        //        parentNode.zPosition = 1.0 // at or above the other nodes in the game
-                parentNode.name = "Asteroid"
-        //        parentNode.physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: bodyOffset)
-                parentNode.physicsBody!.friction = 0.0 // No friction in space
-                parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
-                parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
-                parentNode.physicsBody!.allowsRotation = false // don't spin when bouncing off other objects
-        //        parentNode.position = CGPoint(x: 0, y: 0)
-                parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
-
-        //        parentNode.physicsBody?.categoryBitMask = gCategoryMissile
-        //        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategorySupplyShip | gCategoryEnemyShip
-        //        parentNode.physicsBody?.collisionBitMask = 0 // CategoryEnemyShip // Nothing will interact with the missile. E.g. bounce off it.
-
-                
-                
-                
-                
-                
-                
-                
-                
-                
-
+        parentNode.name = "Asteroid_\(mAsteroidNumber)"
+        mAsteroidNumber += 1 // increment to avoid duplicate names
+        parentNode.physicsBody!.friction = 0.0 // No friction in space
+        parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
+        parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
+        parentNode.physicsBody!.allowsRotation = true // don't spin when bouncing off other objects
+        parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
         
         return parentNode
     }

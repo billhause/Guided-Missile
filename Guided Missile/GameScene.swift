@@ -30,7 +30,7 @@ import SpriteKit
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    private var mResetAsteroidFlag = false
+//    private var mResetAsteroidFlag = false
     private var mResetMissileFlag = false  // set to true to reset the missile at the starbase
 
     private var mGameVM = GameViewModel()
@@ -97,6 +97,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if firstBody.categoryBitMask == gCategoryMissile {
             // Hit Asteroid
             if secondBody.categoryBitMask == gCategoryAsteroid {
+                let theAsteroidNode = secondBody.node as! SKShapeNode
                 MyLog.debug("Missile hit Asteroid")
                 
                 //   Explosion Tutorial
@@ -104,7 +105,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 //   Explostions at 32:30-35:22 - https://www.youtube.com/watch?v=cJy61bOqQpg
                 //   Particl Emmiter creation : 2:43 Settings at 3:58
                 let explosion = SKEmitterNode(fileNamed: "ExplosionParticles")!
-                explosion.position = mAsteroidNode.position
+                explosion.position = theAsteroidNode.position
                 self.addChild(explosion)
                 self.run(SKAction.wait(forDuration: 2.0)) {
                     explosion.removeFromParent() // Remove the explosion after it runs
@@ -112,8 +113,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 // Reset the missile
                 mResetMissileFlag = true // trigger missile reset later in the frame update
-                mResetAsteroidFlag = true
+
                 
+                // Remove the destroied asteroid from everyplace that references it (the parent and the dictionary)
+                theAsteroidNode.removeFromParent()
+                mAsteroidNodeDict.removeValue(forKey: theAsteroidNode.name!)
+                
+                // vvvvv Add replacement asteroid vvvvv
+                MyLog.debug("Adding replacement Asteroid after removin the old one.")
+                let newAsteroid = ShapeNodeBuilder.asteroidRandomNode()
+                newAsteroid.position.y = 0
+                let maxX = self.frame.size.width
+                newAsteroid.position.x = Double.random(in: 0.0...maxX)
+                newAsteroid.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+                newAsteroid.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+                mAsteroidNodeDict[newAsteroid.name!] = newAsteroid
+                self.addChild(newAsteroid)
+                // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 
                 
             } else if secondBody.categoryBitMask == gCategoryEnemyShip { // Hit Enemy Space Ship
@@ -154,7 +170,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
     let mStarBaseNode = ShapeNodeBuilder.starBaseNode()
     let mEnemyShipNode = ShapeNodeBuilder.enemySpaceShipNode()
-    var mAsteroidNode = ShapeNodeBuilder.asteroidRandomNode()
+    var mAsteroidNodeDict = [String: SKShapeNode]() // Dictionary of Asteroids using the node name as key.
     override func didMove(to view: SKView) {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
         MyLog.debug("GameScene.didMove() called wdh")
@@ -170,12 +186,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mStarBaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         self.addChild(mStarBaseNode)
 
-        mAsteroidNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 3*self.frame.size.height/4)
-        self.addChild(mAsteroidNode)
-
         mEnemyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
         self.addChild(mEnemyShipNode)
 
+        // Create Asteroid Nodes
+        let maxX = self.frame.size.width
+        for _ in 0..<4 {
+            let asteroidNode = ShapeNodeBuilder.asteroidRandomNode()
+            asteroidNode.position.y = 0
+            asteroidNode.position.x = Double.random(in: 0.0...maxX)
+            asteroidNode.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            asteroidNode.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            self.addChild(asteroidNode)
+
+            // Add the asteroid to the dictionary
+            mAsteroidNodeDict[asteroidNode.name!] = asteroidNode // wdh
+        }
 
 
         // Config display lines for debugging
@@ -332,30 +358,48 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func correctAsteroidPositions() {
         let maxX = self.frame.size.width
         let maxY = self.frame.size.height
-        if mResetAsteroidFlag { // reset the asteroid
-            mAsteroidNode.removeFromParent()
-            mAsteroidNode = ShapeNodeBuilder.asteroidRandomNode()
-            mAsteroidNode.position.y = 0
-            mAsteroidNode.position.x = Double.random(in: 0.0...maxX)
-            mAsteroidNode.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-            mAsteroidNode.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-            mResetAsteroidFlag = false
-            self.addChild(mAsteroidNode)
+//        if mResetAsteroidFlag { // reset the asteroid
+//            mAsteroidNode.removeFromParent()
+//            mAsteroidNode = ShapeNodeBuilder.asteroidRandomNode()
+//            mAsteroidNode.position.y = 0
+//            mAsteroidNode.position.x = Double.random(in: 0.0...maxX)
+//            mAsteroidNode.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+//            mAsteroidNode.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+//            mResetAsteroidFlag = false
+//            self.addChild(mAsteroidNode)
+//        }
+        
+        
+        // Iterate throuth the asteroids and update positions to keep them on the screen.
+        for (name, node) in mAsteroidNodeDict {
+            // Move back on screen if out of bounds in X direction
+            if node.position.x > maxX + xBuffer {
+                node.position.x = 0
+            } else if node.position.x < -xBuffer {
+                node.position.x = maxX
+            }
+
+            // Move back on screen if out of bounds in X direction
+            if node.position.y > maxY + yBuffer {
+                node.position.y = 0
+            } else if node.position.y < -yBuffer {
+                node.position.y = maxY
+            }
         }
         
-        // Move back on screen if out of bounds in X direction
-        if mAsteroidNode.position.x > maxX + xBuffer {
-            mAsteroidNode.position.x = 0
-        } else if mAsteroidNode.position.x < -xBuffer {
-            mAsteroidNode.position.x = maxX
-        }
-
-        // Move back on screen if out of bounds in X direction
-        if mAsteroidNode.position.y > maxY + yBuffer {
-            mAsteroidNode.position.y = 0
-        } else if mAsteroidNode.position.y < -yBuffer {
-            mAsteroidNode.position.y = maxY
-        }
+//        // Move back on screen if out of bounds in X direction
+//        if mAsteroidNode.position.x > maxX + xBuffer {
+//            mAsteroidNode.position.x = 0
+//        } else if mAsteroidNode.position.x < -xBuffer {
+//            mAsteroidNode.position.x = maxX
+//        }
+//
+//        // Move back on screen if out of bounds in X direction
+//        if mAsteroidNode.position.y > maxY + yBuffer {
+//            mAsteroidNode.position.y = 0
+//        } else if mAsteroidNode.position.y < -yBuffer {
+//            mAsteroidNode.position.y = maxY
+//        }
     }
 
     /**
