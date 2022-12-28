@@ -58,10 +58,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     // ^^^^^^^^^^^^^^^
     
-    // Added by wdh
+    // Added by Bill
     // This gets called before the didMove(to:) function gets called.
     override init(size: CGSize) {
-        MyLog.debug("GameScene.init(size:) called wdh")
+        MyLog.debug("GameScene.init(size:) called")
         super.init(size: size)
         
         self.physicsWorld.contactDelegate = self // IMPORTANT - cant detect colisions without this
@@ -88,13 +88,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // ASTEROID hits STARBASE- Call this when an asteroid and the starbase collide
     // Pass in the Asteroid node.  Since there is only one starbase node we don't need it passed in.
+    
     func handleCollision_Asteroid_and_Starbase(theAsteroidNode: SKShapeNode) {
         MyLog.debug("Missile hit Starbase")
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
         
-        // Allocate Damage to Starbase
-        mStarbaseNode
+        // Reduce Starbase shield level
+        mStarbaseSheildLevel -= 1
         
+        if mStarbaseSheildLevel >= 2 {
+            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
+        } else if mStarbaseSheildLevel == 1 {
+//            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.5)
+            mShieldNode.run(SKAction.fadeAlpha(to: 0.5, duration: 1))
+        } else if mStarbaseSheildLevel == 0 {
+            // Show NO shields - set alpha to 0
+//            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.0)
+            mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
+        } else {
+            // DESTROIED - if the shiends are negative the starbase is destroide
+            
+        }
     }
 
     // ASTEROID DESTROIED - Process the destroid asteroid by exploding it and adding a new
@@ -234,12 +248,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var mLabel3 = SKLabelNode(fontNamed: "Courier")
     let mMissileNode = ShapeNodeBuilder.missileNode()
     let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
-    let mStarbaseNode = ShapeNodeBuilder.starBaseNode()
+    let (mStarbaseNode, mShieldNode) = ShapeNodeBuilder.starBaseNode() // Returns a tuple with the starbase node and the shield node
     let mEnemyShipNode = ShapeNodeBuilder.enemySpaceShipNode()
     var mAsteroidNodeDict = [String: SKShapeNode]() // Dictionary of Asteroids using the node name as key.
     override func didMove(to view: SKView) {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
-        MyLog.debug("GameScene.didMove() called wdh")
+        MyLog.debug("GameScene.didMove() called")
         
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0) // Set gravity to 0
         
@@ -266,7 +280,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.addChild(asteroidNode)
 
             // Add the asteroid to the dictionary
-            mAsteroidNodeDict[asteroidNode.name!] = asteroidNode // wdh
+            mAsteroidNodeDict[asteroidNode.name!] = asteroidNode
         }
 
 
@@ -427,20 +441,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func correctAsteroidPositions() {
         let maxX = self.frame.size.width
         let maxY = self.frame.size.height
-//        if mResetAsteroidFlag { // reset the asteroid
-//            mAsteroidNode.removeFromParent()
-//            mAsteroidNode = ShapeNodeBuilder.asteroidRandomNode()
-//            mAsteroidNode.position.y = 0
-//            mAsteroidNode.position.x = Double.random(in: 0.0...maxX)
-//            mAsteroidNode.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-//            mAsteroidNode.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-//            mResetAsteroidFlag = false
-//            self.addChild(mAsteroidNode)
-//        }
-        
         
         // Iterate throuth the asteroids and update positions to keep them on the screen.
-        for (name, node) in mAsteroidNodeDict {
+        for (_, node) in mAsteroidNodeDict { // key value is _ to avoid compiler warining
             // Move back on screen if out of bounds in X direction
             if node.position.x > maxX + xBuffer {
                 node.position.x = 0
@@ -455,20 +458,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 node.position.y = maxY
             }
         }
-        
-//        // Move back on screen if out of bounds in X direction
-//        if mAsteroidNode.position.x > maxX + xBuffer {
-//            mAsteroidNode.position.x = 0
-//        } else if mAsteroidNode.position.x < -xBuffer {
-//            mAsteroidNode.position.x = maxX
-//        }
-//
-//        // Move back on screen if out of bounds in X direction
-//        if mAsteroidNode.position.y > maxY + yBuffer {
-//            mAsteroidNode.position.y = 0
-//        } else if mAsteroidNode.position.y < -yBuffer {
-//            mAsteroidNode.position.y = maxY
-//        }
     }
 
     /**

@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        UIApplication.shared.isIdleTimerDisabled = true // wdh added to suspend sleep mode
+        UIApplication.shared.isIdleTimerDisabled = true // Bill added to suspend sleep mode
 
         return true
     }

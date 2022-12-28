@@ -96,7 +96,7 @@ struct ShapeNodeBuilder {
         return shape
     }
     
-    static func starBaseNode() -> SKShapeNode {
+    static func starBaseNode() -> (starbaseNode: SKShapeNode, shieldNode: SKShapeNode) {
         let scale = 1.0 // adjust the size of the starbase here.
         let delta = 18.0
         let smallRad = 10.0
@@ -127,11 +127,11 @@ struct ShapeNodeBuilder {
         shape.addChild(band)
         
         // Add Shield
-        let shield = SKShapeNode(circleOfRadius: shieldRad)
-        shield.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
-        shield.glowWidth = 8.0
-        shield.lineWidth = 1
-        shape.addChild(shield)
+        let shieldNode = SKShapeNode(circleOfRadius: shieldRad)
+        shieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
+        shieldNode.glowWidth = 8.0
+        shieldNode.lineWidth = 1
+        shape.addChild(shieldNode)
 
         
         shape.setScale(scale)
@@ -152,7 +152,8 @@ struct ShapeNodeBuilder {
         // Make it spin
         parentNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 20)))
 
-        return parentNode
+        return (parentNode, shieldNode)
+//        return parentNode
     }
     // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

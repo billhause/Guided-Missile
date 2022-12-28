@@ -17,7 +17,7 @@ class GameViewModel {
         let imageNumber = gameLevelNumber % 18 // Reduce the mRoundNumber number to something in our range of backgrounds
 
         var theImage = SKSpriteNode()
-        switch imageNumber { // wdh
+        switch imageNumber {
             case 0:
                 theImage = SKSpriteNode(imageNamed: "Space1") // OK last image since we start at Round 1 and not Round 0
             case 1:
