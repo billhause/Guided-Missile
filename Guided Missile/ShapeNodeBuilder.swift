@@ -10,7 +10,7 @@ import SpriteKit
 
 // vvvv Object Category Bit Masks vvvv
 let gCategoryMissile:    UInt32 = 0x1 << 0  // 1
-let gCategoryStarBase:   UInt32 = 0x1 << 1  // 2
+let gCategoryStarbase:   UInt32 = 0x1 << 1  // 2
 let gCategorySupplyShip: UInt32 = 0x1 << 2  // 4
 let gCategoryEnemyShip:  UInt32 = 0x1 << 3  // 8
 let gCategoryAsteroid:   UInt32 = 0x1 << 4  // 16
@@ -77,7 +77,7 @@ struct ShapeNodeBuilder {
     
     
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    // vvvvvvvvv     Star Base      vvvvvvvvvvv
+    // vvvvvvvvv     Starbase       vvvvvvvvvvv
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     private static func starBaseCircleNode(name: String, posX: Double, posY: Double, radius: Double) -> SKShapeNode {
         let shape = SKShapeNode(circleOfRadius: radius)
@@ -129,7 +129,7 @@ struct ShapeNodeBuilder {
         // Add Shield
         let shield = SKShapeNode(circleOfRadius: shieldRad)
         shield.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
-        shield.glowWidth = 2.0
+        shield.glowWidth = 8.0
         shield.lineWidth = 1
         shape.addChild(shield)
 
@@ -143,9 +143,9 @@ struct ShapeNodeBuilder {
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: shieldRad * scale)
         parentNode.physicsBody?.isDynamic = false // does not move due to gravity
 
-        parentNode.physicsBody?.categoryBitMask = gCategoryStarBase
+        parentNode.physicsBody?.categoryBitMask = gCategoryStarbase
         parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip
-        parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with the star base. E.g. bounce off it.
+        parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with the starbase. E.g. bounce off it.
         
         
         
@@ -419,7 +419,7 @@ struct ShapeNodeBuilder {
         parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
 
         parentNode.physicsBody?.categoryBitMask = gCategorySupplyShip
-        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip | gCategoryStarBase
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip | gCategoryStarbase
         parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with this object. E.g. bounce off it.
 
 
@@ -619,7 +619,7 @@ struct ShapeNodeBuilder {
         parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
 
         parentNode.physicsBody?.categoryBitMask = gCategoryEnemyShip
-        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryStarBase
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryStarbase
         parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with this object. E.g. bounce off it.
 
         

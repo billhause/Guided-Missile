@@ -35,9 +35,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     private var mGameVM = GameViewModel()
     private var lastUpdateTime : TimeInterval = 0 // track time between frame updates in case it's needed
-
-    private var label : SKLabelNode?
-    private var theShapeNode: SKShapeNode?    
+    private var mStarbaseSheildLevel = 2 // Start at level 2
+    
+//    private var label : SKLabelNode?
+//    private var theShapeNode: SKShapeNode?
     
     // vvvvvvvvvvvvvv
     // This code is needed because isPaused automatically sets to true when returning from the background.
@@ -75,83 +76,110 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         super.init(coder: aDecoder)
     }
 
+    
+    // MISSILE HITS ASTEROID - Call this when an asteroid and the missile collide
+    // Pass in the Asteroid node.  Since there is only one missile node we don't need it passed in.
+    func handleCollision_Asteroid_and_Missile(theAsteroidNode: SKShapeNode) {
+        MyLog.debug("Missile hit Asteroid")
+        processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
+        mResetMissileFlag = true // trigger missile reset later in the frame update
+    }
+    
+    
+    // ASTEROID hits STARBASE- Call this when an asteroid and the starbase collide
+    // Pass in the Asteroid node.  Since there is only one starbase node we don't need it passed in.
+    func handleCollision_Asteroid_and_Starbase(theAsteroidNode: SKShapeNode) {
+        MyLog.debug("Missile hit Starbase")
+        processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
+        
+        // Allocate Damage to Starbase
+        mStarbaseNode
+        
+    }
+
+    // ASTEROID DESTROIED - Process the destroid asteroid by exploding it and adding a new
+    // asteroid if necessary
+    func processDestroidAsteroid(theAsteroidNode: SKShapeNode) {
+
+        //   Explosion Tutorial
+        //   https://www.youtube.com/watch?v=cJy61bOqQpg
+        //   Explostions at 32:30-35:22 - https://www.youtube.com/watch?v=cJy61bOqQpg
+        //   Particl Emmiter creation : 2:43 Settings at 3:58
+        let explosion = SKEmitterNode(fileNamed: "ExplosionParticles")!
+        explosion.position = theAsteroidNode.position
+        self.addChild(explosion)
+        self.run(SKAction.wait(forDuration: 2.0)) {
+            explosion.removeFromParent() // Remove the explosion after it runs
+        }
+        
+        // Remove the destroied asteroid from everyplace that references it (the parent and the dictionary)
+        theAsteroidNode.removeFromParent()
+        mAsteroidNodeDict.removeValue(forKey: theAsteroidNode.name!)
+        
+        // vvvvv Add replacement asteroid vvvvv
+        let newAsteroid = ShapeNodeBuilder.asteroidRandomNode()
+        newAsteroid.position.y = 0
+        let maxX = self.frame.size.width
+        newAsteroid.position.x = Double.random(in: 0.0...maxX)
+        newAsteroid.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+        newAsteroid.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+        mAsteroidNodeDict[newAsteroid.name!] = newAsteroid
+        self.addChild(newAsteroid)
+        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    }
+
     // SKPhysicsContactDelegate interface callback function
     func didBegin(_ contact: SKPhysicsContact) {
         var firstBody = SKPhysicsBody()
         var secondBody = SKPhysicsBody()
-                
+        
         // Sort the two bodies by the categoryBitMask so that we can make assumptions
         // about what object they must be and what we must do.
         // Note, the Missile is the smallest BitMask so it will always be firstBody
         // Sort Order is as follows
         //    let gCategoryMissile:    UInt32 = 0x1 << 0  // 1
-        //    let gCategoryStarBase:   UInt32 = 0x1 << 1  // 2
+        //    let gCategoryStarbase:   UInt32 = 0x1 << 1  // 2
         //    let gCategorySupplyShip: UInt32 = 0x1 << 2  // 4
         //    let gCategoryEnemyShip:  UInt32 = 0x1 << 3  // 8
         //    let gCategoryAsteroid:   UInt32 = 0x1 << 4  // 16
 
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             firstBody = contact.bodyA  // missile?
-            secondBody = contact.bodyB // Asteroid, Enemy Ship, Star Base or supply ship
+            secondBody = contact.bodyB // Asteroid, Enemy Ship, Starbase or supply ship
         } else {
             firstBody = contact.bodyB  // missile?
-            secondBody = contact.bodyA // Asteroid, Enemy Ship, Star Base or supply ship
+            secondBody = contact.bodyA // Asteroid, Enemy Ship, Starbase or supply ship
         }
         
-        // MISSILE - Check for Missile Hit
+        // ERROR CHECK - It's possible that an object could contact TWO other objects in the same frame update.
+        // E.g. An asteroid could hit the starbase in the same frame that the missile hits the asteroid.
+        // If that happens, then the processing for the first contact could have resulted in a node being removed
+        // Therefore, we must check if each node still exists before trying to process it here.
+        guard firstBody.node != nil else {
+            return // Nothing to do, the node was removed by a previous collision during this same frame update
+        }
+        guard secondBody.node != nil else {
+            return // Nothing to do, the node was removed by a previous collision during this same frame update
+        }
+
+        
+        // MISSILE Collision
         if firstBody.categoryBitMask == gCategoryMissile {
             // Hit Asteroid
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 let theAsteroidNode = secondBody.node as! SKShapeNode
-                MyLog.debug("Missile hit Asteroid")
-                
-                //   Explosion Tutorial
-                //   https://www.youtube.com/watch?v=cJy61bOqQpg
-                //   Explostions at 32:30-35:22 - https://www.youtube.com/watch?v=cJy61bOqQpg
-                //   Particl Emmiter creation : 2:43 Settings at 3:58
-                let explosion = SKEmitterNode(fileNamed: "ExplosionParticles")!
-                explosion.position = theAsteroidNode.position
-                self.addChild(explosion)
-                self.run(SKAction.wait(forDuration: 2.0)) {
-                    explosion.removeFromParent() // Remove the explosion after it runs
-                }
-                
-                // Reset the missile
-                mResetMissileFlag = true // trigger missile reset later in the frame update
-                
-                // Remove the destroied asteroid from everyplace that references it (the parent and the dictionary)
-                theAsteroidNode.removeFromParent()
-                mAsteroidNodeDict.removeValue(forKey: theAsteroidNode.name!)
-                
-                // vvvvv Add replacement asteroid vvvvv
-                let newAsteroid = ShapeNodeBuilder.asteroidRandomNode()
-                newAsteroid.position.y = 0
-                let maxX = self.frame.size.width
-                newAsteroid.position.x = Double.random(in: 0.0...maxX)
-                newAsteroid.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-                newAsteroid.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-                mAsteroidNodeDict[newAsteroid.name!] = newAsteroid
-                self.addChild(newAsteroid)
-                // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                
-                
+                handleCollision_Asteroid_and_Missile(theAsteroidNode: theAsteroidNode)
             } else if secondBody.categoryBitMask == gCategoryEnemyShip { // Hit Enemy Space Ship
                 MyLog.debug("Missile hit Enemy Space Ship")
-            } else if secondBody.categoryBitMask == gCategoryStarBase {  // Hit Star Base
-                MyLog.debug("Missile hit Star Base")
-            } else if secondBody.categoryBitMask == gCategorySupplyShip { // Hit Friendly Supply Ship
-                MyLog.debug("Missile hit Friendly Supply Ship")
-            } else { // Hit something unknown
-                MyLog.debug("ERROR Missile Hit and UNKNOWN OBJECT - This should not happen")
             }
         
         // STARBASE - Check for Starbase Hit
-        } else if firstBody.categoryBitMask == gCategoryStarBase {
+        } else if firstBody.categoryBitMask == gCategoryStarbase {
             // Something Hit the Starbase
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 // Asteroid Hit the Starbase
                 let theAsteroidNode = secondBody.node as! SKShapeNode
-                MyLog.debug("Asteroid hit Starbase")
+                handleCollision_Asteroid_and_Starbase(theAsteroidNode: theAsteroidNode)
             } else if secondBody.categoryBitMask == gCategoryEnemyShip {
                 // Enemy Ship Hit the Starbase
                 let theEnemyShipNode = secondBody.node as! SKShapeNode
@@ -206,7 +234,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var mLabel3 = SKLabelNode(fontNamed: "Courier")
     let mMissileNode = ShapeNodeBuilder.missileNode()
     let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
-    let mStarBaseNode = ShapeNodeBuilder.starBaseNode()
+    let mStarbaseNode = ShapeNodeBuilder.starBaseNode()
     let mEnemyShipNode = ShapeNodeBuilder.enemySpaceShipNode()
     var mAsteroidNodeDict = [String: SKShapeNode]() // Dictionary of Asteroids using the node name as key.
     override func didMove(to view: SKView) {
@@ -221,8 +249,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mSupplyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
         self.addChild(mSupplyShipNode)
 
-        mStarBaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
-        self.addChild(mStarBaseNode)
+        mStarbaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
+        self.addChild(mStarbaseNode)
 
         mEnemyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
         self.addChild(mEnemyShipNode)
@@ -266,6 +294,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func touchUp(atPoint pos : CGPoint) {
         MyLog.debug("GameScene.touchUp() called")
+        
+        // PAUSE / UNPAUSE Game
+        realPaused = !realPaused
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -369,7 +400,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     func correctMissilePosition() {
         if mResetMissileFlag { // reset the missile back at the starbase
-            mMissileNode.position = mStarBaseNode.position
+            mMissileNode.position = mStarbaseNode.position
             mMissileNode.physicsBody?.velocity.dy = 0
             mMissileNode.physicsBody?.velocity.dx = 0
             mResetMissileFlag = false
