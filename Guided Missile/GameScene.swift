@@ -77,14 +77,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // SKPhysicsContactDelegate interface callback function
     func didBegin(_ contact: SKPhysicsContact) {
-        MyLog.debug("didBegin() called - collision processing")
         var firstBody = SKPhysicsBody()
         var secondBody = SKPhysicsBody()
                 
         // Sort the two bodies by the categoryBitMask so that we can make assumptions
         // about what object they must be and what we must do.
         // Note, the Missile is the smallest BitMask so it will always be firstBody
-        //
+        // Sort Order is as follows
+        //    let gCategoryMissile:    UInt32 = 0x1 << 0  // 1
+        //    let gCategoryStarBase:   UInt32 = 0x1 << 1  // 2
+        //    let gCategorySupplyShip: UInt32 = 0x1 << 2  // 4
+        //    let gCategoryEnemyShip:  UInt32 = 0x1 << 3  // 8
+        //    let gCategoryAsteroid:   UInt32 = 0x1 << 4  // 16
+
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             firstBody = contact.bodyA  // missile?
             secondBody = contact.bodyB // Asteroid, Enemy Ship, Star Base or supply ship
@@ -93,7 +98,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             secondBody = contact.bodyA // Asteroid, Enemy Ship, Star Base or supply ship
         }
         
-        // Is the firstBody the Missile? - I.e. did the missile hit something?
+        // MISSILE - Check for Missile Hit
         if firstBody.categoryBitMask == gCategoryMissile {
             // Hit Asteroid
             if secondBody.categoryBitMask == gCategoryAsteroid {
@@ -113,14 +118,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 // Reset the missile
                 mResetMissileFlag = true // trigger missile reset later in the frame update
-
                 
                 // Remove the destroied asteroid from everyplace that references it (the parent and the dictionary)
                 theAsteroidNode.removeFromParent()
                 mAsteroidNodeDict.removeValue(forKey: theAsteroidNode.name!)
                 
                 // vvvvv Add replacement asteroid vvvvv
-                MyLog.debug("Adding replacement Asteroid after removin the old one.")
                 let newAsteroid = ShapeNodeBuilder.asteroidRandomNode()
                 newAsteroid.position.y = 0
                 let maxX = self.frame.size.width
@@ -141,8 +144,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             } else { // Hit something unknown
                 MyLog.debug("ERROR Missile Hit and UNKNOWN OBJECT - This should not happen")
             }
-        } else { // Something other than a missile
-            MyLog.debug("Objects Collided and neither was a missile")
+        
+        // STARBASE - Check for Starbase Hit
+        } else if firstBody.categoryBitMask == gCategoryStarBase {
+            // Something Hit the Starbase
+            if secondBody.categoryBitMask == gCategoryAsteroid {
+                // Asteroid Hit the Starbase
+                let theAsteroidNode = secondBody.node as! SKShapeNode
+                MyLog.debug("Asteroid hit Starbase")
+            } else if secondBody.categoryBitMask == gCategoryEnemyShip {
+                // Enemy Ship Hit the Starbase
+                let theEnemyShipNode = secondBody.node as! SKShapeNode
+                MyLog.debug("Enemy Ship hit Starbase")
+            }
+
+        // SUPPLY SHIP - Check for Supply Ship Hit
+        } else if firstBody.categoryBitMask == gCategorySupplyShip {
+            // Something Hit the Supply Ship
+            if secondBody.categoryBitMask == gCategoryAsteroid {
+                // Asteroid Hit the supply ship
+                let theAsteroidNode = secondBody.node as! SKShapeNode
+                MyLog.debug("Asteroid hit Supply Ship")
+            } else if secondBody.categoryBitMask == gCategoryEnemyShip {
+                // Enemy Ship Hit the Supply Ship
+                let theEnemyShipNode = secondBody.node as! SKShapeNode
+                MyLog.debug("Enemy Ship hit Supply Ship")
+            }
+
+        // ENEMY SHIP - Check for Enemy Ship Hit
+        } else if firstBody.categoryBitMask == gCategoryEnemyShip {
+            // Something Hit the Enemy Ship
+            if secondBody.categoryBitMask == gCategoryAsteroid {
+                // Asteroid Hit the enemy ship
+                let theAsteroidNode = secondBody.node as! SKShapeNode
+                MyLog.debug("Asteroid hit Enemy Ship")
+            }
+        } else { // Some other collision that we don't need to handle
+            MyLog.debug("Unhandled collision type of some sort.  No Worries...")
         }
 
 

@@ -10,10 +10,10 @@ import SpriteKit
 
 // vvvv Object Category Bit Masks vvvv
 let gCategoryMissile:    UInt32 = 0x1 << 0  // 1
-let gCategoryAsteroid:   UInt32 = 0x1 << 1  // 2
-let gCategoryStarBase:   UInt32 = 0x1 << 2  // 4
-let gCategorySupplyShip: UInt32 = 0x1 << 3  // 8
-let gCategoryEnemyShip:  UInt32 = 0x1 << 4  // 16
+let gCategoryStarBase:   UInt32 = 0x1 << 1  // 2
+let gCategorySupplyShip: UInt32 = 0x1 << 2  // 4
+let gCategoryEnemyShip:  UInt32 = 0x1 << 3  // 8
+let gCategoryAsteroid:   UInt32 = 0x1 << 4  // 16
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 struct ShapeNodeBuilder {
