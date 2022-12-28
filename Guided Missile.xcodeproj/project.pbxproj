@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		28C70BC9294D2C5600ADAC9A /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */; };
 		28C70C0A2952787F00ADAC9A /* ExplosionParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C092952787F00ADAC9A /* ExplosionParticles.sks */; };
+		28C70C0C295CF63F00ADAC9A /* ExplosionStarbase.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */; };
+		28C70C10295D003F00ADAC9A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C0E295D003F00ADAC9A /* Assets.xcassets */; };
 		28D8C62F2942AC150067D801 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C62E2942AC150067D801 /* AppDelegate.swift */; };
 		28D8C6312942AC150067D801 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28D8C6302942AC150067D801 /* GameScene.sks */; };
 		28D8C6332942AC150067D801 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28D8C6322942AC150067D801 /* Actions.sks */; };
@@ -46,6 +48,8 @@
 /* Begin PBXFileReference section */
 		28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		28C70C092952787F00ADAC9A /* ExplosionParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionParticles.sks; sourceTree = "<group>"; };
+		28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionStarbase.sks; sourceTree = "<group>"; };
+		28C70C0E295D003F00ADAC9A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		28D8C62B2942AC150067D801 /* Guided Missile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Guided Missile.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		28D8C62E2942AC150067D801 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		28D8C6302942AC150067D801 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -94,6 +98,7 @@
 		28D8C6222942AC150067D801 = {
 			isa = PBXGroup;
 			children = (
+				28C70C0E295D003F00ADAC9A /* Assets.xcassets */,
 				28D8C62D2942AC150067D801 /* Guided Missile */,
 				28D8C6472942AC160067D801 /* Guided MissileTests */,
 				28D8C6512942AC170067D801 /* Guided MissileUITests */,
@@ -119,6 +124,7 @@
 				28D8C62E2942AC150067D801 /* AppDelegate.swift */,
 				28D8C6342942AC150067D801 /* GameScene.swift */,
 				28C70C092952787F00ADAC9A /* ExplosionParticles.sks */,
+				28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */,
 				28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */,
 				28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */,
 				28D8C6362942AC150067D801 /* GameViewController.swift */,
@@ -253,11 +259,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28C70C0C295CF63F00ADAC9A /* ExplosionStarbase.sks in Resources */,
 				28D8C63A2942AC150067D801 /* Main.storyboard in Resources */,
 				28C70C0A2952787F00ADAC9A /* ExplosionParticles.sks in Resources */,
 				28D8C6312942AC150067D801 /* GameScene.sks in Resources */,
 				28D8C63C2942AC160067D801 /* Assets.xcassets in Resources */,
 				28D8C63F2942AC160067D801 /* LaunchScreen.storyboard in Resources */,
+				28C70C10295D003F00ADAC9A /* Assets.xcassets in Resources */,
 				28D8C6332942AC150067D801 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

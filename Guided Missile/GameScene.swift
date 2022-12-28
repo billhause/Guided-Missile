@@ -99,11 +99,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if mStarbaseSheildLevel >= 2 {
             mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
         } else if mStarbaseSheildLevel == 1 {
-//            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.5)
             mShieldNode.run(SKAction.fadeAlpha(to: 0.5, duration: 1))
         } else if mStarbaseSheildLevel == 0 {
             // Show NO shields - set alpha to 0
-//            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.0)
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
         } else {
             // DESTROIED - if the shiends are negative the starbase is destroide
@@ -120,6 +118,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //   Explostions at 32:30-35:22 - https://www.youtube.com/watch?v=cJy61bOqQpg
         //   Particl Emmiter creation : 2:43 Settings at 3:58
         let explosion = SKEmitterNode(fileNamed: "ExplosionParticles")!
+        // let explosion = SKEmitterNode(fileNamed: "ExplosionStarbase")!
+        
         explosion.position = theAsteroidNode.position
         self.addChild(explosion)
         self.run(SKAction.wait(forDuration: 2.0)) {
