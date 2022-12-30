@@ -47,10 +47,10 @@ struct GameModel {
         return level
     }
     
+    // You should set the level before calling this function
     mutating func resetLevel() {
         asteroidsRemaining = totalAsteroids
         shieldLevel = INITIAL_SHIELD_LEVEL
-        score = 0
     }
 }
 
@@ -102,6 +102,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         super.init(coder: aDecoder)
     }
 
+
+    // Call this after we beat the current level and need to move on to the next level
+    func initializeNextLevel() {
+        //
+        theModel.level += 1 // move to next level
+        theModel.resetLevel()
+        MyLog.debug("Starting Next Level: \(theModel.level)")
+        
+        // Reset Shields - the star base node should still be in tact since we beat the level
+        mShieldNode.run(SKAction.fadeAlpha(to: 0.8, duration: 1))
+        
+        // Add starting number of Asteroids to Dictionary
+        let maxX = self.frame.size.width
+        for _ in 0..<theModel.maxAsteroidsInPlay {
+            let asteroidNode = ShapeNodeBuilder.asteroidRandomNode()
+            asteroidNode.position.y = 0
+            asteroidNode.position.x = Double.random(in: 0.0...maxX)
+            asteroidNode.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            asteroidNode.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            self.addChild(asteroidNode)
+
+            // Add the asteroid to the dictionary
+            mAsteroidNodeDict[asteroidNode.name!] = asteroidNode
+        }
+
+    }
     
     // MISSILE HITS ASTEROID - Call this when an asteroid and the missile collide
     // Pass in the Asteroid node.  Since there is only one missile node we don't need it passed in.
@@ -110,6 +136,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
         theModel.score += 1
         mResetMissileFlag = true // trigger missile reset later in the frame update
+        
+        if theModel.asteroidsRemaining < 1 {
+            // We beat the level so reset and start the next level
+            initializeNextLevel()
+        }
+        
     }
     
     
@@ -307,21 +339,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mEnemyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
         self.addChild(mEnemyShipNode)
 
-        // Create Asteroid Nodes
-        let maxX = self.frame.size.width
-        for _ in 0..<theModel.maxAsteroidsInPlay {
-            let asteroidNode = ShapeNodeBuilder.asteroidRandomNode()
-            asteroidNode.position.y = 0
-            asteroidNode.position.x = Double.random(in: 0.0...maxX)
-            asteroidNode.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-            asteroidNode.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-            self.addChild(asteroidNode)
-
-            // Add the asteroid to the dictionary
-            mAsteroidNodeDict[asteroidNode.name!] = asteroidNode
-        }
-
-
+        theModel.score = 0
+        theModel.level = 0 // Will be incremented to 1 by initializeNextLevel() on next line
+        initializeNextLevel() // Add asteroids to the scene, increment level, reset shields, score etc.
+        
         // Config display lines for debugging
         mLabel1.position = CGPoint(x: self.frame.width/2, y: 10)
         mLabel1.fontSize = CGFloat(9.0)
@@ -444,7 +465,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         gUpdateCount += 1
         mLabel3.text = String(format: "Score: %d", theModel.score)
-        mLabel2.text = String(format: "dy: %3.4f", dy)
+        mLabel2.text = String(format: "Level: %d", theModel.level)  // %3.4f", dy)
         mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
     }
     
