@@ -26,19 +26,45 @@ import SwiftUI // Needed for Image struct
 import SpriteKit
 //import GameplayKit
 
+let INITIAL_SHIELD_LEVEL = 2
+struct GameModel {
+    var level                = 1 // game level
+    var asteroidsRemaining   = 3 // Number of asteroids that still need to be destroied for the current level
+    var score                = 0
+    var highScore            = 0 // Highest score achieved to date
+    var shieldLevel          = INITIAL_SHIELD_LEVEL
+    
+    var totalAsteroids: Int { // How many asteroids must be destroid to complete this level
+        switch level {
+        case 1:
+            return 3
+        default:
+            return level + 2
+        }
+    }
+    
+    var maxAsteroidsInPlay: Int { // Number of asteroids to have in play at one time
+        return level
+    }
+    
+    mutating func resetLevel() {
+        asteroidsRemaining = totalAsteroids
+        shieldLevel = INITIAL_SHIELD_LEVEL
+        score = 0
+    }
+}
 
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-//    private var mResetAsteroidFlag = false
+    var theModel = GameModel()
+
     private var mResetMissileFlag = false  // set to true to reset the missile at the starbase
 
     private var mGameVM = GameViewModel()
     private var lastUpdateTime : TimeInterval = 0 // track time between frame updates in case it's needed
-    private var mStarbaseSheildLevel = 2 // Start at level 2
+//    private var mStarbaseSheildLevel = 2 // Start at level 2
     
-//    private var label : SKLabelNode?
-//    private var theShapeNode: SKShapeNode?
     
     // vvvvvvvvvvvvvv
     // This code is needed because isPaused automatically sets to true when returning from the background.
@@ -82,6 +108,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func handleCollision_Asteroid_and_Missile(theAsteroidNode: SKShapeNode) {
         MyLog.debug("Missile hit Asteroid")
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
+        theModel.score += 1
         mResetMissileFlag = true // trigger missile reset later in the frame update
     }
     
@@ -91,28 +118,41 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func handleCollision_Asteroid_and_Starbase(theAsteroidNode: SKShapeNode) {
         MyLog.debug("Missile hit Starbase")
-        processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
         
         // Reduce Starbase shield level
-        mStarbaseSheildLevel -= 1
+        theModel.shieldLevel -= 1
         
-        if mStarbaseSheildLevel >= 2 {
+        if theModel.shieldLevel >= 2 {
             mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
-        } else if mStarbaseSheildLevel == 1 {
+        } else if theModel.shieldLevel == 1 {
             mShieldNode.run(SKAction.fadeAlpha(to: 0.5, duration: 1))
-        } else if mStarbaseSheildLevel == 0 {
+        } else if theModel.shieldLevel == 0 {
             // Show NO shields - set alpha to 0
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
         } else {
-            // DESTROIED - if the shiends are negative the starbase is destroide
+            // DESTROIED - if the shields are negative then the starbase is destroide
+            //let explosion = SKEmitterNode(fileNamed: "ExplosionParticles")!
+            let explosion = SKEmitterNode(fileNamed: "ExplosionStarbase")!
             
+            explosion.position = mStarbaseNode.position
+            self.addChild(explosion)
+            self.run(SKAction.wait(forDuration: 2.0)) {
+                explosion.removeFromParent() // Remove the explosion after it runs
+            }
+            
+            // REMOVE THE Starbase
+            mStarbaseNode.removeFromParent()
         }
+
+        processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
     }
 
     // ASTEROID DESTROIED - Process the destroid asteroid by exploding it and adding a new
     // asteroid if necessary
     func processDestroidAsteroid(theAsteroidNode: SKShapeNode) {
 
+        theModel.asteroidsRemaining -= 1
+        
         //   Explosion Tutorial
         //   https://www.youtube.com/watch?v=cJy61bOqQpg
         //   Explostions at 32:30-35:22 - https://www.youtube.com/watch?v=cJy61bOqQpg
@@ -131,14 +171,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mAsteroidNodeDict.removeValue(forKey: theAsteroidNode.name!)
         
         // vvvvv Add replacement asteroid vvvvv
-        let newAsteroid = ShapeNodeBuilder.asteroidRandomNode()
-        newAsteroid.position.y = 0
-        let maxX = self.frame.size.width
-        newAsteroid.position.x = Double.random(in: 0.0...maxX)
-        newAsteroid.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-        newAsteroid.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-        mAsteroidNodeDict[newAsteroid.name!] = newAsteroid
-        self.addChild(newAsteroid)
+        if theModel.asteroidsRemaining >= theModel.maxAsteroidsInPlay {
+            let newAsteroid = ShapeNodeBuilder.asteroidRandomNode()
+            newAsteroid.position.y = 0
+            let maxX = self.frame.size.width
+            newAsteroid.position.x = Double.random(in: 0.0...maxX)
+            newAsteroid.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            newAsteroid.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            mAsteroidNodeDict[newAsteroid.name!] = newAsteroid
+            self.addChild(newAsteroid)
+        }
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     }
 
@@ -196,7 +238,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 handleCollision_Asteroid_and_Starbase(theAsteroidNode: theAsteroidNode)
             } else if secondBody.categoryBitMask == gCategoryEnemyShip {
                 // Enemy Ship Hit the Starbase
-                let theEnemyShipNode = secondBody.node as! SKShapeNode
                 MyLog.debug("Enemy Ship hit Starbase")
             }
 
@@ -205,11 +246,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // Something Hit the Supply Ship
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 // Asteroid Hit the supply ship
-                let theAsteroidNode = secondBody.node as! SKShapeNode
                 MyLog.debug("Asteroid hit Supply Ship")
             } else if secondBody.categoryBitMask == gCategoryEnemyShip {
                 // Enemy Ship Hit the Supply Ship
-                let theEnemyShipNode = secondBody.node as! SKShapeNode
                 MyLog.debug("Enemy Ship hit Supply Ship")
             }
 
@@ -218,7 +257,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // Something Hit the Enemy Ship
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 // Asteroid Hit the enemy ship
-                let theAsteroidNode = secondBody.node as! SKShapeNode
                 MyLog.debug("Asteroid hit Enemy Ship")
             }
         } else { // Some other collision that we don't need to handle
@@ -271,7 +309,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         // Create Asteroid Nodes
         let maxX = self.frame.size.width
-        for _ in 0..<4 {
+        for _ in 0..<theModel.maxAsteroidsInPlay {
             let asteroidNode = ShapeNodeBuilder.asteroidRandomNode()
             asteroidNode.position.y = 0
             asteroidNode.position.x = Double.random(in: 0.0...maxX)
@@ -354,7 +392,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let dy = (Motion.shared.yGravity + 0.3) * THRUST_MULTIPLIER // TODO use inverse sine to adjust the angle, then convert back instead of just adding something to the dy
         
-
+ 
         // Only change direction and show Thrust if the acceleration is > minThrust
         var thrust = sqrt(dx*dx+dy*dy)
         
@@ -405,7 +443,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         gUpdateCount += 1
-        mLabel3.text = String(format: "thrust: %3.4f", thrust)
+        mLabel3.text = String(format: "Score: %d", theModel.score)
         mLabel2.text = String(format: "dy: %3.4f", dy)
         mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
     }
