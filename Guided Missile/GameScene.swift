@@ -33,6 +33,7 @@ struct GameModel {
     var score                = 0
     var highScore            = 0 // Highest score achieved to date
     var shieldLevel          = INITIAL_SHIELD_LEVEL
+    var gameOver             = false
     
     var totalAsteroids: Int { // How many asteroids must be destroid to complete this level
         switch level {
@@ -51,6 +52,8 @@ struct GameModel {
     mutating func resetLevel() {
         asteroidsRemaining = totalAsteroids
         shieldLevel = INITIAL_SHIELD_LEVEL
+        
+    
     }
 }
 
@@ -154,6 +157,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Reduce Starbase shield level
         theModel.shieldLevel -= 1
         
+
+        
         if theModel.shieldLevel >= 2 {
             mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
         } else if theModel.shieldLevel == 1 {
@@ -163,20 +168,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
         } else {
             // DESTROIED - if the shields are negative then the starbase is destroide
-            //let explosion = SKEmitterNode(fileNamed: "ExplosionParticles")!
             let explosion = SKEmitterNode(fileNamed: "ExplosionStarbase")!
-            
             explosion.position = mStarbaseNode.position
             self.addChild(explosion)
             self.run(SKAction.wait(forDuration: 2.0)) {
                 explosion.removeFromParent() // Remove the explosion after it runs
             }
             
-            // REMOVE THE Starbase
+            // REMOVE THE Starbase and the missile
             mStarbaseNode.removeFromParent()
+            mMissileNode.removeFromParent()
+            
+            theModel.gameOver = true
+            
+            call a function to display "Game Over, Play Again?"
         }
 
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
+        
+        // If this was the last asteroid and the base is not destroid, then we beat the
+        // level even though the starbase destroied the last asteroid in the collision
+        if (theModel.asteroidsRemaining < 1) && (theModel.shieldLevel >= 0) {
+            initializeNextLevel()
+        }
     }
 
     // ASTEROID DESTROIED - Process the destroid asteroid by exploding it and adding a new
@@ -408,59 +422,60 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         
         
-        // Update Missile Velocity based on phone orientation gravity
-        let dx = Motion.shared.xGravity * THRUST_MULTIPLIER // Change in velocity
         
-        let dy = (Motion.shared.yGravity + 0.3) * THRUST_MULTIPLIER // TODO use inverse sine to adjust the angle, then convert back instead of just adding something to the dy
-        
- 
-        // Only change direction and show Thrust if the acceleration is > minThrust
-        var thrust = sqrt(dx*dx+dy*dy)
-        
-        // Update Missile image orientation and velocity
-        if thrust > ROTATION_SENSITIVITY {
-            var angleRad = atan2(dy, dx)
-            angleRad -= Double.pi/2 // Convert to clockwise with 0 radians pointing up
-            mMissileNode.run(SKAction.rotate(toAngle: angleRad, duration: 0.2, shortestUnitArc: true))
-        }
-
-        if thrust > MINIMUM_THRUST {
-            // Apply thrust to the missile
-            mMissileNode.physicsBody!.velocity.dx += dx // Add change to velocity
-            mMissileNode.physicsBody!.velocity.dy += dy
-
-            // Limit thrust to 1 (which should be max anyway) because we use it for alpha
-            if thrust > 1 {
-                thrust = 1.0
+        // vvvvvvvvvvvvvv UPDATE MISSILE vvvvvvvvvvvvvvv
+        if !theModel.gameOver {
+            // Update Missile Velocity based on phone orientation gravity
+            let dx = Motion.shared.xGravity * THRUST_MULTIPLIER // Change in velocity
+            
+            let dy = (Motion.shared.yGravity + 0.3) * THRUST_MULTIPLIER // TODO use inverse sine to adjust the angle, then convert back instead of just adding something to the dy
+            
+            // Only change direction and show Thrust if the acceleration is > minThrust
+            var thrust = sqrt(dx*dx+dy*dy)
+            
+            // Update Missile image orientation and velocity
+            if thrust > ROTATION_SENSITIVITY {
+                var angleRad = atan2(dy, dx)
+                angleRad -= Double.pi/2 // Convert to clockwise with 0 radians pointing up
+                mMissileNode.run(SKAction.rotate(toAngle: angleRad, duration: 0.2, shortestUnitArc: true))
             }
-            
 
-            // Show Exaust
-            let pos = mMissileNode.position
-            let exaustBall = SKShapeNode.init(circleOfRadius: 1)
-            exaustBall.position = pos
-            exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: thrust/5)
-            exaustBall.glowWidth = 5.0
-            exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: thrust/2)
-    //        exaustBall.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.3)
-            exaustBall.physicsBody = SKPhysicsBody()
-            exaustBall.physicsBody?.isDynamic = true // can move
-            
-            
-            // Calc exaust velocity (Total V = Missile velocity + thrust velocity)
-            let missileVx = (mMissileNode.physicsBody!.velocity.dx)
-            let missileVy = mMissileNode.physicsBody!.velocity.dy
-            let exaustVx = missileVx + -dx*EXAUST_MULTIPLIER
-            let exaustVy = missileVy + -dy*EXAUST_MULTIPLIER
-            exaustBall.physicsBody!.velocity = CGVector(dx: exaustVx, dy: exaustVy)
-            self.addChild(exaustBall)
-            let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 5.0, duration: 0.8),
-                                                      SKAction.fadeOut(withDuration: 0.8)])
-            exaustBall.run(SKAction.sequence([shrinkAndFadeAction,
-                                             SKAction.removeFromParent()]))
-            
+            if thrust > MINIMUM_THRUST {
+                // Apply thrust to the missile
+                mMissileNode.physicsBody!.velocity.dx += dx // Add change to velocity
+                mMissileNode.physicsBody!.velocity.dy += dy
 
+                // Limit thrust to 1 (which should be max anyway) because we use it for alpha
+                if thrust > 1 {
+                    thrust = 1.0
+                }
+                
+                // Show Exaust
+                let pos = mMissileNode.position
+                let exaustBall = SKShapeNode.init(circleOfRadius: 1)
+                exaustBall.position = pos
+                exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: thrust/5)
+                exaustBall.glowWidth = 5.0
+                exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: thrust/2)
+        //        exaustBall.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.3)
+                exaustBall.physicsBody = SKPhysicsBody()
+                exaustBall.physicsBody?.isDynamic = true // can move
+                
+                
+                // Calc exaust velocity (Total V = Missile velocity + thrust velocity)
+                let missileVx = (mMissileNode.physicsBody!.velocity.dx)
+                let missileVy = mMissileNode.physicsBody!.velocity.dy
+                let exaustVx = missileVx + -dx*EXAUST_MULTIPLIER
+                let exaustVy = missileVy + -dy*EXAUST_MULTIPLIER
+                exaustBall.physicsBody!.velocity = CGVector(dx: exaustVx, dy: exaustVy)
+                self.addChild(exaustBall)
+                let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 5.0, duration: 0.8),
+                                                          SKAction.fadeOut(withDuration: 0.8)])
+                exaustBall.run(SKAction.sequence([shrinkAndFadeAction,
+                                                 SKAction.removeFromParent()]))
+            }
         }
+        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         
         
         gUpdateCount += 1
