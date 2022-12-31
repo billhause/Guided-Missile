@@ -271,7 +271,7 @@ struct ShapeNodeBuilder {
         parentNode.name = "Missile"
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: bodyOffset)
         parentNode.physicsBody!.friction = 0.0 // No friction in space
-        parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
+        parentNode.physicsBody!.linearDamping = 0.3 // Fluid or Air Friction, 0= no friction, 1.0= max friction
         parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
         parentNode.physicsBody!.allowsRotation = false // don't spin when bouncing off other objects
         parentNode.position = CGPoint(x: 0, y: 0)
@@ -413,7 +413,7 @@ struct ShapeNodeBuilder {
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: bodyOffset)
         parentNode.physicsBody?.isDynamic = false // does not move due to gravity
         parentNode.physicsBody!.friction = 0.0 // No friction in space
-        parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
+        parentNode.physicsBody!.linearDamping = 0.1 // Fluid or Air Friction, 0= no friction, 1.0= max friction
         parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
         parentNode.physicsBody!.allowsRotation = false // don't spin when bouncing off other objects
         parentNode.position = CGPoint(x: 0, y: 0)

@@ -181,7 +181,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             theModel.gameOver = true
             
-            call a function to display "Game Over, Play Again?"
         }
 
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
@@ -424,6 +423,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         // vvvvvvvvvvvvvv UPDATE MISSILE vvvvvvvvvvvvvvv
+        Move Update Missile into its own function, then add a unit vector to limit max thrust
+        
         if !theModel.gameOver {
             // Update Missile Velocity based on phone orientation gravity
             let dx = Motion.shared.xGravity * THRUST_MULTIPLIER // Change in velocity
