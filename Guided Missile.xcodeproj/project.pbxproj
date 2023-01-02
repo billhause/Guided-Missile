@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28A12E8C29637FDC00EF2E5B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A12E8B29637FDC00EF2E5B /* Helper.swift */; };
 		28C70BC9294D2C5600ADAC9A /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */; };
 		28C70C0A2952787F00ADAC9A /* ExplosionParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C092952787F00ADAC9A /* ExplosionParticles.sks */; };
 		28C70C0C295CF63F00ADAC9A /* ExplosionStarbase.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */; };
@@ -45,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		28A12E8B29637FDC00EF2E5B /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		28C70C092952787F00ADAC9A /* ExplosionParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionParticles.sks; sourceTree = "<group>"; };
 		28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionStarbase.sks; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */,
 				28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */,
 				28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */,
+				28A12E8B29637FDC00EF2E5B /* Helper.swift */,
 				28D8C6362942AC150067D801 /* GameViewController.swift */,
 				28D8C6652942AF930067D801 /* MotionForSpriteKit.swift */,
 				28D8C6632942AF880067D801 /* Motion.swift */,
@@ -292,6 +295,7 @@
 				28D8C6372942AC150067D801 /* GameViewController.swift in Sources */,
 				28D8C6622942AF620067D801 /* MyLog.swift in Sources */,
 				28D8C6662942AF930067D801 /* MotionForSpriteKit.swift in Sources */,
+				28A12E8C29637FDC00EF2E5B /* Helper.swift in Sources */,
 				28D8C6642942AF880067D801 /* Motion.swift in Sources */,
 				28D8C62F2942AC150067D801 /* AppDelegate.swift in Sources */,
 				28D8C66A294794EE0067D801 /* ShapeNodeBuilder.swift in Sources */,

@@ -45,15 +45,14 @@ struct GameModel {
     }
     
     var maxAsteroidsInPlay: Int { // Number of asteroids to have in play at one time
-        return level
+        return level // for now we're setting the number of asteroids to start with to be the same as the level you're on.
     }
     
-    // You should set the level before calling this function
+    // You should set the level variable before calling this function
+    // because some of the values may depend on the level.
     mutating func resetLevel() {
         asteroidsRemaining = totalAsteroids
         shieldLevel = INITIAL_SHIELD_LEVEL
-        
-    
     }
 }
 
@@ -356,6 +355,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         theModel.level = 0 // Will be incremented to 1 by initializeNextLevel() on next line
         initializeNextLevel() // Add asteroids to the scene, increment level, reset shields, score etc.
         
+        let testButtonPosition = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + 80)
+        var testButton = Helper.makeButton(position: testButtonPosition,
+                                           text: "Testing \nABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz")
+        self.addChild(testButton)
+        
+        
+        
         // Config display lines for debugging
         mLabel1.position = CGPoint(x: self.frame.width/2, y: 10)
         mLabel1.fontSize = CGFloat(9.0)
@@ -406,11 +412,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Called before each frame is rendered
     var gUpdateCount = 0
     override func update(_ currentTime: TimeInterval) {
-        let THRUST_MULTIPLIER = 3.0
-        let MINIMUM_THRUST = 0.15 * THRUST_MULTIPLIER // How much thrust is needed before we start applying thrust
-        let ROTATION_SENSITIVITY = 0.05 // How much phone tilt is needed to change missile orientation
-        let EXAUST_MULTIPLIER = 100.0 // How fast should the exaust come out
-
         // vvvvv Time Management - Time Between Frames vvvvv
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime
@@ -420,19 +421,66 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.lastUpdateTime = currentTime
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         
+        updateMissileFrame()
         
+        gUpdateCount += 1
+        mLabel3.text = String(format: "Score: %d", theModel.score)
+        mLabel2.text = String(format: "Level: %d", theModel.level)  // %3.4f", dy)
+        mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
+    }
+    
+    // limit must be a positive number.  Else the input will be returend as the result
+    func vectorClamp(dx: Double, dy: Double, limit: Double) -> (dx: Double, dy: Double) {
+        // Get the Unit Vector components in x and y directions
+        let mag = sqrt(dx*dx+dy*dy)
+        if (mag <= limit) || (limit <= 0.0) || (mag == 0.0) {
+            return (dx, dy) // Nothing to do
+        }
         
-        // vvvvvvvvvvvvvv UPDATE MISSILE vvvvvvvvvvvvvvv
-        Move Update Missile into its own function, then add a unit vector to limit max thrust
+        let unitX = dx/mag
+        let unitY = dy/mag
         
+        let newX = unitX * limit
+        let newY = unitY * limit
+        
+        return (newX, newY)
+    }
+    
+    
+    func updateMissileFrame() {
+        // NOTES:
+        // GravityX and GravityY raw values are between -1.0 and 1.0
+        // We add an offset to GravityY so that the zero point is at about a 30 degree angle so that
+        // the user can hold the phone comfortably without accelerating the missile.
+        // We want to limit how much the user tilts the phone so we limit maximum thrust long before
+        // the phone is tilted on its side or vertical
+        // To get the thrust in a fun range we multiply it by THRUST_MULTIPLIER
+        // A good fast acceleration is about 1.0 so let's limit it to about that
+        // Make THRUST_MULTIPLIER around 5 so that we reach MAX_THRUST long before tilting the phone verticle
+        //
+        //
+        let THRUST_MULTIPLIER = 4.0
+        let MAX_THRUST = 1.0 // We don't want full phone tilting by user
+        let MINIMUM_THRUST = 0.3 // How much thrust is needed before we start applying thrust
+        let ROTATION_SENSITIVITY = 0.0 //0.05 // How much phone tilt is needed to change missile orientation
+        let EXAUST_MULTIPLIER = 120.0 // How fast should the exaust come out
+
         if !theModel.gameOver {
             // Update Missile Velocity based on phone orientation gravity
-            let dx = Motion.shared.xGravity * THRUST_MULTIPLIER // Change in velocity
+            var dx = Motion.shared.xGravity * THRUST_MULTIPLIER // Change in velocity
+            var dy = (Motion.shared.yGravity + 0.4) * THRUST_MULTIPLIER // TODO use inverse sine to adjust the angle, then convert back instead of just adding something to the dy
             
-            let dy = (Motion.shared.yGravity + 0.3) * THRUST_MULTIPLIER // TODO use inverse sine to adjust the angle, then convert back instead of just adding something to the dy
+            let thrust = sqrt(dx*dx+dy*dy)
             
-            // Only change direction and show Thrust if the acceleration is > minThrust
-            var thrust = sqrt(dx*dx+dy*dy)
+            // Limit thrust to MAX_THRUST value
+            MyLog.debug("THRUST REDUCTIONS from dy:\(dy)")
+            if thrust > MAX_THRUST {
+                let thrustVector = vectorClamp(dx: dx, dy: dy, limit: MAX_THRUST) // Reduce vector magnitude to MAX_THRUST
+                dx = thrustVector.dx
+                dy = thrustVector.dy
+                MyLog.debug("THRUST REDUCTIONS to   dy:\(dy)")
+                MyLog.debug("--------")
+            }
             
             // Update Missile image orientation and velocity
             if thrust > ROTATION_SENSITIVITY {
@@ -441,24 +489,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 mMissileNode.run(SKAction.rotate(toAngle: angleRad, duration: 0.2, shortestUnitArc: true))
             }
 
+            // Only apply Thrust if the acceleration is > minThrust
             if thrust > MINIMUM_THRUST {
                 // Apply thrust to the missile
                 mMissileNode.physicsBody!.velocity.dx += dx // Add change to velocity
                 mMissileNode.physicsBody!.velocity.dy += dy
 
-                // Limit thrust to 1 (which should be max anyway) because we use it for alpha
-                if thrust > 1 {
-                    thrust = 1.0
-                }
                 
                 // Show Exaust
                 let pos = mMissileNode.position
                 let exaustBall = SKShapeNode.init(circleOfRadius: 1)
                 exaustBall.position = pos
-                exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: thrust/5)
+//                exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: 0.2) // 0.2 // orange
+                exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: 0.1)
                 exaustBall.glowWidth = 5.0
-                exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: thrust/2)
-        //        exaustBall.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.3)
+//                exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.5) // 0.5 yellow
+                exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.6)
                 exaustBall.physicsBody = SKPhysicsBody()
                 exaustBall.physicsBody?.isDynamic = true // can move
                 
@@ -477,14 +523,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        
-        
-        gUpdateCount += 1
-        mLabel3.text = String(format: "Score: %d", theModel.score)
-        mLabel2.text = String(format: "Level: %d", theModel.level)  // %3.4f", dy)
-        mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
     }
-    
     
 
     func correctMissilePosition() {
