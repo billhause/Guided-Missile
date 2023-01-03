@@ -120,10 +120,10 @@
 			children = (
 				28D8C6302942AC150067D801 /* GameScene.sks */,
 				28D8C6322942AC150067D801 /* Actions.sks */,
-				28D8C62E2942AC150067D801 /* AppDelegate.swift */,
-				28D8C6342942AC150067D801 /* GameScene.swift */,
 				28C70C092952787F00ADAC9A /* ExplosionParticles.sks */,
 				28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */,
+				28D8C62E2942AC150067D801 /* AppDelegate.swift */,
+				28D8C6342942AC150067D801 /* GameScene.swift */,
 				28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */,
 				28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */,
 				28A12E8B29637FDC00EF2E5B /* Helper.swift */,

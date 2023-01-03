@@ -55,14 +55,6 @@ struct GameModel {
         shieldLevel = INITIAL_SHIELD_LEVEL
     }
     
-    // Call to reset the entire game to play again
-    mutating func resetGame() {
-        if score > highScore {
-            highScore = score
-        }
-        level = 1
-        resetLevel()
-    }
 }
 
 
@@ -187,7 +179,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             mMissileNode.removeFromParent()
             
             theModel.gameOver = true
-            mPlayAgainButton.isHidden = false // show the button
+            
+            // Wait 2 seconds for starbase explosion to finish then show Play Again
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                self.mPlayAgainButton.isHidden = false // show the button
+            }
+
             
         }
 
@@ -368,9 +365,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // vvvvv Add Game Over Button vvvvv
         let buttonPosition = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + 80)
-        mPlayAgainButton = Helper.makeButton(position: buttonPosition, text: "Play Again")
-        self.addChild(mPlayAgainButton)
-        mPlayAgainButton.isHidden = true // Hide the button
+        self.mPlayAgainButton = Helper.makeButton(position: buttonPosition, text: "Play Again")
+        self.addChild(self.mPlayAgainButton)
+        self.mPlayAgainButton.isHidden = true // Hide the button
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 
         
@@ -387,13 +384,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     }
     
+    // Rest the game when the use clicks Play Again
+    func resetGame() {
+        
+        if theModel.score > theModel.highScore {
+            theModel.highScore = theModel.score
+        }
+        theModel.score = 0
+        
+        theModel.gameOver = false // we're playing agian.
+        
+        // Clear out the Asteroid Dictionary
+        for (_, node) in mAsteroidNodeDict {
+            node.removeFromParent() // Remove all asteroids from parent
+        }
+        mAsteroidNodeDict.removeAll()
+
+        theModel.level = 0 // initializeNextLevel() will increment the level to 1
+        initializeNextLevel()
+
+        // Reset the Starbase
+        self.addChild(mStarbaseNode)
+        
+        // Reset the Missile
+        self.addChild(mMissileNode)
+        mMissileNode.position = mStarbaseNode.position
+        mMissileNode.physicsBody?.velocity.dy = 0
+        mMissileNode.physicsBody?.velocity.dx = 0
+
+    }
+    
     
     func touchDown(atPoint pos : CGPoint) {
         MyLog.debug("GameScene.touchDown() called")
         if !mPlayAgainButton.isHidden && mPlayAgainButton.frame.contains(pos) {
             mPlayAgainButton.isHidden = true // Hide the button and start a new game
-             .resetGame()
-            MyLog.debug("mGameOverButtonNode Tapped")
+            resetGame()
+        } else {
+            // PAUSE / UNPAUSE Game
+            realPaused = !realPaused
         }
 
     }
@@ -405,8 +434,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func touchUp(atPoint pos : CGPoint) {
         MyLog.debug("GameScene.touchUp() called")
         
-        // PAUSE / UNPAUSE Game
-        realPaused = !realPaused
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -444,7 +471,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gUpdateCount += 1
         mLabel3.text = String(format: "Score: %d", theModel.score)
         mLabel2.text = String(format: "Level: %d", theModel.level)  // %3.4f", dy)
-        mLabel1.text = String(format: "Update Count: %d", gUpdateCount)
+        mLabel1.text = String(format: "High Score: %d", theModel.highScore)
     }
     
     // limit must be a positive number.  Else the input will be returend as the result
@@ -491,13 +518,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let thrust = sqrt(dx*dx+dy*dy)
             
             // Limit thrust to MAX_THRUST value
-            MyLog.debug("THRUST REDUCTIONS from dy:\(dy)")
             if thrust > MAX_THRUST {
                 let thrustVector = vectorClamp(dx: dx, dy: dy, limit: MAX_THRUST) // Reduce vector magnitude to MAX_THRUST
                 dx = thrustVector.dx
                 dy = thrustVector.dy
-                MyLog.debug("THRUST REDUCTIONS to   dy:\(dy)")
-                MyLog.debug("--------")
             }
             
             // Update Missile image orientation and velocity
@@ -596,8 +620,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      Override this to perform game logic. Called exactly once per frame after any actions have been evaluated but before any physics are simulated. Any additional actions applied is not evaluated until the next update.
      */
     // Called every frame update after update() function is called
-    let xBuffer = 20.0
-    let yBuffer = 20.0
+    let xBuffer = 10.0 // How far off the screen does an asteroid need to be before appearing on the other side
+    let yBuffer = 10.0
     override func didEvaluateActions() {
 //        MyLog.debug("didEvaluateActions() called")
         
