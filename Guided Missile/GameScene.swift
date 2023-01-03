@@ -54,13 +54,21 @@ struct GameModel {
         asteroidsRemaining = totalAsteroids
         shieldLevel = INITIAL_SHIELD_LEVEL
     }
+    
+    // Call to reset the entire game to play again
+    mutating func resetGame() {
+        if score > highScore {
+            highScore = score
+        }
+        level = 1
+        resetLevel()
+    }
 }
 
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var theModel = GameModel()
-
     private var mResetMissileFlag = false  // set to true to reset the missile at the starbase
 
     private var mGameVM = GameViewModel()
@@ -179,6 +187,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             mMissileNode.removeFromParent()
             
             theModel.gameOver = true
+            mPlayAgainButton.isHidden = false // show the button
             
         }
 
@@ -325,9 +334,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // to create the scene’s contents.
     // the 'view' is the SKView that is presenting the SKScene
     //
+    // MARK: Member Variables and Nodes
     var mLabel1 = SKLabelNode(fontNamed: "Courier") // label for debugging
     var mLabel2 = SKLabelNode(fontNamed: "Courier")
     var mLabel3 = SKLabelNode(fontNamed: "Courier")
+    var mPlayAgainButton = SKShapeNode()
     let mMissileNode = ShapeNodeBuilder.missileNode()
     let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
     let (mStarbaseNode, mShieldNode) = ShapeNodeBuilder.starBaseNode() // Returns a tuple with the starbase node and the shield node
@@ -355,12 +366,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         theModel.level = 0 // Will be incremented to 1 by initializeNextLevel() on next line
         initializeNextLevel() // Add asteroids to the scene, increment level, reset shields, score etc.
         
-        let testButtonPosition = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + 80)
-        var testButton = Helper.makeButton(position: testButtonPosition,
-                                           text: "Testing \nABCDEFGHIJKLMNOPQRSTUVWXYZ\nabcdefghijklmnopqrstuvwxyz")
-        self.addChild(testButton)
-        
-        
+        // vvvvv Add Game Over Button vvvvv
+        let buttonPosition = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + 80)
+        mPlayAgainButton = Helper.makeButton(position: buttonPosition, text: "Play Again")
+        self.addChild(mPlayAgainButton)
+        mPlayAgainButton.isHidden = true // Hide the button
+        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                
         
         // Config display lines for debugging
         mLabel1.position = CGPoint(x: self.frame.width/2, y: 10)
@@ -378,6 +390,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func touchDown(atPoint pos : CGPoint) {
         MyLog.debug("GameScene.touchDown() called")
+        if !mPlayAgainButton.isHidden && mPlayAgainButton.frame.contains(pos) {
+            mPlayAgainButton.isHidden = true // Hide the button and start a new game
+             .resetGame()
+            MyLog.debug("mGameOverButtonNode Tapped")
+        }
+
     }
     
     func touchMoved(toPoint pos : CGPoint) {

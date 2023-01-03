@@ -19,9 +19,18 @@ struct Helper {
     // USAGE:
     //   In the GameScene 'touchDown(atPoint pos: CGPoint)' function add code
     //   to check if the button was tapped like this:
-    //     if buttonNode.frame.contains(pos) {
+    //     if !buttonNode.isHidden && buttonNode.frame.contains(pos) {
     //       do button stuff
     //     }
+    //
+    //   To create a button add code like this to the GameScene constructor
+    //        let buttonPosition = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + 80)
+    //        mPlayAgainButton = Helper.makeButton(position: buttonPosition, text: "Play Again")
+    //        self.addChild(mPlayAgainButton)
+    //        mPlayAgainButton.isHidden = false // Hide the button
+    //
+    //   To hide/show the button add code like this:
+    //     theButton.isHidden = true
     // Font Samples: http://iosfonts.com
     //
     static func makeButton(position: CGPoint, text: String) -> SKShapeNode {
@@ -59,4 +68,20 @@ struct Helper {
     }
     
 }
+
+//class ButtonNode: SKNode {
+//    private var saveAlpha = 1.0
+//    private var isHidden = false
+//    func hide() {
+//        guard (isHidden == false) else {
+//            return // Nothing to do, it's already hidden
+//        }
+//        saveAlpha = self.alpha //  save the previous alpha to restore later
+//        self.alpha = 0.0 // Hide the button
+//    }
+//    func show {
+//        self.alpha = saveAlpha // Hide the button
+//    }
+//}
+
 
