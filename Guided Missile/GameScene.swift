@@ -24,6 +24,7 @@
 //
 import SwiftUI // Needed for Image struct
 import SpriteKit
+import AVFoundation // Sound Player
 //import GameplayKit
 
 let INITIAL_SHIELD_LEVEL = 2
@@ -167,12 +168,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
         } else {
             // DESTROIED - if the shields are negative then the starbase is destroide
+            Sound.shared.play(forResource: "Explosion1")   // Good Starbase Explosion Sound
+            
+            Haptic.shared.longVibrate() // Long vibration like Error vibrate
+            
             let explosion = SKEmitterNode(fileNamed: "ExplosionStarbase")!
             explosion.position = mStarbaseNode.position
             self.addChild(explosion)
             self.run(SKAction.wait(forDuration: 2.0)) {
                 explosion.removeFromParent() // Remove the explosion after it runs
             }
+            
             
             // REMOVE THE Starbase and the missile
             mStarbaseNode.removeFromParent()
@@ -215,6 +221,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.run(SKAction.wait(forDuration: 2.0)) {
             explosion.removeFromParent() // Remove the explosion after it runs
         }
+        
+        // Play Sound - Asteroid Explosion
+        Sound.shared.play(forResource: "Boom1") // Good Asteroid Explosion Sound - Short Bang
+
+        Haptic.shared.boomVibrate()
+        
+
+//        Sound.shared.play(forResource: "Boom2")   // I like Boom1 better for Asteroids
+//        Sound.shared.play(forResource: "Boom3")   // Too short and muted for Asteroid explosion
+//        Sound.shared.play(forResource: "Explosion1")   // Good Starbase Explosion Sound
+
         
         // Remove the destroied asteroid from everyplace that references it (the parent and the dictionary)
         theAsteroidNode.removeFromParent()
@@ -344,6 +361,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
         MyLog.debug("GameScene.didMove() called")
+        
+        // Initialize Sound Player - Force singleton load by playing silent sound
+        Sound.shared.play(forResource: "silent_sound")
         
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0) // Set gravity to 0
         
