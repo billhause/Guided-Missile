@@ -23,7 +23,44 @@ class Sound {
     private var sounds2: [String: AVAudioPlayer]
     private var sounds3: [String: AVAudioPlayer]
     private var sounds4: [String: AVAudioPlayer]
-    private var soundNames = ["silent_sound", "fail2", "TrekKlaxon", "laser3", "GameOver", "Boom1", "Boom2", "Boom3", "Explosion1"] //, "fail1",  "fail3", "fail4", "fail5",  "8BitBounce", "Boom1", "Boom2", "Boom3", "Explosion1", "Gunshot", "GameOver2"]
+    private var soundNames = [ "silent_sound", "asteroid_explosion", "fail2", "TrekKlaxon", "laser3", "GameOver", "Boom1", "Boom2", "Boom3", "Explosion1"] //, "fail1",  "fail3", "fail4", "fail5",  "8BitBounce", "Boom1", "Boom2", "Boom3", "Explosion1", "Gunshot", "GameOver2"]
+    
+    
+    // Load the rocket thrust sound and prepare to play it.
+    private var rocketSoundPlayer = AVAudioPlayer()
+    private var rocketIsPlaying = false
+    func thrustInit() {
+        do {
+            let urlPathString = Bundle.main.path(forResource: "rocket_4_sec", ofType: "wav")
+//            let urlPathString = Bundle.main.path(forResource: "Thrusters_20_Seconds", ofType: "wav")
+            rocketSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+            rocketSoundPlayer.numberOfLoops = -1 // -1 means loop forever
+            rocketSoundPlayer.prepareToPlay()
+            rocketIsPlaying = false
+        } catch {
+            print(error)
+        }
+    }
+    
+    // Start rocket thrust sound if it's not already playing
+    func thrustOn(volume: Float) {
+        if !rocketIsPlaying {
+            rocketIsPlaying = true
+            DispatchQueue.global().async { // play in background
+                self.rocketSoundPlayer.play()
+            }
+        }
+        // Adjust the volume of the sound
+        rocketSoundPlayer.setVolume(volume, fadeDuration: 0.0) // no fade in duration
+    }
+    
+    // Stop rocket thrust sound if it's playing
+    func thrustOff() {
+        if rocketIsPlaying {
+            rocketIsPlaying = false
+            rocketSoundPlayer.stop()
+        }
+    }
     
     
     private init() {
@@ -66,6 +103,8 @@ class Sound {
                 print(error)
             }
         }
+        
+        thrustInit() // init rocket thrust sound player
     }
 
     func play(forResource name: String) {

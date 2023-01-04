@@ -135,7 +135,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MISSILE HITS ASTEROID - Call this when an asteroid and the missile collide
     // Pass in the Asteroid node.  Since there is only one missile node we don't need it passed in.
     func handleCollision_Asteroid_and_Missile(theAsteroidNode: SKShapeNode) {
-        MyLog.debug("Missile hit Asteroid")
+//        MyLog.debug("Missile hit Asteroid")
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
         theModel.score += 1
         mResetMissileFlag = true // trigger missile reset later in the frame update
@@ -183,7 +183,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // REMOVE THE Starbase and the missile
             mStarbaseNode.removeFromParent()
             mMissileNode.removeFromParent()
-            
+            Sound.shared.thrustOff() // Stop thrust sound
             theModel.gameOver = true
             
             // Wait 2 seconds for starbase explosion to finish then show Play Again
@@ -223,7 +223,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         // Play Sound - Asteroid Explosion
-        Sound.shared.play(forResource: "Boom1") // Good Asteroid Explosion Sound - Short Bang
+//        Sound.shared.play(forResource: "Boom1") // Good Asteroid Explosion Sound - Short Bang
+        Sound.shared.play(forResource: "asteroid_explosion") // Good Asteroid Explosion Sound - Short Bang
 
         Haptic.shared.boomVibrate()
         
@@ -293,7 +294,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let theAsteroidNode = secondBody.node as! SKShapeNode
                 handleCollision_Asteroid_and_Missile(theAsteroidNode: theAsteroidNode)
             } else if secondBody.categoryBitMask == gCategoryEnemyShip { // Hit Enemy Space Ship
-                MyLog.debug("Missile hit Enemy Space Ship")
+//                MyLog.debug("Missile hit Enemy Space Ship")
             }
         
         // STARBASE - Check for Starbase Hit
@@ -443,6 +444,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             // PAUSE / UNPAUSE Game
             realPaused = !realPaused
+            if realPaused {
+                Sound.shared.thrustOff() // Stop thrust sound
+            }
         }
 
     }
@@ -482,7 +486,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.lastUpdateTime = currentTime
         }
         // Calculate time since last update
-        let dt = currentTime - self.lastUpdateTime
+        // let dt = currentTime - self.lastUpdateTime
+        let _ = currentTime - self.lastUpdateTime
         self.lastUpdateTime = currentTime
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         
@@ -582,6 +587,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                                           SKAction.fadeOut(withDuration: 0.8)])
                 exaustBall.run(SKAction.sequence([shrinkAndFadeAction,
                                                  SKAction.removeFromParent()]))
+                
+                Sound.shared.thrustOn(volume: Float((thrust-MINIMUM_THRUST)/2.0)) // Thrust louder if stronger.  divide to adjust nominal volume
+            } else {
+                Sound.shared.thrustOff() // Stop thrust sound if not thrusting
             }
         }
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
