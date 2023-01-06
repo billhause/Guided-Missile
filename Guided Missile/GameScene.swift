@@ -35,6 +35,7 @@ struct GameModel {
     var highScore            = 0 // Highest score achieved to date
     var shieldLevel          = INITIAL_SHIELD_LEVEL
     var gameOver             = false
+    var bFirstRun            = true // Display instructions if it's the first run.
     
     var totalAsteroids: Int { // How many asteroids must be destroid to complete this level
         switch level {
@@ -141,12 +142,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mResetMissileFlag = true // trigger missile reset later in the frame update
         
         if theModel.asteroidsRemaining < 1 {
+
             // We beat the level so reset and start the next level
             initializeNextLevel()
+
+            // Display Text - Warping To Asteroid Field 2 etc.
+            let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
+            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 20)
+            Helper.fadingAlert(scene: self, position: line1Position, text: "Warping to")
+            Helper.fadingAlert(scene: self, position: line2Position, text: "Asteroid Field \(theModel.level)")
+
+            warpAnimation() // Show starbase warping out and back in.
+
         }
         
     }
     
+    func warpAnimation() {
+        let WARP_DURATION = 1.0
+        let warpOutAction = SKAction.group([SKAction.rotate(byAngle: 2*3.141, duration: WARP_DURATION/2),
+                                            SKAction.scale(to: 0.01, duration: WARP_DURATION/2)
+                                            ])
+        let warpInAction = SKAction.group([SKAction.rotate(byAngle: 2*3.141, duration: WARP_DURATION/2),
+                                           SKAction.scale(to: 1.0, duration: WARP_DURATION/2)
+                                          ])
+        let actionSequence = SKAction.sequence([warpOutAction, warpInAction])
+        mStarbaseNode.run(actionSequence)
+
+    }
     
     // ASTEROID hits STARBASE- Call this when an asteroid and the starbase collide
     // Pass in the Asteroid node.  Since there is only one starbase node we don't need it passed in.
@@ -157,7 +180,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Reduce Starbase shield level
         theModel.shieldLevel -= 1
         
-
         
         if theModel.shieldLevel >= 2 {
             mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
@@ -191,7 +213,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.mPlayAgainButton.isHidden = false // show the button
             }
 
-            
         }
 
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
@@ -223,16 +244,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         // Play Sound - Asteroid Explosion
-//        Sound.shared.play(forResource: "Boom1") // Good Asteroid Explosion Sound - Short Bang
         Sound.shared.play(forResource: "asteroid_explosion") // Good Asteroid Explosion Sound - Short Bang
 
         Haptic.shared.boomVibrate()
         
-
-//        Sound.shared.play(forResource: "Boom2")   // I like Boom1 better for Asteroids
-//        Sound.shared.play(forResource: "Boom3")   // Too short and muted for Asteroid explosion
-//        Sound.shared.play(forResource: "Explosion1")   // Good Starbase Explosion Sound
-
         
         // Remove the destroied asteroid from everyplace that references it (the parent and the dictionary)
         theAsteroidNode.removeFromParent()
@@ -403,6 +418,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mLabel3.fontSize = CGFloat(9.0)
         self.addChild(mLabel3)
 
+        if theModel.bFirstRun {
+            // Display instructions if this is the first run of the game.
+            let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
+            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 60)
+
+            let instructions1 = "Tilt Phone to Guide Missiles."
+            let instructions2 = "Clear Each Asteroid Field"
+        
+            Helper.fadingAlert(scene: self, position: line1Position, text: instructions1, fontSize: CGFloat(18), duration: 3)
+            Helper.fadingAlert(scene: self, position: line2Position, text: instructions2, fontSize: CGFloat(18), duration: 5)
+        }
+        
     }
     
     // Rest the game when the use clicks Play Again
@@ -588,7 +615,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 exaustBall.run(SKAction.sequence([shrinkAndFadeAction,
                                                  SKAction.removeFromParent()]))
                 
-                Sound.shared.thrustOn(volume: Float((thrust-MINIMUM_THRUST)/2.0)) // Thrust louder if stronger.  divide to adjust nominal volume
+                Sound.shared.thrustOn(volume: Float((thrust-MINIMUM_THRUST)/1.5)) // Thrust louder if stronger.  divide to adjust nominal volume
             } else {
                 Sound.shared.thrustOff() // Stop thrust sound if not thrusting
             }

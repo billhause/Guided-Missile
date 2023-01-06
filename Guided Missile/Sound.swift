@@ -31,8 +31,9 @@ class Sound {
     private var rocketIsPlaying = false
     func thrustInit() {
         do {
-            let urlPathString = Bundle.main.path(forResource: "rocket_4_sec", ofType: "wav")
-//            let urlPathString = Bundle.main.path(forResource: "Thrusters_20_Seconds", ofType: "wav")
+//            let urlPathString = Bundle.main.path(forResource: "deep_rumble_1_sec", ofType: "wav")
+//            let urlPathString = Bundle.main.path(forResource: "rocket_4_sec", ofType: "wav")
+            let urlPathString = Bundle.main.path(forResource: "Thrusters_20_Seconds", ofType: "wav")
             rocketSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
             rocketSoundPlayer.numberOfLoops = -1 // -1 means loop forever
             rocketSoundPlayer.prepareToPlay()

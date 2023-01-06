@@ -11,8 +11,9 @@ import SpriteKit
 // Struct with static helper functions
 
 
+let GAME_FONT = "Copperplate" // Pretty GOOD - Caps theme
+
 struct Helper {
-    
     
     
     
@@ -38,12 +39,12 @@ struct Helper {
 //        let buttonLabelNode = SKLabelNode(fontNamed: "Futura-Medium") // OK.
 //        let buttonLabelNode = SKLabelNode(fontNamed: "Helvetica") // I think this is the default
 //        let buttonLabelNode = SKLabelNode(fontNamed: "TrebuchetMS") // plane and simple
-        let buttonLabelNode = SKLabelNode(fontNamed: "Copperplate") // Pretty GOOD - Caps theme
+        let buttonLabelNode = SKLabelNode(fontNamed: GAME_FONT)
 
         
         // Game Center Leaderboard Button
         buttonLabelNode.text = text
-        buttonLabelNode.fontSize = CGFloat(20)
+        buttonLabelNode.fontSize = CGFloat(30)
         buttonLabelNode.lineBreakMode = NSLineBreakMode.byWordWrapping
         buttonLabelNode.numberOfLines = 0
 //        buttonLabelNode.preferredMaxLayoutWidth = theGameScene.frame.size.width * 4 / 5
@@ -66,22 +67,39 @@ struct Helper {
         
         return buttonFrameNode
     }
+
+    // Display a message that fades out.  Default font size it 20
+    static func fadingAlert(scene: SKScene, position: CGPoint, text: String, fontSize: CGFloat = CGFloat(30), duration: Double = 2.0) {
+        let fontSize = CGFloat(fontSize)
+        let alertLabel = SKLabelNode(fontNamed: GAME_FONT)
+        alertLabel.fontSize = fontSize
+        alertLabel.text = text
+        alertLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
+        alertLabel.numberOfLines = 0
+        alertLabel.fontColor = UIColor(cgColor: CGColor(srgbRed: 0.0, green: 0.8, blue: 1.0, alpha: 1.0))
+        alertLabel.preferredMaxLayoutWidth = scene.frame.size.width * 4/5
+        alertLabel.position = position
+        scene.addChild(alertLabel)
+        
+//        let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 0.1, duration: 1.0),
+//                                                  SKAction.rotate(byAngle: 2*3.141, duration: 1.0),
+//                                                  SKAction.moveTo(y: alertLabel.position.y*2, duration: 1.0),
+//                                                  SKAction.moveTo(x: alertLabel.position.x*2, duration: 1.0),
+//                                                  SKAction.fadeOut(withDuration: 1.0)])
+
+        
+//        let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 0.1, duration: 1.0),
+//                                                  SKAction.fadeOut(withDuration: 1.0)])
+
+        let shrinkAndFadeAction = SKAction.group([SKAction.fadeOut(withDuration: 1.0)])
+        alertLabel.run(SKAction.sequence([SKAction.wait(forDuration: duration),
+                                         shrinkAndFadeAction,
+                                         SKAction.removeFromParent()]))
+
+
+    }
+    
     
 }
-
-//class ButtonNode: SKNode {
-//    private var saveAlpha = 1.0
-//    private var isHidden = false
-//    func hide() {
-//        guard (isHidden == false) else {
-//            return // Nothing to do, it's already hidden
-//        }
-//        saveAlpha = self.alpha //  save the previous alpha to restore later
-//        self.alpha = 0.0 // Hide the button
-//    }
-//    func show {
-//        self.alpha = saveAlpha // Hide the button
-//    }
-//}
 
 
