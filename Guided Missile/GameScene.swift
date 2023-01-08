@@ -29,33 +29,51 @@ import AVFoundation // Sound Player
 
 let INITIAL_SHIELD_LEVEL = 2
 struct GameModel {
-    var level                = 1 // game level
-    var asteroidsRemaining   = 3 // Number of asteroids that still need to be destroied for the current level
-    var score                = 0
-    var highScore            = 0 // Highest score achieved to date
-    var shieldLevel          = INITIAL_SHIELD_LEVEL
-    var gameOver             = false
-    var bFirstRun            = true // Display instructions if it's the first run.
+    var mLevel                = 1 // game level - Should be 1
+    var mAsteroidsRemaining   = 3 // 3 - Number of asteroids that still need to be destroied for the current level
+    var mScore                = 0
+    var mHighScore            = 0 // Highest score achieved to date
+    var mShieldLevel          = INITIAL_SHIELD_LEVEL
+    var mGameOver             = false
+    var mFirstRun             = true // Display instructions if it's the first run.
     
     var totalAsteroids: Int { // How many asteroids must be destroid to complete this level
-        switch level {
+        switch mLevel {
         case 1:
             return 3
         default:
-            return level + 2
+            return mLevel + 2
         }
     }
     
     var maxAsteroidsInPlay: Int { // Number of asteroids to have in play at one time
-        return level // for now we're setting the number of asteroids to start with to be the same as the level you're on.
+        return mLevel // for now we're setting the number of asteroids to start with to be the same as the level you're on.
     }
     
     // You should set the level variable before calling this function
     // because some of the values may depend on the level.
     mutating func resetLevel() {
-        asteroidsRemaining = totalAsteroids
-        shieldLevel = INITIAL_SHIELD_LEVEL
+        mAsteroidsRemaining = totalAsteroids
+        mShieldLevel = INITIAL_SHIELD_LEVEL
     }
+    
+    func getLevelBonus(level: Int) -> Int {
+        if level <= 1 { return 0 }
+        
+        // Recursively calculate bonus
+        var bonus = (level-1) + 2 + getLevelBonus(level: level-1)
+        return bonus
+    }
+    
+    func playAgainButton1Level() -> Int { return 0}
+    func playAgainButton2Level() -> Int { return mLevel/2}
+    func playAgainButton3Level() -> Int { return mLevel}
+    
+    func playAgainButton1Bonus() -> Int { return getLevelBonus(level: 1) }
+    func playAgainButton2Bonus() -> Int { return getLevelBonus(level: mLevel/2) }
+    func playAgainButton3Bonus() -> Int { return getLevelBonus(level: mLevel) }
+
+    
     
 }
 
@@ -110,9 +128,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Call this after we beat the current level and need to move on to the next level
     func initializeNextLevel() {
         //
-        theModel.level += 1 // move to next level
+        theModel.mLevel += 1 // move to next level
         theModel.resetLevel()
-        MyLog.debug("Starting Next Level: \(theModel.level)")
+        MyLog.debug("Starting Next Level: \(theModel.mLevel)")
         
         // Reset Shields - the star base node should still be in tact since we beat the level
         mShieldNode.run(SKAction.fadeAlpha(to: 0.8, duration: 1))
@@ -138,10 +156,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func handleCollision_Asteroid_and_Missile(theAsteroidNode: SKShapeNode) {
 //        MyLog.debug("Missile hit Asteroid")
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
-        theModel.score += 1
+        theModel.mScore += 1
         mResetMissileFlag = true // trigger missile reset later in the frame update
         
-        if theModel.asteroidsRemaining < 1 {
+        if theModel.mAsteroidsRemaining < 1 {
 
             // We beat the level so reset and start the next level
             initializeNextLevel()
@@ -150,7 +168,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
             let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 20)
             Helper.fadingAlert(scene: self, position: line1Position, text: "Warping to")
-            Helper.fadingAlert(scene: self, position: line2Position, text: "Asteroid Field \(theModel.level)")
+            Helper.fadingAlert(scene: self, position: line2Position, text: "Asteroid Field \(theModel.mLevel)")
 
             warpAnimation() // Show starbase warping out and back in.
 
@@ -171,21 +189,52 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     }
     
+    // Update the Play Again button text based on max level achieved
+    private func updatePlayAgainButtonText() {
+        // vvvvv Add Play Again Buttons vvvvv
+        let buttonPosition1 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.8)
+        let buttonPosition2 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.6)
+        let buttonPosition3 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.4)
+
+        // Remove from parent if necessary
+        if mPlayAgainButton1.parent != nil { mPlayAgainButton1.removeFromParent() }
+        if mPlayAgainButton2.parent != nil { mPlayAgainButton2.removeFromParent() }
+        if mPlayAgainButton3.parent != nil { mPlayAgainButton3.removeFromParent() }
+
+        
+        self.mPlayAgainButton1 = Helper.makeButton(position: buttonPosition1,
+                                                   text: "Play Again\nLevel 1\nBonus: \(theModel.playAgainButton1Bonus())")
+        self.addChild(self.mPlayAgainButton1)
+        self.mPlayAgainButton1.isHidden = true // Hide the button
+
+        if theModel.mLevel > 4 { // Only show the other two buttons if the level is high enough
+            self.mPlayAgainButton2 = Helper.makeButton(position: buttonPosition2,
+                                                       text: "Play Again\nLevel \(theModel.mLevel/2)\nBonus: \(theModel.playAgainButton2Bonus())")
+            self.addChild(self.mPlayAgainButton2)
+            self.mPlayAgainButton2.isHidden = true // Hide the button
+            
+            self.mPlayAgainButton3 = Helper.makeButton(position: buttonPosition3,
+                                                       text: "Play Again\nLevel \(theModel.mLevel)\nBonus: \(theModel.playAgainButton3Bonus())")
+            self.addChild(self.mPlayAgainButton3)
+            self.mPlayAgainButton3.isHidden = true // Hide the button
+        }
+        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    }
+    
     // ASTEROID hits STARBASE- Call this when an asteroid and the starbase collide
     // Pass in the Asteroid node.  Since there is only one starbase node we don't need it passed in.
-    
     func handleCollision_Asteroid_and_Starbase(theAsteroidNode: SKShapeNode) {
         MyLog.debug("Missile hit Starbase")
         
         // Reduce Starbase shield level
-        theModel.shieldLevel -= 1
+        theModel.mShieldLevel -= 1
         
         
-        if theModel.shieldLevel >= 2 {
+        if theModel.mShieldLevel >= 2 {
             mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
-        } else if theModel.shieldLevel == 1 {
+        } else if theModel.mShieldLevel == 1 {
             mShieldNode.run(SKAction.fadeAlpha(to: 0.5, duration: 1))
-        } else if theModel.shieldLevel == 0 {
+        } else if theModel.mShieldLevel == 0 {
             // Show NO shields - set alpha to 0
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
         } else {
@@ -206,11 +255,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             mStarbaseNode.removeFromParent()
             mMissileNode.removeFromParent()
             Sound.shared.thrustOff() // Stop thrust sound
-            theModel.gameOver = true
+            theModel.mGameOver = true
             
-            // Wait 2 seconds for starbase explosion to finish then show Play Again
+            // Wait 2 seconds for starbase explosion to finish then show Play Again buttons
+            updatePlayAgainButtonText()
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                self.mPlayAgainButton.isHidden = false // show the button
+                self.mPlayAgainButton1.isHidden = false // show the button
+                self.mPlayAgainButton2.isHidden = false // show the button
+                self.mPlayAgainButton3.isHidden = false // show the button
             }
 
         }
@@ -219,7 +271,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // If this was the last asteroid and the base is not destroid, then we beat the
         // level even though the starbase destroied the last asteroid in the collision
-        if (theModel.asteroidsRemaining < 1) && (theModel.shieldLevel >= 0) {
+        if (theModel.mAsteroidsRemaining < 1) && (theModel.mShieldLevel >= 0) {
             initializeNextLevel()
         }
     }
@@ -228,7 +280,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // asteroid if necessary
     func processDestroidAsteroid(theAsteroidNode: SKShapeNode) {
 
-        theModel.asteroidsRemaining -= 1
+        theModel.mAsteroidsRemaining -= 1
         
         //   Explosion Tutorial
         //   https://www.youtube.com/watch?v=cJy61bOqQpg
@@ -254,7 +306,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mAsteroidNodeDict.removeValue(forKey: theAsteroidNode.name!)
         
         // vvvvv Add replacement asteroid vvvvv
-        if theModel.asteroidsRemaining >= theModel.maxAsteroidsInPlay {
+        if theModel.mAsteroidsRemaining >= theModel.maxAsteroidsInPlay {
             let newAsteroid = ShapeNodeBuilder.asteroidRandomNode()
             newAsteroid.position.y = 0
             let maxX = self.frame.size.width
@@ -368,7 +420,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var mLabel1 = SKLabelNode(fontNamed: "Courier") // label for debugging
     var mLabel2 = SKLabelNode(fontNamed: "Courier")
     var mLabel3 = SKLabelNode(fontNamed: "Courier")
-    var mPlayAgainButton = SKShapeNode()
+    var mPlayAgainButton1 = SKShapeNode()
+    var mPlayAgainButton2 = SKShapeNode()
+    var mPlayAgainButton3 = SKShapeNode()
     let mMissileNode = ShapeNodeBuilder.missileNode()
     let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
     let (mStarbaseNode, mShieldNode) = ShapeNodeBuilder.starBaseNode() // Returns a tuple with the starbase node and the shield node
@@ -395,17 +449,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mEnemyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
         self.addChild(mEnemyShipNode)
 
-        theModel.score = 0
-        theModel.level = 0 // Will be incremented to 1 by initializeNextLevel() on next line
+        theModel.mScore = 0
+        theModel.mLevel = 0   // wdh start at 0 because it will be incremented to 1 by initializeNextLevel() on next line
         initializeNextLevel() // Add asteroids to the scene, increment level, reset shields, score etc.
         
-        // vvvvv Add Game Over Button vvvvv
-        let buttonPosition = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2 + 80)
-        self.mPlayAgainButton = Helper.makeButton(position: buttonPosition, text: "Play Again")
-        self.addChild(self.mPlayAgainButton)
-        self.mPlayAgainButton.isHidden = true // Hide the button
-        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                
         
         // Config display lines for debugging
         mLabel1.position = CGPoint(x: self.frame.width/2, y: 10)
@@ -418,7 +465,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mLabel3.fontSize = CGFloat(9.0)
         self.addChild(mLabel3)
 
-        if theModel.bFirstRun {
+        if theModel.mFirstRun {
             // Display instructions if this is the first run of the game.
             let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
             let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 60)
@@ -433,14 +480,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     // Rest the game when the use clicks Play Again
-    func resetGame() {
+    func resetGame(level: Int) {
         
-        if theModel.score > theModel.highScore {
-            theModel.highScore = theModel.score
+        if theModel.mScore > theModel.mHighScore {
+            theModel.mHighScore = theModel.mScore
         }
-        theModel.score = 0
+        theModel.mScore = theModel.getLevelBonus(level: level)
         
-        theModel.gameOver = false // we're playing agian.
+        theModel.mGameOver = false // we're playing agian.
         
         // Clear out the Asteroid Dictionary
         for (_, node) in mAsteroidNodeDict {
@@ -448,7 +495,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         mAsteroidNodeDict.removeAll()
 
-        theModel.level = 0 // initializeNextLevel() will increment the level to 1
+        theModel.mLevel = level-1 // initializeNextLevel() will increment the level to 1
         initializeNextLevel()
 
         // Reset the Starbase
@@ -462,12 +509,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     }
     
+    private func hidePlayAgainButtons() {
+        mPlayAgainButton1.isHidden = true
+        mPlayAgainButton2.isHidden = true
+        mPlayAgainButton3.isHidden = true
+    }
     
     func touchDown(atPoint pos : CGPoint) {
         MyLog.debug("GameScene.touchDown() called")
-        if !mPlayAgainButton.isHidden && mPlayAgainButton.frame.contains(pos) {
-            mPlayAgainButton.isHidden = true // Hide the button and start a new game
-            resetGame()
+        
+        // Check Play Again Buttons
+        if !mPlayAgainButton1.isHidden && mPlayAgainButton1.frame.contains(pos) {
+            hidePlayAgainButtons()
+            resetGame(level: theModel.playAgainButton1Level()) // Reset to level 1
+        } else if !mPlayAgainButton2.isHidden && mPlayAgainButton2.frame.contains(pos) {
+            hidePlayAgainButtons()
+            resetGame(level: theModel.playAgainButton2Level()) // Reset to mid level
+        } else if !mPlayAgainButton3.isHidden && mPlayAgainButton3.frame.contains(pos) {
+            hidePlayAgainButtons()
+            resetGame(level: theModel.playAgainButton3Level()) // Reset to highest level achieved
+            
+        // Check Pause / Unpause
         } else {
             // PAUSE / UNPAUSE Game
             realPaused = !realPaused
@@ -521,9 +583,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         updateMissileFrame()
         
         gUpdateCount += 1
-        mLabel3.text = String(format: "Score: %d", theModel.score)
-        mLabel2.text = String(format: "Level: %d", theModel.level)  // %3.4f", dy)
-        mLabel1.text = String(format: "High Score: %d", theModel.highScore)
+        mLabel3.text = String(format: "Score: %d", theModel.mScore)
+        mLabel2.text = String(format: "Level: %d", theModel.mLevel)  // %3.4f", dy)
+        mLabel1.text = String(format: "High Score: %d", theModel.mHighScore)
     }
     
     // limit must be a positive number.  Else the input will be returend as the result
@@ -562,7 +624,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let ROTATION_SENSITIVITY = 0.0 //0.05 // How much phone tilt is needed to change missile orientation
         let EXAUST_MULTIPLIER = 120.0 // How fast should the exaust come out
 
-        if !theModel.gameOver {
+        if !theModel.mGameOver {
             // Update Missile Velocity based on phone orientation gravity
             var dx = Motion.shared.xGravity * THRUST_MULTIPLIER // Change in velocity
             var dy = (Motion.shared.yGravity + 0.4) * THRUST_MULTIPLIER // TODO use inverse sine to adjust the angle, then convert back instead of just adding something to the dy

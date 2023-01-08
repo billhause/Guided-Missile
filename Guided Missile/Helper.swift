@@ -34,7 +34,7 @@ struct Helper {
     //     theButton.isHidden = true
     // Font Samples: http://iosfonts.com
     //
-    static func makeButton(position: CGPoint, text: String) -> SKShapeNode {
+    static func makeButton(position: CGPoint, text: String, fontSize: CGFloat = CGFloat(20)) -> SKShapeNode {
 //        let buttonLabelNode = SKLabelNode(fontNamed: "Copperplate") // Pretty GOOD - Caps theme
 //        let buttonLabelNode = SKLabelNode(fontNamed: "Futura-Medium") // OK.
 //        let buttonLabelNode = SKLabelNode(fontNamed: "Helvetica") // I think this is the default
@@ -44,7 +44,7 @@ struct Helper {
         
         // Game Center Leaderboard Button
         buttonLabelNode.text = text
-        buttonLabelNode.fontSize = CGFloat(30)
+        buttonLabelNode.fontSize = CGFloat(fontSize)
         buttonLabelNode.lineBreakMode = NSLineBreakMode.byWordWrapping
         buttonLabelNode.numberOfLines = 0
 //        buttonLabelNode.preferredMaxLayoutWidth = theGameScene.frame.size.width * 4 / 5
