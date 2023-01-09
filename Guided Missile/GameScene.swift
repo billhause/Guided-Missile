@@ -61,7 +61,7 @@ struct GameModel {
         if level <= 1 { return 0 }
         
         // Recursively calculate bonus
-        var bonus = (level-1) + 2 + getLevelBonus(level: level-1)
+        let bonus = (level-1) + 2 + getLevelBonus(level: level-1)
         return bonus
     }
     
@@ -169,22 +169,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mResetMissileFlag = true // move missile back to center of starbase later in the frame update
         
         if theModel.mAsteroidsRemaining < 1 {
-
             // We beat the level so reset and start the next level
             initializeNextLevel()
-
-//            // Display Text - Warping To Asteroid Field 2 etc.  wdh
-//            let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
-//            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 20)
-//            Helper.fadingAlert(scene: self, position: line1Position, text: "Warping to")
-//            Helper.fadingAlert(scene: self, position: line2Position, text: "Asteroid Field \(theModel.mLevel)")
-//
-//            warpAnimation() // Show starbase warping out and back in.
-
         }
 
     }
-    
+
     // ASTEROID hits STARBASE- Call this when an asteroid and the starbase collide
     // Pass in the Asteroid node.  Since there is only one starbase node we don't need it passed in.
     func handleCollision_Asteroid_and_Starbase(theAsteroidNode: SKShapeNode) {
@@ -330,6 +320,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     }
 
+
     // SKPhysicsContactDelegate interface callback function
     func didBegin(_ contact: SKPhysicsContact) {
         var firstBody = SKPhysicsBody()
@@ -342,7 +333,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //    let gCategoryMissile:    UInt32 = 0x1 << 0  // 1
         //    let gCategoryStarbase:   UInt32 = 0x1 << 1  // 2
         //    let gCategorySupplyShip: UInt32 = 0x1 << 2  // 4
-        //    let gCategoryEnemyShip:  UInt32 = 0x1 << 3  // 8
+        //    let gCategorySaucer:  UInt32 = 0x1 << 3  // 8
         //    let gCategoryAsteroid:   UInt32 = 0x1 << 4  // 16
 
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
@@ -371,8 +362,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 let theAsteroidNode = secondBody.node as! SKShapeNode
                 handleCollision_Asteroid_and_Missile(theAsteroidNode: theAsteroidNode)
-            } else if secondBody.categoryBitMask == gCategoryEnemyShip { // Hit Enemy Space Ship
-//                MyLog.debug("Missile hit Enemy Space Ship")
+            } else if secondBody.categoryBitMask == gCategorySaucer { // Hit Enemy Space Ship
+                handleCollision_Spaceship_and_Missile()
             }
         
         // STARBASE - Check for Starbase Hit
@@ -382,7 +373,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 // Asteroid Hit the Starbase
                 let theAsteroidNode = secondBody.node as! SKShapeNode
                 handleCollision_Asteroid_and_Starbase(theAsteroidNode: theAsteroidNode)
-            } else if secondBody.categoryBitMask == gCategoryEnemyShip {
+            } else if secondBody.categoryBitMask == gCategorySaucer {
                 // Enemy Ship Hit the Starbase
                 MyLog.debug("Enemy Ship hit Starbase")
             }
@@ -393,13 +384,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 // Asteroid Hit the supply ship
                 MyLog.debug("Asteroid hit Supply Ship")
-            } else if secondBody.categoryBitMask == gCategoryEnemyShip {
+            } else if secondBody.categoryBitMask == gCategorySaucer {
                 // Enemy Ship Hit the Supply Ship
                 MyLog.debug("Enemy Ship hit Supply Ship")
             }
 
         // ENEMY SHIP - Check for Enemy Ship Hit
-        } else if firstBody.categoryBitMask == gCategoryEnemyShip {
+        } else if firstBody.categoryBitMask == gCategorySaucer {
             // Something Hit the Enemy Ship
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 // Asteroid Hit the enemy ship
@@ -437,7 +428,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let mMissileNode = ShapeNodeBuilder.missileNode()
     let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
     let (mStarbaseNode, mShieldNode) = ShapeNodeBuilder.starBaseNode() // Returns a tuple with the starbase node and the shield node
-    let mEnemyShipNode = ShapeNodeBuilder.enemySpaceShipNode()
+    let mSaucerNode = ShapeNodeBuilder.enemySpaceShipNode()
     var mAsteroidNodeDict = [String: SKShapeNode]() // Dictionary of Asteroids using the node name as key.
     override func didMove(to view: SKView) {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
@@ -457,8 +448,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mStarbaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         self.addChild(mStarbaseNode)
 
-        mEnemyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - 2*self.frame.size.height/3)
-        self.addChild(mEnemyShipNode)
+        self.addChild(mSaucerNode)
+        startSaucer()
 
         theModel.mScore = 0
         theModel.mLevel = 0   // wdh start at 0 because it will be incremented to 1 by initializeNextLevel() on next line
@@ -595,12 +586,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         
         updateMissileFrame()
+        updateSaucerFrame()
         
         gUpdateCount += 1
         mLabel3.text = String(format: "Score: %d", theModel.mScore)
         mLabel2.text = String(format: "Level: %d", theModel.mLevel)  // %3.4f", dy)
         mLabel1.text = String(format: "High Score: %d", theModel.mHighScore)
     }
+    
+    /**
+     Override this to perform game logic. Called exactly once per frame after any actions have been evaluated but before any physics are simulated. Any additional actions applied is not evaluated until the next update.
+     */
+    // Called every frame update after update() function is called
+    let xBuffer = 10.0 // How far off the screen does an asteroid need to be before appearing on the other side
+    let yBuffer = 10.0
+    override func didEvaluateActions() {
+        correctMissilePosition()
+        correctAsteroidPositions()
+        correctSaucerPosition()
+    }
+
+    
+    
     
     // limit must be a positive number.  Else the input will be returend as the result
     func vectorClamp(dx: Double, dy: Double, limit: Double) -> (dx: Double, dy: Double) {
@@ -748,19 +755,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
 
-    /**
-     Override this to perform game logic. Called exactly once per frame after any actions have been evaluated but before any physics are simulated. Any additional actions applied is not evaluated until the next update.
-     */
-    // Called every frame update after update() function is called
-    let xBuffer = 10.0 // How far off the screen does an asteroid need to be before appearing on the other side
-    let yBuffer = 10.0
-    override func didEvaluateActions() {
-//        MyLog.debug("didEvaluateActions() called")
-        
-        correctMissilePosition()
-        correctAsteroidPositions()
-        
-    }
     
     
     /**
@@ -815,6 +809,79 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         theGameScene.addChild(mBackgroundImage!)
     }
     
+    
+    
+    
+    // MARK: Saucer Code
+    private var mResetSaucerFlag = false   // set to true to reset the saucer position after being destroid
+
+    // Start the Enemy flying saucer
+    func startSaucer() {
+        mSaucerNode.position.y = self.frame.size.height    // Top of screen
+        mSaucerNode.position.x = self.frame.size.width/2  // Center of screen
+        mSaucerNode.isHidden = false
+    }
+    
+    // Update the Enemy Spaceship one frame
+    func updateSaucerFrame() {
+        var posY = mSaucerNode.position.y
+        posY -= 0.2 // How fast does it move down the screen?  Bigger numbers are faster
+        mSaucerNode.position.y = posY
+        
+        // Calc X postition
+        let xInput = posY/40  // How fast does it move back and forth - Bigger Denominator is slower
+        let xOffset = self.frame.size.width / 2 // Center of screen
+        let xPos = (xOffset * 0.9) * sin(xInput) + xOffset
+        mSaucerNode.position.x = xPos
+    }
+    
+    
+    func correctSaucerPosition() {
+        var posY = mSaucerNode.position.y
+        if posY < 0 {   // Move back to Top of screen
+            posY = self.frame.size.height
+            mSaucerNode.position.y = posY
+        }
+        
+        if mResetSaucerFlag { // reset the saucer back to it's starrting position
+            startSaucer()
+            mResetSaucerFlag = false
+        }
+
+    }
+    
+    // SPACESHIP DESTROIED - Process the destroid Spaceship by exploding
+    func processDestroidSpaceship() {
+        //   Explosion Tutorial
+        //   https://www.youtube.com/watch?v=cJy61bOqQpg
+        //   Explostions at 32:30-35:22 - https://www.youtube.com/watch?v=cJy61bOqQpg
+        //   Particl Emmiter creation : 2:43 Settings at 3:58
+        let explosion = SKEmitterNode(fileNamed: "ExplosionParticles")!
+        explosion.position = mSaucerNode.position
+        self.addChild(explosion)
+        self.run(SKAction.wait(forDuration: 2.0)) {
+            explosion.removeFromParent() // Remove the explosion after it runs
+        }
+        
+        Sound.shared.play(forResource: "asteroid_explosion") // Good Asteroid Explosion Sound - Short Bang
+        Haptic.shared.boomVibrate()
+        mSaucerNode.isHidden = true
+        
+        mResetSaucerFlag = true // Move back to top later in the frame
+    }
+
+    // MISSILE HITS ENEMY SPACE SHIP
+    func handleCollision_Spaceship_and_Missile() {
+        MyLog.debug("Missile hit Spaceship")
+        
+        if mSaucerNode.isHidden == true { // Nothing to do
+            return
+        }
+        
+        theModel.mScore += 1
+        processDestroidSpaceship()
+        mResetMissileFlag = true // move missile back to center of starbase later in the frame update
+    }
 
     
 }

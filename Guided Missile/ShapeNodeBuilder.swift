@@ -12,7 +12,7 @@ import SpriteKit
 let gCategoryMissile:    UInt32 = 0x1 << 0  // 1
 let gCategoryStarbase:   UInt32 = 0x1 << 1  // 2
 let gCategorySupplyShip: UInt32 = 0x1 << 2  // 4
-let gCategoryEnemyShip:  UInt32 = 0x1 << 3  // 8
+let gCategorySaucer:  UInt32 = 0x1 << 3  // 8
 let gCategoryAsteroid:   UInt32 = 0x1 << 4  // 16
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -144,7 +144,7 @@ struct ShapeNodeBuilder {
         parentNode.physicsBody?.isDynamic = false // does not move due to gravity
 
         parentNode.physicsBody?.categoryBitMask = gCategoryStarbase
-        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategorySaucer
         parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with the starbase. E.g. bounce off it.
         
         
@@ -278,8 +278,8 @@ struct ShapeNodeBuilder {
         parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
 
         parentNode.physicsBody?.categoryBitMask = gCategoryMissile
-        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategorySupplyShip | gCategoryEnemyShip
-        parentNode.physicsBody?.collisionBitMask = 0 // CategoryEnemyShip // Nothing will interact with the missile. E.g. bounce off it.
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategorySupplyShip | gCategorySaucer
+        parentNode.physicsBody?.collisionBitMask = 0 // CategorySaucer // Nothing will interact with the missile. E.g. bounce off it.
 
         
         return parentNode
@@ -420,7 +420,7 @@ struct ShapeNodeBuilder {
         parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
 
         parentNode.physicsBody?.categoryBitMask = gCategorySupplyShip
-        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip | gCategoryStarbase
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategorySaucer | gCategoryStarbase
         parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with this object. E.g. bounce off it.
 
 
@@ -503,7 +503,7 @@ struct ShapeNodeBuilder {
         parentNode.physicsBody?.isDynamic = true // false means does not move due to gravity
 
         parentNode.physicsBody?.categoryBitMask = gCategoryAsteroid
-        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryEnemyShip | gCategorySupplyShip
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategorySaucer | gCategorySupplyShip
         parentNode.physicsBody?.collisionBitMask = gCategoryAsteroid // Asteroids will bounce off each other
 
         // Make it spin
@@ -619,7 +619,7 @@ struct ShapeNodeBuilder {
         parentNode.position = CGPoint(x: 0, y: 0)
         parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
 
-        parentNode.physicsBody?.categoryBitMask = gCategoryEnemyShip
+        parentNode.physicsBody?.categoryBitMask = gCategorySaucer
         parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryStarbase
         parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with this object. E.g. bounce off it.
 
