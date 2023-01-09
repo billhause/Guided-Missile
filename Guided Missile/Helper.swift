@@ -69,7 +69,7 @@ struct Helper {
     }
 
     // Display a message that fades out.  Default font size it 20
-    static func fadingAlert(scene: SKScene, position: CGPoint, text: String, fontSize: CGFloat = CGFloat(30), duration: Double = 2.0) {
+    static func fadingAlert(scene: SKScene, position: CGPoint, text: String, fontSize: CGFloat = CGFloat(30), duration: Double = 2.0, delay: Double = 0) {
         let fontSize = CGFloat(fontSize)
         let alertLabel = SKLabelNode(fontNamed: GAME_FONT)
         alertLabel.fontSize = fontSize
@@ -79,7 +79,6 @@ struct Helper {
         alertLabel.fontColor = UIColor(cgColor: CGColor(srgbRed: 0.0, green: 0.8, blue: 1.0, alpha: 1.0))
         alertLabel.preferredMaxLayoutWidth = scene.frame.size.width * 4/5
         alertLabel.position = position
-        scene.addChild(alertLabel)
         
 //        let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 0.1, duration: 1.0),
 //                                                  SKAction.rotate(byAngle: 2*3.141, duration: 1.0),
@@ -91,11 +90,19 @@ struct Helper {
 //        let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 0.1, duration: 1.0),
 //                                                  SKAction.fadeOut(withDuration: 1.0)])
 
-        let shrinkAndFadeAction = SKAction.group([SKAction.fadeOut(withDuration: 1.0)])
-        alertLabel.run(SKAction.sequence([SKAction.wait(forDuration: duration),
-                                         shrinkAndFadeAction,
-                                         SKAction.removeFromParent()]))
+        
+        // Wait 'delay' seconds to display the message
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            scene.addChild(alertLabel)
 
+            let shrinkAndFadeAction = SKAction.group([SKAction.fadeOut(withDuration: 1.0)])
+            alertLabel.run(SKAction.sequence([
+//                SKAction.wait(forDuration: delay),      // Delay beofre displaying text
+                // Add the text to the scene
+                SKAction.wait(forDuration: duration),   // Duration to display the text
+                shrinkAndFadeAction,                    // Remove the text from view
+                SKAction.removeFromParent()]))          // Remove the text from the scene
+        }
 
     }
     

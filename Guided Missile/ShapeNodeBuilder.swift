@@ -436,7 +436,7 @@ struct ShapeNodeBuilder {
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     private static var mAsteroidNumber = 1 // used to create unique names
     static func asteroidRandomNode() -> SKShapeNode {
-        let scale = 2.5 * Double.random(in: 1.0...1.5)// Change this to change the size of the asteroid
+        let scale = 2.5 * Double.random(in: 1.0...1.5)  // Change this to change the size of the asteroid
         
         let redRand   = 0.5 + Double.random(in: -0.1...0.1)
         let greenRand = 0.5 + Double.random(in: -0.1...0.1)

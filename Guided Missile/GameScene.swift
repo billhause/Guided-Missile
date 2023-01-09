@@ -65,12 +65,12 @@ struct GameModel {
         return bonus
     }
     
-    func playAgainButton1Level() -> Int { return 0}
-    func playAgainButton2Level() -> Int { return mLevel/2}
+    func playAgainButton1Level() -> Int { return 1} // What level should Button 1 take us to?
+    func playAgainButton2Level() -> Int { return mLevel/2} // What level should button 2 take us to?
     func playAgainButton3Level() -> Int { return mLevel}
     
-    func playAgainButton1Bonus() -> Int { return getLevelBonus(level: 1) }
-    func playAgainButton2Bonus() -> Int { return getLevelBonus(level: mLevel/2) }
+    func playAgainButton1Bonus() -> Int { return getLevelBonus(level: 1) }  // What point bonus should be displayed for button 1
+    func playAgainButton2Bonus() -> Int { return getLevelBonus(level: mLevel/2) } // What point bonus should be displayed for button 2
     func playAgainButton3Bonus() -> Int { return getLevelBonus(level: mLevel) }
 
     
@@ -149,6 +149,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             mAsteroidNodeDict[asteroidNode.name!] = asteroidNode
         }
 
+        // Display Text - Warping To Asteroid Field 2 etc.  ONLY IF Field 2 or greater
+        if theModel.mLevel > 1 {
+            let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
+            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 20)
+            Helper.fadingAlert(scene: self, position: line1Position, text: "Warping to")
+            Helper.fadingAlert(scene: self, position: line2Position, text: "Asteroid Field \(theModel.mLevel)")
+        }
+
+        warpAnimation() // Show starbase warping out and back in.
     }
     
     // MISSILE HITS ASTEROID - Call this when an asteroid and the missile collide
@@ -157,68 +166,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        MyLog.debug("Missile hit Asteroid")
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
         theModel.mScore += 1
-        mResetMissileFlag = true // trigger missile reset later in the frame update
+        mResetMissileFlag = true // move missile back to center of starbase later in the frame update
         
         if theModel.mAsteroidsRemaining < 1 {
 
             // We beat the level so reset and start the next level
             initializeNextLevel()
 
-            // Display Text - Warping To Asteroid Field 2 etc.
-            let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
-            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 20)
-            Helper.fadingAlert(scene: self, position: line1Position, text: "Warping to")
-            Helper.fadingAlert(scene: self, position: line2Position, text: "Asteroid Field \(theModel.mLevel)")
-
-            warpAnimation() // Show starbase warping out and back in.
+//            // Display Text - Warping To Asteroid Field 2 etc.  wdh
+//            let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
+//            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 20)
+//            Helper.fadingAlert(scene: self, position: line1Position, text: "Warping to")
+//            Helper.fadingAlert(scene: self, position: line2Position, text: "Asteroid Field \(theModel.mLevel)")
+//
+//            warpAnimation() // Show starbase warping out and back in.
 
         }
-        
-    }
-    
-    func warpAnimation() {
-        let WARP_DURATION = 1.0
-        let warpOutAction = SKAction.group([SKAction.rotate(byAngle: 2*3.141, duration: WARP_DURATION/2),
-                                            SKAction.scale(to: 0.01, duration: WARP_DURATION/2)
-                                            ])
-        let warpInAction = SKAction.group([SKAction.rotate(byAngle: 2*3.141, duration: WARP_DURATION/2),
-                                           SKAction.scale(to: 1.0, duration: WARP_DURATION/2)
-                                          ])
-        let actionSequence = SKAction.sequence([warpOutAction, warpInAction])
-        mStarbaseNode.run(actionSequence)
 
-    }
-    
-    // Update the Play Again button text based on max level achieved
-    private func updatePlayAgainButtonText() {
-        // vvvvv Add Play Again Buttons vvvvv
-        let buttonPosition1 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.8)
-        let buttonPosition2 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.6)
-        let buttonPosition3 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.4)
-
-        // Remove from parent if necessary
-        if mPlayAgainButton1.parent != nil { mPlayAgainButton1.removeFromParent() }
-        if mPlayAgainButton2.parent != nil { mPlayAgainButton2.removeFromParent() }
-        if mPlayAgainButton3.parent != nil { mPlayAgainButton3.removeFromParent() }
-
-        
-        self.mPlayAgainButton1 = Helper.makeButton(position: buttonPosition1,
-                                                   text: "Play Again\nLevel 1\nBonus: \(theModel.playAgainButton1Bonus())")
-        self.addChild(self.mPlayAgainButton1)
-        self.mPlayAgainButton1.isHidden = true // Hide the button
-
-        if theModel.mLevel > 4 { // Only show the other two buttons if the level is high enough
-            self.mPlayAgainButton2 = Helper.makeButton(position: buttonPosition2,
-                                                       text: "Play Again\nLevel \(theModel.mLevel/2)\nBonus: \(theModel.playAgainButton2Bonus())")
-            self.addChild(self.mPlayAgainButton2)
-            self.mPlayAgainButton2.isHidden = true // Hide the button
-            
-            self.mPlayAgainButton3 = Helper.makeButton(position: buttonPosition3,
-                                                       text: "Play Again\nLevel \(theModel.mLevel)\nBonus: \(theModel.playAgainButton3Bonus())")
-            self.addChild(self.mPlayAgainButton3)
-            self.mPlayAgainButton3.isHidden = true // Hide the button
-        }
-        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     }
     
     // ASTEROID hits STARBASE- Call this when an asteroid and the starbase collide
@@ -275,6 +239,53 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             initializeNextLevel()
         }
     }
+
+    
+    func warpAnimation() {
+        let WARP_DURATION = 1.0
+        let warpOutAction = SKAction.group([SKAction.rotate(byAngle: 2*3.141, duration: WARP_DURATION/2),
+                                            SKAction.scale(to: 0.01, duration: WARP_DURATION/2)
+                                            ])
+        let warpInAction = SKAction.group([SKAction.rotate(byAngle: 2*3.141, duration: WARP_DURATION/2),
+                                           SKAction.scale(to: 1.0, duration: WARP_DURATION/2)
+                                          ])
+        let actionSequence = SKAction.sequence([warpOutAction, warpInAction])
+        mStarbaseNode.run(actionSequence)
+
+    }
+    
+    // Update the Play Again button text based on max level achieved
+    private func updatePlayAgainButtonText() {
+        // vvvvv Add Play Again Buttons vvvvv
+        let buttonPosition1 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.8)
+        let buttonPosition2 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.6)
+        let buttonPosition3 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.4)
+
+        // Remove from parent if necessary
+        if mPlayAgainButton1.parent != nil { mPlayAgainButton1.removeFromParent() }
+        if mPlayAgainButton2.parent != nil { mPlayAgainButton2.removeFromParent() }
+        if mPlayAgainButton3.parent != nil { mPlayAgainButton3.removeFromParent() }
+
+        
+        self.mPlayAgainButton1 = Helper.makeButton(position: buttonPosition1,
+                                                   text: "Play Again\nLevel 1\nBonus: \(theModel.playAgainButton1Bonus())")
+        self.addChild(self.mPlayAgainButton1)
+        self.mPlayAgainButton1.isHidden = true // Hide the button
+
+        if theModel.mLevel > 4 { // Only show the other two buttons if the level is high enough
+            self.mPlayAgainButton2 = Helper.makeButton(position: buttonPosition2,
+                                                       text: "Play Again\nLevel \(theModel.mLevel/2)\nBonus: \(theModel.playAgainButton2Bonus())")
+            self.addChild(self.mPlayAgainButton2)
+            self.mPlayAgainButton2.isHidden = true // Hide the button
+            
+            self.mPlayAgainButton3 = Helper.makeButton(position: buttonPosition3,
+                                                       text: "Play Again\nLevel \(theModel.mLevel)\nBonus: \(theModel.playAgainButton3Bonus())")
+            self.addChild(self.mPlayAgainButton3)
+            self.mPlayAgainButton3.isHidden = true // Hide the button
+        }
+        // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    }
+    
 
     // ASTEROID DESTROIED - Process the destroid asteroid by exploding it and adding a new
     // asteroid if necessary
@@ -467,14 +478,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         if theModel.mFirstRun {
             // Display instructions if this is the first run of the game.
-            let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
-            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 60)
+            let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.85)
+            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.72)
+            let line3Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.62)
 
-            let instructions1 = "Tilt Phone to Guide Missiles."
-            let instructions2 = "Clear Each Asteroid Field"
-        
-            Helper.fadingAlert(scene: self, position: line1Position, text: instructions1, fontSize: CGFloat(18), duration: 3)
-            Helper.fadingAlert(scene: self, position: line2Position, text: instructions2, fontSize: CGFloat(18), duration: 5)
+            let instructions1 = "Hold Phone Flat \n\nTilt phone slightly forward to guid missile UP"
+            let instructions2 = "Tilt phone slightly back to guid missile down"
+            let instructions3 = "Destroy all asteroids!"
+
+            Helper.fadingAlert(scene: self, position: line1Position, text: instructions1, fontSize: CGFloat(18), duration: 5)
+            Helper.fadingAlert(scene: self, position: line2Position, text: instructions2, fontSize: CGFloat(18), duration: 5, delay: 5)
+            Helper.fadingAlert(scene: self, position: line3Position, text: instructions3, fontSize: CGFloat(18), duration: 5, delay: 10)
         }
         
     }
