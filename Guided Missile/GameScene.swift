@@ -208,7 +208,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // REMOVE THE Starbase and the missile
             mStarbaseNode.removeFromParent()
             mMissileNode.removeFromParent()
-            Sound.shared.thrustOff() // Stop thrust sound
+            Sound.shared.thrustSoundOff() // Stop thrust sound
             theModel.mGameOver = true
             
             // Wait 2 seconds for starbase explosion to finish then show Play Again buttons
@@ -542,7 +542,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // PAUSE / UNPAUSE Game
             realPaused = !realPaused
             if realPaused {
-                Sound.shared.thrustOff() // Stop thrust sound
+                Sound.shared.thrustSoundOff() // Stop thrust sound
             }
         }
 
@@ -700,10 +700,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                                                           SKAction.fadeOut(withDuration: 0.8)])
                 exaustBall.run(SKAction.sequence([shrinkAndFadeAction,
                                                  SKAction.removeFromParent()]))
-                
-                Sound.shared.thrustOn(volume: Float((thrust-MINIMUM_THRUST)/1.5)) // Thrust louder if stronger.  divide to adjust nominal volume
+//                Sound.shared.saucerSoundOn()
+                Sound.shared.thrustSoundOn(volume: Float((thrust-MINIMUM_THRUST)/1.5)) // Thrust louder if stronger.  divide to adjust nominal volume
             } else {
-                Sound.shared.thrustOff() // Stop thrust sound if not thrusting
+                Sound.shared.thrustSoundOff() // Stop thrust sound if not thrusting
             }
         }
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -823,6 +823,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mSaucerNode.position.y = self.frame.size.height    // Top of screen
         mSaucerNode.position.x = self.frame.size.width/2  // Center of screen
         mSaucerNode.isHidden = false
+        Sound.shared.saucerSoundOn()
     }
     
     // Update the Enemy Spaceship one frame
@@ -853,8 +854,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     }
     
-    // SPACESHIP DESTROIED - Process the destroid Spaceship by exploding
-    func processDestroidSpaceship() {
+    // SAUCER DESTROIED - Process the destroid Saucer by exploding
+    func processDestroidSaucer() {
         //   Explosion Tutorial
         //   https://www.youtube.com/watch?v=cJy61bOqQpg
         //   Explostions at 32:30-35:22 - https://www.youtube.com/watch?v=cJy61bOqQpg
@@ -865,7 +866,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.run(SKAction.wait(forDuration: 2.0)) {
             explosion.removeFromParent() // Remove the explosion after it runs
         }
-        
+        Sound.shared.saucerSoundOff()
         Sound.shared.play(forResource: "ExplosionSaucerSound")
         Haptic.shared.boomVibrate()
         mSaucerNode.isHidden = true
@@ -882,7 +883,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         theModel.mScore += 1
-        processDestroidSpaceship()
+        processDestroidSaucer()
         mResetMissileFlag = true // move missile back to center of starbase later in the frame update
     }
 
@@ -894,7 +895,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
         
-        processDestroidSpaceship()
+        processDestroidSaucer()
         
         // Process Asteroid
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
