@@ -193,7 +193,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
         } else {
             // DESTROIED - if the shields are negative then the starbase is destroide
-            Sound.shared.play(forResource: "Explosion1")   // Good Starbase Explosion Sound
+            Sound.shared.play(forResource: "ExplosionStarbaseSound")   // Good Starbase Explosion Sound
             
             Haptic.shared.longVibrate() // Long vibration like Error vibrate
             
@@ -866,7 +866,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             explosion.removeFromParent() // Remove the explosion after it runs
         }
         
-        Sound.shared.play(forResource: "asteroid_explosion") // Good Asteroid Explosion Sound - Short Bang
+        Sound.shared.play(forResource: "ExplosionSaucerSound")
         Haptic.shared.boomVibrate()
         mSaucerNode.isHidden = true
         

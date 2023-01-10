@@ -23,7 +23,7 @@ class Sound {
     private var sounds2: [String: AVAudioPlayer]
     private var sounds3: [String: AVAudioPlayer]
     private var sounds4: [String: AVAudioPlayer]
-    private var soundNames = [ "silent_sound", "asteroid_explosion", "fail2", "TrekKlaxon", "laser3", "GameOver", "Boom1", "Boom2", "Boom3", "Explosion1"] //, "fail1",  "fail3", "fail4", "fail5",  "8BitBounce", "Boom1", "Boom2", "Boom3", "Explosion1", "Gunshot", "GameOver2"]
+    private var soundNames = [ "silent_sound", "asteroid_explosion", "fail2", "TrekKlaxon", "laser3", "GameOver", "Boom1", "Boom2", "Boom3", "Explosion1", "ExplosionSaucerSound", "ExplosionStarbaseSound"] //, "fail1",  "fail3", "fail4", "fail5",  "8BitBounce", "Boom1", "Boom2", "Boom3", "Explosion1", "Gunshot", "GameOver2"]
     
     
     // Load the rocket thrust sound and prepare to play it.

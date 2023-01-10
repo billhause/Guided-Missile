@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28916197296E0B0F008C8C5E /* ExplosionStarbaseSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28916195296E0B0F008C8C5E /* ExplosionStarbaseSound.wav */; };
+		2891619A296E0C95008C8C5E /* ExplosionSaucerSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28916199296E0C95008C8C5E /* ExplosionSaucerSound.wav */; };
 		28A12E8C29637FDC00EF2E5B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A12E8B29637FDC00EF2E5B /* Helper.swift */; };
 		28A12E8F29661B4A00EF2E5B /* Boom1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12E8E29661B4A00EF2E5B /* Boom1.wav */; };
 		28A12E9329661B5D00EF2E5B /* Boom3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12E9029661B5D00EF2E5B /* Boom3.wav */; };
@@ -64,6 +66,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		28916195296E0B0F008C8C5E /* ExplosionStarbaseSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ExplosionStarbaseSound.wav; sourceTree = "<group>"; };
+		28916199296E0C95008C8C5E /* ExplosionSaucerSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ExplosionSaucerSound.wav; sourceTree = "<group>"; };
 		28A12E8B29637FDC00EF2E5B /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		28A12E8E29661B4A00EF2E5B /* Boom1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Boom1.wav; sourceTree = "<group>"; };
 		28A12E9029661B5D00EF2E5B /* Boom3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Boom3.wav; sourceTree = "<group>"; };
@@ -141,6 +145,8 @@
 				28A12E9C29661E2600EF2E5B /* silent_sound.wav */,
 				28A12E9A29661E1500EF2E5B /* TrekKlaxon.wav */,
 				28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */,
+				28916195296E0B0F008C8C5E /* ExplosionStarbaseSound.wav */,
+				28916199296E0C95008C8C5E /* ExplosionSaucerSound.wav */,
 				28A12E8E29661B4A00EF2E5B /* Boom1.wav */,
 				28A12E9229661B5D00EF2E5B /* Boom2.wav */,
 				28A12E9029661B5D00EF2E5B /* Boom3.wav */,
@@ -325,6 +331,7 @@
 				28A12EB12966406500EF2E5B /* flying_saucer_rumble.wav in Resources */,
 				28A12E9329661B5D00EF2E5B /* Boom3.wav in Resources */,
 				28C70C0C295CF63F00ADAC9A /* ExplosionStarbase.sks in Resources */,
+				2891619A296E0C95008C8C5E /* ExplosionSaucerSound.wav in Resources */,
 				28D8C63A2942AC150067D801 /* Main.storyboard in Resources */,
 				28C70C0A2952787F00ADAC9A /* ExplosionParticles.sks in Resources */,
 				28A12E9429661B5D00EF2E5B /* Explosion1.wav in Resources */,
@@ -334,6 +341,7 @@
 				28A12E9D29661E2600EF2E5B /* silent_sound.wav in Resources */,
 				28A12EAB29663CB000EF2E5B /* Thrusters_20_Seconds.wav in Resources */,
 				28A12E9B29661E1500EF2E5B /* TrekKlaxon.wav in Resources */,
+				28916197296E0B0F008C8C5E /* ExplosionStarbaseSound.wav in Resources */,
 				28A12E9529661B5D00EF2E5B /* Boom2.wav in Resources */,
 				28A12EAD29663E6700EF2E5B /* deep_rumble_1_sec.wav in Resources */,
 				28D8C63C2942AC160067D801 /* Assets.xcassets in Resources */,
