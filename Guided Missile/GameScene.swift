@@ -158,6 +158,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
         warpAnimation() // Show starbase warping out and back in.
+        Sound.shared.play(forResource: "WarpSound4") // WarpSound4 and WarpSound3 are the best.
     }
     
     // MISSILE HITS ASTEROID - Call this when an asteroid and the missile collide
@@ -543,6 +544,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             realPaused = !realPaused
             if realPaused {
                 Sound.shared.thrustSoundOff() // Stop thrust sound
+                Sound.shared.saucerSoundOff()
             }
         }
 

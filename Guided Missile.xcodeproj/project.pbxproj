@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		28916197296E0B0F008C8C5E /* ExplosionStarbaseSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28916195296E0B0F008C8C5E /* ExplosionStarbaseSound.wav */; };
 		2891619A296E0C95008C8C5E /* ExplosionSaucerSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28916199296E0C95008C8C5E /* ExplosionSaucerSound.wav */; };
+		289161A4296E2B5E008C8C5E /* WarpSound4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2891619F296E2B5E008C8C5E /* WarpSound4.wav */; };
 		28A12E8C29637FDC00EF2E5B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A12E8B29637FDC00EF2E5B /* Helper.swift */; };
 		28A12E8F29661B4A00EF2E5B /* Boom1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12E8E29661B4A00EF2E5B /* Boom1.wav */; };
 		28A12E9329661B5D00EF2E5B /* Boom3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12E9029661B5D00EF2E5B /* Boom3.wav */; };
@@ -67,6 +68,7 @@
 /* Begin PBXFileReference section */
 		28916195296E0B0F008C8C5E /* ExplosionStarbaseSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ExplosionStarbaseSound.wav; sourceTree = "<group>"; };
 		28916199296E0C95008C8C5E /* ExplosionSaucerSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ExplosionSaucerSound.wav; sourceTree = "<group>"; };
+		2891619F296E2B5E008C8C5E /* WarpSound4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = WarpSound4.wav; sourceTree = "<group>"; };
 		28A12E8B29637FDC00EF2E5B /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		28A12E8E29661B4A00EF2E5B /* Boom1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Boom1.wav; sourceTree = "<group>"; };
 		28A12E9029661B5D00EF2E5B /* Boom3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Boom3.wav; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */,
 				28916195296E0B0F008C8C5E /* ExplosionStarbaseSound.wav */,
 				28916199296E0C95008C8C5E /* ExplosionSaucerSound.wav */,
+				2891619F296E2B5E008C8C5E /* WarpSound4.wav */,
 				28A12E8E29661B4A00EF2E5B /* Boom1.wav */,
 				28A12E9229661B5D00EF2E5B /* Boom2.wav */,
 				28A12E9029661B5D00EF2E5B /* Boom3.wav */,
@@ -324,6 +327,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				289161A4296E2B5E008C8C5E /* WarpSound4.wav in Resources */,
 				28A12EA129661E4200EF2E5B /* laser3.wav in Resources */,
 				28A12EB12966406500EF2E5B /* flying_saucer_rumble.wav in Resources */,
 				28A12E9329661B5D00EF2E5B /* Boom3.wav in Resources */,
