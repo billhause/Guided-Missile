@@ -25,6 +25,7 @@
 		28A12EB12966406500EF2E5B /* flying_saucer_rumble.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB02966406500EF2E5B /* flying_saucer_rumble.wav */; };
 		28A12EB32966453100EF2E5B /* rocket_4_sec.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB22966453100EF2E5B /* rocket_4_sec.wav */; };
 		28A12EB52966477D00EF2E5B /* asteroid_explosion.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */; };
+		28A12EB9296E06E500EF2E5B /* ExplosionSaucer.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */; };
 		28C70BC9294D2C5600ADAC9A /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */; };
 		28C70C0A2952787F00ADAC9A /* ExplosionParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C092952787F00ADAC9A /* ExplosionParticles.sks */; };
 		28C70C0C295CF63F00ADAC9A /* ExplosionStarbase.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */; };
@@ -81,6 +82,7 @@
 		28A12EB02966406500EF2E5B /* flying_saucer_rumble.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = flying_saucer_rumble.wav; sourceTree = "<group>"; };
 		28A12EB22966453100EF2E5B /* rocket_4_sec.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = rocket_4_sec.wav; path = Sounds/rocket_4_sec.wav; sourceTree = SOURCE_ROOT; };
 		28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = asteroid_explosion.wav; sourceTree = "<group>"; };
+		28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionSaucer.sks; sourceTree = "<group>"; };
 		28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		28C70C092952787F00ADAC9A /* ExplosionParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionParticles.sks; sourceTree = "<group>"; };
 		28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionStarbase.sks; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				28D8C6322942AC150067D801 /* Actions.sks */,
 				28C70C092952787F00ADAC9A /* ExplosionParticles.sks */,
 				28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */,
+				28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */,
 				28D8C62E2942AC150067D801 /* AppDelegate.swift */,
 				28A12E8D29661B3100EF2E5B /* Sounds */,
 				28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */,
@@ -340,6 +343,7 @@
 				28A12EB52966477D00EF2E5B /* asteroid_explosion.wav in Resources */,
 				28D8C6332942AC150067D801 /* Actions.sks in Resources */,
 				28A12E9729661B6600EF2E5B /* Gunshot.wav in Resources */,
+				28A12EB9296E06E500EF2E5B /* ExplosionSaucer.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

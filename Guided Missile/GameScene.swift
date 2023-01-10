@@ -395,6 +395,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 // Asteroid Hit the enemy ship
                 MyLog.debug("Asteroid hit Enemy Ship")
+                let theAsteroidNode = secondBody.node as! SKShapeNode
+                handleCollision_Spaceship_and_Asteroid(theAsteroidNode: theAsteroidNode)
+
             }
         } else { // Some other collision that we don't need to handle
             MyLog.debug("Unhandled collision type of some sort.  No Worries...")
@@ -856,7 +859,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //   https://www.youtube.com/watch?v=cJy61bOqQpg
         //   Explostions at 32:30-35:22 - https://www.youtube.com/watch?v=cJy61bOqQpg
         //   Particl Emmiter creation : 2:43 Settings at 3:58
-        let explosion = SKEmitterNode(fileNamed: "ExplosionParticles")!
+        let explosion = SKEmitterNode(fileNamed: "ExplosionSaucer")!
         explosion.position = mSaucerNode.position
         self.addChild(explosion)
         self.run(SKAction.wait(forDuration: 2.0)) {
@@ -870,7 +873,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mResetSaucerFlag = true // Move back to top later in the frame
     }
 
-    // MISSILE HITS ENEMY SPACE SHIP
+    // Collision Saucer & Missile
     func handleCollision_Spaceship_and_Missile() {
         MyLog.debug("Missile hit Spaceship")
         
@@ -881,6 +884,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         theModel.mScore += 1
         processDestroidSpaceship()
         mResetMissileFlag = true // move missile back to center of starbase later in the frame update
+    }
+
+    // Collision Saucer & Asteroid
+    func handleCollision_Spaceship_and_Asteroid(theAsteroidNode: SKShapeNode) {
+        MyLog.debug("Missile hit Asteroid")
+        
+        if mSaucerNode.isHidden == true { // Nothing to do
+            return
+        }
+        
+        processDestroidSpaceship()
+        
+        // Process Asteroid
+        processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
+        
+        if theModel.mAsteroidsRemaining < 1 {
+            // We beat the level so reset and start the next level
+            initializeNextLevel()
+        }
+
     }
 
     
