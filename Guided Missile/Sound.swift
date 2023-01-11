@@ -23,7 +23,7 @@ class Sound {
     private var sounds2: [String: AVAudioPlayer]
     private var sounds3: [String: AVAudioPlayer]
     private var sounds4: [String: AVAudioPlayer]
-    private var soundNames = [ "silent_sound", "asteroid_explosion", "TrekKlaxon", "laser3", "GameOver", "Boom1", "Boom2", "Boom3", "Explosion1", "ExplosionSaucerSound", "ExplosionStarbaseSound", "WarpSound1", "WarpSound2", "WarpSound3", "WarpSound4", "WarpSound5"]
+    private var soundNames = [ "silent_sound", "asteroid_explosion", "TrekKlaxon", "laser3", "GameOver", "Boom1", "Boom2", "Boom3", "Explosion1", "ExplosionSaucerSound", "ExplosionStarbaseSound", "WarpSound4"]
     
 
     // vvvvvvvvvv SAUCER SOUND vvvvvvvvvv

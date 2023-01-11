@@ -28,6 +28,22 @@ import AVFoundation // Sound Player
 //import GameplayKit
 
 let INITIAL_SHIELD_LEVEL = 2
+
+// vvvvvvvvvv  Adjusters  vvvvvvvvvvv
+// These multipliers all start at 1.0 and can be change to adjust difficulty as the game moves along
+var xThrust             = 1.0     // How powerful is the missile thrust
+var xAsteroidSpeed      = 1.0     // How fast do the asteroids go
+var xAsteroidSize       = 1.0     // How big are the asteroids - smaller number makes smaller asteroids
+var xSaucerSpeedY       = 1.0     // How fast does the saucer come down the screen
+var xSaucerSpeedX       = 1.0     // How fast does the saucer move across the screen left and right
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+// vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
+let xScreenBuffer       = 5.0    // How far off the screen does an object need to be before appearing on the other side
+let yScreenBuffer       = 5.0    // How far off the screen does an object need to be before appearing on the other side
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 struct GameModel {
     var mLevel                = 1 // game level - Should be 1
     var mAsteroidsRemaining   = 3 // 3 - Number of asteroids that still need to be destroied for the current level
@@ -141,8 +157,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let asteroidNode = ShapeNodeBuilder.asteroidRandomNode()
             asteroidNode.position.y = 0
             asteroidNode.position.x = Double.random(in: 0.0...maxX)
-            asteroidNode.physicsBody?.velocity.dy = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
-            asteroidNode.physicsBody?.velocity.dx = Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            asteroidNode.physicsBody?.velocity.dy = xAsteroidSpeed * Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
+            asteroidNode.physicsBody?.velocity.dx = xAsteroidSpeed * Double.random(in: -MAX_ASTEROID_VELOCITY...MAX_ASTEROID_VELOCITY)
             self.addChild(asteroidNode)
 
             // Add the asteroid to the dictionary
@@ -603,8 +619,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      Override this to perform game logic. Called exactly once per frame after any actions have been evaluated but before any physics are simulated. Any additional actions applied is not evaluated until the next update.
      */
     // Called every frame update after update() function is called
-    let xBuffer = 10.0 // How far off the screen does an asteroid need to be before appearing on the other side
-    let yBuffer = 10.0
     override func didEvaluateActions() {
         correctMissilePosition()
         correctAsteroidPositions()
@@ -674,18 +688,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // Only apply Thrust if the acceleration is > minThrust
             if thrust > MINIMUM_THRUST {
                 // Apply thrust to the missile
-                mMissileNode.physicsBody!.velocity.dx += dx // Add change to velocity
-                mMissileNode.physicsBody!.velocity.dy += dy
+                mMissileNode.physicsBody!.velocity.dx += dx*xThrust // Add change to velocity
+                mMissileNode.physicsBody!.velocity.dy += dy*xThrust
 
                 
                 // Show Exaust
                 let pos = mMissileNode.position
                 let exaustBall = SKShapeNode.init(circleOfRadius: 1)
                 exaustBall.position = pos
-//                exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: 0.2) // 0.2 // orange
                 exaustBall.strokeColor = UIColor(red: 1.0, green: 0.3, blue: 0.0, alpha: 0.1)
                 exaustBall.glowWidth = 5.0
-//                exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.5) // 0.5 yellow
                 exaustBall.fillColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.6)
                 exaustBall.physicsBody = SKPhysicsBody()
                 exaustBall.physicsBody?.isDynamic = true // can move
@@ -722,17 +734,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         // Move back on screen if out of bounds in X direction
         let maxX = self.frame.size.width
-        if mMissileNode.position.x > maxX + xBuffer {
+        if mMissileNode.position.x > maxX + xScreenBuffer {
             mMissileNode.position.x = 0
-        } else if mMissileNode.position.x < -xBuffer {
+        } else if mMissileNode.position.x < -xScreenBuffer {
             mMissileNode.position.x = maxX
         }
 
         // Move back on screen if out of bounds in X direction
         let maxY = self.frame.size.height
-        if mMissileNode.position.y > maxY + yBuffer {
+        if mMissileNode.position.y > maxY + yScreenBuffer {
             mMissileNode.position.y = 0
-        } else if mMissileNode.position.y < -yBuffer {
+        } else if mMissileNode.position.y < -yScreenBuffer {
             mMissileNode.position.y = maxY
         }
     }
@@ -745,16 +757,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Iterate throuth the asteroids and update positions to keep them on the screen.
         for (_, node) in mAsteroidNodeDict { // key value is _ to avoid compiler warining
             // Move back on screen if out of bounds in X direction
-            if node.position.x > maxX + xBuffer {
+            if node.position.x > maxX + xScreenBuffer {
                 node.position.x = 0
-            } else if node.position.x < -xBuffer {
+            } else if node.position.x < -xScreenBuffer {
                 node.position.x = maxX
             }
 
             // Move back on screen if out of bounds in X direction
-            if node.position.y > maxY + yBuffer {
+            if node.position.y > maxY + yScreenBuffer {
                 node.position.y = 0
-            } else if node.position.y < -yBuffer {
+            } else if node.position.y < -yScreenBuffer {
                 node.position.y = maxY
             }
         }
@@ -828,24 +840,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         Sound.shared.saucerSoundOn()
     }
     
-    // Update the Enemy Spaceship one frame
+    // Update the Saucer one frame
     func updateSaucerFrame() {
         var posY = mSaucerNode.position.y
-        posY -= 0.2 // How fast does it move down the screen?  Bigger numbers are faster
+        posY -= 0.2 * xSaucerSpeedY // How fast does it move down the screen?  Bigger numbers are faster
         mSaucerNode.position.y = posY
         
         // Calc X postition
         let xInput = posY/40  // How fast does it move back and forth - Bigger Denominator is slower
-        let xOffset = self.frame.size.width / 2 // Center of screen
-        let xPos = (xOffset * 0.9) * sin(xInput) + xOffset
+        let xOffset = self.frame.size.width / 2 // Center the saucer on the screen
+        let xPos = (xOffset * 0.9) * sin(xSaucerSpeedX * xInput/xSaucerSpeedY) + xOffset
         mSaucerNode.position.x = xPos
     }
     
     
     func correctSaucerPosition() {
         var posY = mSaucerNode.position.y
-        if posY < 0 {   // Move back to Top of screen
+        if posY < 0 - yScreenBuffer {   // Move back to Top of screen
             posY = self.frame.size.height
+            mSaucerNode.position.y = posY
+        } else if posY > self.frame.size.height + yScreenBuffer {
+            posY = 0.0 // move back to the bottom of the screen
             mSaucerNode.position.y = posY
         }
         
@@ -853,7 +868,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             startSaucer()
             mResetSaucerFlag = false
         }
-
     }
     
     // SAUCER DESTROIED - Process the destroid Saucer by exploding
