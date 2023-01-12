@@ -45,8 +45,8 @@ let TOTAL_ASTEROID_LIMIT        = 12     // Never have more than this many total
 let MAX_SIMULTANIOUS_ASTEROIDS  = TOTAL_ASTEROID_LIMIT - 2 // Never have more than this many asteroids at the same time
 let xScreenBuffer               = 5.0    // How far off the screen does an object need to be before appearing on the other side
 let yScreenBuffer               = 5.0    // How far off the screen does an object need to be before appearing on the other side
-let MIN_TIME_BETWEEN_SAUCERS    = 0.0 //10.0   // Min time between saucers at start of game
-let MIN_TIME_BETWEEN_ASTEROID_AND_SAUCER = 0.0 //4.0 // Min time between when the last asteroid was destroid and when the saucer comes out
+let MIN_TIME_BETWEEN_SAUCERS    = 10.0   // Minimum time between saucers at start of game
+let MIN_TIME_BETWEEN_ASTEROID_AND_SAUCER = 4.0 // Minimum time between when the last asteroid was destroid and when the saucer comes out
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -59,27 +59,45 @@ struct GameModel {
     var mGameOver             = false
     var mFirstRun             = true // Display instructions if it's the first run.
     
-    var totalAsteroids: Int { // How many asteroids must be destroid to complete this level
-        switch mLevel {
+//    var totalAsteroids: Int { // How many asteroids must be destroid to complete this level
+//        switch mLevel {
+//        case 1:
+//            return 3
+//        default:
+//            var total = mLevel + 2
+//            if total > TOTAL_ASTEROID_LIMIT { total = TOTAL_ASTEROID_LIMIT }
+//            return total
+//        }
+//    }
+    
+//    var maxAsteroidsInPlay: Int { // Number of asteroids to have in play at one time
+//        var inPlay = mLevel
+//        if inPlay > MAX_SIMULTANIOUS_ASTEROIDS { inPlay = MAX_SIMULTANIOUS_ASTEROIDS }
+//        return inPlay // setting the number of asteroids to start with to be the same as the level you're on OR the max limit
+//    }
+    
+    func totalAsteroids(level: Int) -> Int {
+        switch level {
         case 1:
             return 3
         default:
-            var total = mLevel + 2
-            if total > TOTAL_ASTEROID_LIMIT { total = TOTAL_ASTEROID_LIMIT }
+            var total = level + 2
+            if total > TOTAL_ASTEROID_LIMIT {total = TOTAL_ASTEROID_LIMIT}
             return total
         }
     }
     
-    var maxAsteroidsInPlay: Int { // Number of asteroids to have in play at one time
-        var inPlay = mLevel
+    func maxAsteroidsInPlay(level: Int) -> Int {
+        var inPlay = level
         if inPlay > MAX_SIMULTANIOUS_ASTEROIDS { inPlay = MAX_SIMULTANIOUS_ASTEROIDS }
-        return inPlay // setting the number of asteroids to start with to be the same as the level you're on OR the max limit
+        return inPlay
     }
+    
     
     // You should set the level variable before calling this function
     // because some of the values may depend on the level.
     mutating func resetLevel() {
-        mAsteroidsRemaining = totalAsteroids // Calculated Var that changes based on mLevel
+        mAsteroidsRemaining = totalAsteroids(level: mLevel) // Calculated Var that changes based on mLevel
         mShieldLevel = INITIAL_SHIELD_LEVEL
         
         // Update the Adjusters based on the level
@@ -179,7 +197,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Add starting number of Asteroids to Dictionary
         let maxX = self.frame.size.width
-        for _ in 0..<theModel.maxAsteroidsInPlay {
+        for _ in 0..<theModel.maxAsteroidsInPlay(level: theModel.mLevel) {
             let asteroidNode = ShapeNodeBuilder.asteroidRandomNode()
             asteroidNode.position.y = 0
             asteroidNode.position.x = Double.random(in: 0.0...maxX)
@@ -351,7 +369,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mAsteroidNodeDict.removeValue(forKey: theAsteroidNode.name!)
         
         // vvvvv Add replacement asteroid vvvvv
-        if theModel.mAsteroidsRemaining >= theModel.maxAsteroidsInPlay {
+        if theModel.mAsteroidsRemaining >= theModel.maxAsteroidsInPlay(level: theModel.mLevel) {
             let newAsteroid = ShapeNodeBuilder.asteroidRandomNode()
             newAsteroid.position.y = 0
             let maxX = self.frame.size.width
@@ -369,8 +387,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         var firstBody = SKPhysicsBody()
         var secondBody = SKPhysicsBody()
-        MyLog.debug("*****************  didBegin Called ****************** ")
-        
         
         // Sort the two bodies by the categoryBitMask so that we can make assumptions
         // about what object they must be and what we must do.
@@ -877,6 +893,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Update the Saucer one frame
     func updateSaucerFrame() {
+        if mSaucerNode.isHidden {return} // Nothing to do
+        
         var posY = mSaucerNode.position.y
         posY -= 0.2 * xSaucerSpeedY // How fast does it move down the screen?  Bigger numbers are faster
         mSaucerNode.position.y = posY
@@ -890,6 +908,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     func correctSaucerPosition() {
+        if mResetSaucerFlag { // reset the saucer back to it's starrting position
+            startSaucer()
+        }
+        
+        if mSaucerNode.isHidden { return } // Nothing to do
+        
         var posY = mSaucerNode.position.y
         if posY < 0 - yScreenBuffer {   // Move back to Top of screen
             posY = self.frame.size.height
@@ -899,9 +923,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             mSaucerNode.position.y = posY
         }
         
-        if mResetSaucerFlag { // reset the saucer back to it's starrting position
-            startSaucer()
-        }
     }
     
     // SAUCER DESTROIED - Process the destroid Saucer by exploding
@@ -929,9 +950,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func handleCollision_Saucer_and_Missile() {
         MyLog.debug("Missile hit Spaceship")
         
-        if mSaucerNode.isHidden == true { // Nothing to do
-            return
-        }
+        if mSaucerNode.isHidden {return} // Nothing to do
         
         theModel.mScore += 1
         processDestroidSaucer()
@@ -942,9 +961,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func handleCollision_Saucer_and_Asteroid(theAsteroidNode: SKShapeNode) {
         MyLog.debug("Missile hit Asteroid")
         
-        if mSaucerNode.isHidden == true { // Nothing to do
-            return
-        }
+        if mSaucerNode.isHidden {return} // Nothing to do
         
         processDestroidSaucer()
         
@@ -961,7 +978,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // SAUCER hits STARBASE- Call this when the saucer and the starbase collide
     func handleCollision_Saucer_and_Starbase() {
         MyLog.debug("Saucer hit Starbase")
-        
+        if mSaucerNode.isHidden {return} // Nothing to do
+
         // Reduce Starbase shield level
         theModel.mShieldLevel -= 1
         
