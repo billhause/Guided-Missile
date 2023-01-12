@@ -36,6 +36,7 @@ var xAsteroidSpeed      = 1.0     // How fast do the asteroids go
 var xAsteroidSize       = 1.0     // How big are the asteroids - smaller number makes smaller asteroids
 var xSaucerSpeedY       = 1.0     // How fast does the saucer come down the screen
 var xSaucerSpeedX       = 1.0     // How fast does the saucer move across the screen left and right
+var xSaucerTime         = 1.0     // How long do we wait between saucers
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
@@ -44,6 +45,8 @@ let TOTAL_ASTEROID_LIMIT        = 12     // Never have more than this many total
 let MAX_SIMULTANIOUS_ASTEROIDS  = TOTAL_ASTEROID_LIMIT - 2 // Never have more than this many asteroids at the same time
 let xScreenBuffer               = 5.0    // How far off the screen does an object need to be before appearing on the other side
 let yScreenBuffer               = 5.0    // How far off the screen does an object need to be before appearing on the other side
+let MIN_TIME_BETWEEN_SAUCERS    = 0.0 //10.0   // Min time between saucers at start of game
+let MIN_TIME_BETWEEN_ASTEROID_AND_SAUCER = 0.0 //4.0 // Min time between when the last asteroid was destroid and when the saucer comes out
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -82,7 +85,7 @@ struct GameModel {
         // Update the Adjusters based on the level
         var increase = 1.0
         var decrease = 1.0
-        for i in 0..<mLevel {
+        for _ in 0..<mLevel {
             increase *= (1.0 + INCREMENTAL_LEVEL_CHANGE) // Increase by some small percentage each level
             decrease *= (1.0 - INCREMENTAL_LEVEL_CHANGE)
         }
@@ -124,7 +127,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var mResetMissileFlag = false  // set to true to reset the missile at the starbase
 
     private var mGameVM = GameViewModel()
-    private var lastUpdateTime : TimeInterval = 0 // track time between frame updates in case it's needed
 //    private var mStarbaseSheildLevel = 2 // Start at level 2
     
     
@@ -323,6 +325,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func processDestroidAsteroid(theAsteroidNode: SKShapeNode) {
 
         theModel.mAsteroidsRemaining -= 1
+        mLastAsteroidTime = mCurrentTime // remember when the last asteroid was destroid
         
         //   Explosion Tutorial
         //   https://www.youtube.com/watch?v=cJy61bOqQpg
@@ -366,6 +369,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         var firstBody = SKPhysicsBody()
         var secondBody = SKPhysicsBody()
+        MyLog.debug("*****************  didBegin Called ****************** ")
+        
         
         // Sort the two bodies by the categoryBitMask so that we can make assumptions
         // about what object they must be and what we must do.
@@ -374,7 +379,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //    let gCategoryMissile:    UInt32 = 0x1 << 0  // 1
         //    let gCategoryStarbase:   UInt32 = 0x1 << 1  // 2
         //    let gCategorySupplyShip: UInt32 = 0x1 << 2  // 4
-        //    let gCategorySaucer:  UInt32 = 0x1 << 3  // 8
+        //    let gCategorySaucer:     UInt32 = 0x1 << 3  // 8
         //    let gCategoryAsteroid:   UInt32 = 0x1 << 4  // 16
 
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
@@ -404,7 +409,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let theAsteroidNode = secondBody.node as! SKShapeNode
                 handleCollision_Asteroid_and_Missile(theAsteroidNode: theAsteroidNode)
             } else if secondBody.categoryBitMask == gCategorySaucer { // Hit Enemy Space Ship
-                handleCollision_Spaceship_and_Missile()
+                handleCollision_Saucer_and_Missile()
             }
         
         // STARBASE - Check for Starbase Hit
@@ -415,8 +420,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 let theAsteroidNode = secondBody.node as! SKShapeNode
                 handleCollision_Asteroid_and_Starbase(theAsteroidNode: theAsteroidNode)
             } else if secondBody.categoryBitMask == gCategorySaucer {
-                // Enemy Ship Hit the Starbase
-                MyLog.debug("Enemy Ship hit Starbase")
+                // Saucer Hit the Starbase
+                handleCollision_Saucer_and_Starbase()
+                MyLog.debug("Saucer hit Starbase")
             }
 
         // SUPPLY SHIP - Check for Supply Ship Hit
@@ -430,14 +436,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 MyLog.debug("Enemy Ship hit Supply Ship")
             }
 
-        // ENEMY SHIP - Check for Enemy Ship Hit
+        // SAUCER - Check for Enemy Ship Hit
         } else if firstBody.categoryBitMask == gCategorySaucer {
             // Something Hit the Enemy Ship
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 // Asteroid Hit the enemy ship
                 MyLog.debug("Asteroid hit Enemy Ship")
                 let theAsteroidNode = secondBody.node as! SKShapeNode
-                handleCollision_Spaceship_and_Asteroid(theAsteroidNode: theAsteroidNode)
+                handleCollision_Saucer_and_Asteroid(theAsteroidNode: theAsteroidNode)
 
             }
         } else { // Some other collision that we don't need to handle
@@ -472,8 +478,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let mMissileNode = ShapeNodeBuilder.missileNode()
     let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
     let (mStarbaseNode, mShieldNode) = ShapeNodeBuilder.starBaseNode() // Returns a tuple with the starbase node and the shield node
-    let mSaucerNode = ShapeNodeBuilder.enemySpaceShipNode()
+    let mSaucerNode = ShapeNodeBuilder.SaucerNode()
     var mAsteroidNodeDict = [String: SKShapeNode]() // Dictionary of Asteroids using the node name as key.
+    var mCurrentTime : Double = 0                   // current Time in seconds
     override func didMove(to view: SKView) {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
         MyLog.debug("GameScene.didMove() called")
@@ -496,7 +503,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startSaucer()
 
         theModel.mScore = 0
-        theModel.mLevel = 0   // wdh start at 0 because it will be incremented to 1 by initializeNextLevel() on next line
+        theModel.mLevel = 0   // start at 0 because it will be incremented to 1 by initializeNextLevel() on next line
         initializeNextLevel() // Add asteroids to the scene, increment level, reset shields, score etc.
         
         
@@ -621,13 +628,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gUpdateCount = 0
     override func update(_ currentTime: TimeInterval) {
         // vvvvv Time Management - Time Between Frames vvvvv
-        if (self.lastUpdateTime == 0) {
-            self.lastUpdateTime = currentTime
-        }
-        // Calculate time since last update
-        // let dt = currentTime - self.lastUpdateTime
-        let _ = currentTime - self.lastUpdateTime
-        self.lastUpdateTime = currentTime
+        mCurrentTime = currentTime // Keep track of the time
         // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         
         updateMissileFrame()
@@ -854,18 +855,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     // MARK: Saucer Code
-    private var mResetSaucerFlag = false   // set to true to reset the saucer position after being destroid
+    private var mResetSaucerFlag = true   // set to true to reset the saucer position after being destroid
 
     // Start the Enemy flying saucer
     
+    var mLastSaucerTime = 0.0   // When was the last Saucer destroid
+    var mLastAsteroidTime = 0.0 // When was the last asteroid destroid
     func startSaucer() {
         // Has enough time elapsed since the previous saucer was destroied?
-        
+        if mCurrentTime - mLastSaucerTime < MIN_TIME_BETWEEN_SAUCERS * xSaucerTime { return }
         
         // Has enough time elapsed since the previous asteroid was destroied?
-        
-        
-        
+        if mCurrentTime - mLastAsteroidTime < MIN_TIME_BETWEEN_ASTEROID_AND_SAUCER * xSaucerTime { return }
+
+        mResetSaucerFlag = false // Don't reset it now that it's been started
         mSaucerNode.position.y = self.frame.size.height    // Top of screen
         mSaucerNode.position.x = self.frame.size.width/2  // Center of screen
         mSaucerNode.isHidden = false
@@ -898,7 +901,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if mResetSaucerFlag { // reset the saucer back to it's starrting position
             startSaucer()
-            mResetSaucerFlag = false
         }
     }
     
@@ -919,11 +921,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         Haptic.shared.boomVibrate()
         mSaucerNode.isHidden = true
         
-        mResetSaucerFlag = true // Move back to top later in the frame
+        mResetSaucerFlag = true         // Move back to top later in the frame
+        mLastSaucerTime = mCurrentTime  // Remember when the saucer was destroied
     }
 
     // Collision Saucer & Missile
-    func handleCollision_Spaceship_and_Missile() {
+    func handleCollision_Saucer_and_Missile() {
         MyLog.debug("Missile hit Spaceship")
         
         if mSaucerNode.isHidden == true { // Nothing to do
@@ -936,7 +939,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     // Collision Saucer & Asteroid
-    func handleCollision_Spaceship_and_Asteroid(theAsteroidNode: SKShapeNode) {
+    func handleCollision_Saucer_and_Asteroid(theAsteroidNode: SKShapeNode) {
         MyLog.debug("Missile hit Asteroid")
         
         if mSaucerNode.isHidden == true { // Nothing to do
@@ -952,7 +955,53 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // We beat the level so reset and start the next level
             initializeNextLevel()
         }
+    }
 
+    
+    // SAUCER hits STARBASE- Call this when the saucer and the starbase collide
+    func handleCollision_Saucer_and_Starbase() {
+        MyLog.debug("Saucer hit Starbase")
+        
+        // Reduce Starbase shield level
+        theModel.mShieldLevel -= 1
+        
+        
+        if theModel.mShieldLevel >= 2 {
+            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
+        } else if theModel.mShieldLevel == 1 {
+            mShieldNode.run(SKAction.fadeAlpha(to: 0.5, duration: 1))
+        } else if theModel.mShieldLevel == 0 {
+            // Show NO shields - set alpha to 0
+            mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
+        } else {
+            // DESTROIED - if the shields are negative then the starbase is destroide
+            Sound.shared.play(forResource: "ExplosionStarbaseSound")   // Good Starbase Explosion Sound
+            
+            Haptic.shared.longVibrate() // Long vibration like Error vibrate
+            
+            let explosion = SKEmitterNode(fileNamed: "ExplosionStarbase")!
+            explosion.position = mStarbaseNode.position
+            self.addChild(explosion)
+            self.run(SKAction.wait(forDuration: 2.0)) {
+                explosion.removeFromParent() // Remove the explosion after it runs
+            }
+            
+            
+            // REMOVE THE Starbase and the Saucer
+            mStarbaseNode.removeFromParent()
+            theModel.mGameOver = true
+            
+            // Wait 2 seconds for starbase explosion to finish then show Play Again buttons
+            updatePlayAgainButtonText()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                self.mPlayAgainButton1.isHidden = false // show the button
+                self.mPlayAgainButton2.isHidden = false // show the button
+                self.mPlayAgainButton3.isHidden = false // show the button
+            }
+
+        }
+
+        processDestroidSaucer()
     }
 
     

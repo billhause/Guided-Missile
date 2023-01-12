@@ -12,7 +12,7 @@ import SpriteKit
 let gCategoryMissile:    UInt32 = 0x1 << 0  // 1
 let gCategoryStarbase:   UInt32 = 0x1 << 1  // 2
 let gCategorySupplyShip: UInt32 = 0x1 << 2  // 4
-let gCategorySaucer:  UInt32 = 0x1 << 3  // 8
+let gCategorySaucer:     UInt32 = 0x1 << 3  // 8
 let gCategoryAsteroid:   UInt32 = 0x1 << 4  // 16
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -141,7 +141,7 @@ struct ShapeNodeBuilder {
         parentNode.addChild(shape)
         
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: shieldRad * scale)
-        parentNode.physicsBody?.isDynamic = false // does not move due to gravity
+        parentNode.physicsBody?.isDynamic = true // false means it does not move, true means it can move.
 
         parentNode.physicsBody?.categoryBitMask = gCategoryStarbase
         parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategorySaucer
@@ -411,7 +411,7 @@ struct ShapeNodeBuilder {
         parentNode.zPosition = 1.0 // at or above the other nodes in the game
         parentNode.name = "SupplyShip"
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: bodyOffset)
-        parentNode.physicsBody?.isDynamic = false // does not move due to gravity
+        parentNode.physicsBody?.isDynamic = true // fase = does not move due to gravity, true = does move
         parentNode.physicsBody!.friction = 0.0 // No friction in space
         parentNode.physicsBody!.linearDamping = 0.1 // Fluid or Air Friction, 0= no friction, 1.0= max friction
         parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
@@ -500,7 +500,7 @@ struct ShapeNodeBuilder {
 
         
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: 5 * scale)
-        parentNode.physicsBody?.isDynamic = true // false means does not move due to gravity
+        parentNode.physicsBody?.isDynamic = true // false means does not move, true means it can move
 
         parentNode.physicsBody?.categoryBitMask = gCategoryAsteroid
         parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategorySaucer | gCategorySupplyShip
@@ -525,9 +525,9 @@ struct ShapeNodeBuilder {
 
     
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    // vvvvvvvvv     SpaceShip      vvvvvvvvvvv
+    // vvvvvvvvv      Saucer        vvvvvvvvvvv
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    static func enemySpaceShipNode() -> SKShapeNode {
+    static func SaucerNode() -> SKShapeNode {
         let scale = 1.0 // Change this to change the size of the object
         let bodyRadius = 24/2 * scale // The ship is 17 high and 30 wide
         let bodyOffset = CGPoint(x: 0, y: (10.0-7)/2 * scale) // ship height is 17 with 10 above center and 7 below
@@ -611,7 +611,7 @@ struct ShapeNodeBuilder {
         parentNode.zPosition = 1.0 // at or above the other nodes in the game
         parentNode.name = "EnemySpaceShip"
         parentNode.physicsBody = SKPhysicsBody(circleOfRadius: bodyRadius, center: bodyOffset)
-        parentNode.physicsBody?.isDynamic = false // does not move due to gravity
+        parentNode.physicsBody?.isDynamic = true // true means it can move, false means is can't move.
         parentNode.physicsBody!.friction = 0.0 // No friction in space
         parentNode.physicsBody!.linearDamping = 0.0 // Fluid or Air Friction, 0= no friction, 1.0= max friction
         parentNode.physicsBody!.restitution = 1 // 1.0 = totaly bouncy, 0.0 = no bounce
@@ -620,8 +620,8 @@ struct ShapeNodeBuilder {
         parentNode.physicsBody!.velocity = CGVector(dx: 0.0, dy: 0.0)
 
         parentNode.physicsBody?.categoryBitMask = gCategorySaucer
-        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryStarbase
-        parentNode.physicsBody?.collisionBitMask = 0 // Nothing will interact with this object. E.g. bounce off it.
+        parentNode.physicsBody?.contactTestBitMask = gCategoryAsteroid | gCategoryMissile | gCategoryStarbase | gCategorySupplyShip
+        parentNode.physicsBody?.collisionBitMask = gCategoryStarbase // Nothing will interact with this object. E.g. bounce off it.
 
         
         return parentNode
