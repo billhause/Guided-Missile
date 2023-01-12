@@ -39,8 +39,11 @@ var xSaucerSpeedX       = 1.0     // How fast does the saucer move across the sc
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
-let xScreenBuffer       = 5.0    // How far off the screen does an object need to be before appearing on the other side
-let yScreenBuffer       = 5.0    // How far off the screen does an object need to be before appearing on the other side
+let INCREMENTAL_LEVEL_CHANGE    = 0.02   // How much to change things each leve.  E.g. % faster, smaller etc.
+let TOTAL_ASTEROID_LIMIT        = 12     // Never have more than this many total asteroids in the field
+let MAX_SIMULTANIOUS_ASTEROIDS  = TOTAL_ASTEROID_LIMIT - 2 // Never have more than this many asteroids at the same time
+let xScreenBuffer               = 5.0    // How far off the screen does an object need to be before appearing on the other side
+let yScreenBuffer               = 5.0    // How far off the screen does an object need to be before appearing on the other side
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -58,19 +61,40 @@ struct GameModel {
         case 1:
             return 3
         default:
-            return mLevel + 2
+            var total = mLevel + 2
+            if total > TOTAL_ASTEROID_LIMIT { total = TOTAL_ASTEROID_LIMIT }
+            return total
         }
     }
     
     var maxAsteroidsInPlay: Int { // Number of asteroids to have in play at one time
-        return mLevel // for now we're setting the number of asteroids to start with to be the same as the level you're on.
+        var inPlay = mLevel
+        if inPlay > MAX_SIMULTANIOUS_ASTEROIDS { inPlay = MAX_SIMULTANIOUS_ASTEROIDS }
+        return inPlay // setting the number of asteroids to start with to be the same as the level you're on OR the max limit
     }
     
     // You should set the level variable before calling this function
     // because some of the values may depend on the level.
     mutating func resetLevel() {
-        mAsteroidsRemaining = totalAsteroids
+        mAsteroidsRemaining = totalAsteroids // Calculated Var that changes based on mLevel
         mShieldLevel = INITIAL_SHIELD_LEVEL
+        
+        // Update the Adjusters based on the level
+        var increase = 1.0
+        var decrease = 1.0
+        for i in 0..<mLevel {
+            increase *= (1.0 + INCREMENTAL_LEVEL_CHANGE) // Increase by some small percentage each level
+            decrease *= (1.0 - INCREMENTAL_LEVEL_CHANGE)
+        }
+        
+        // These get multiplied by the original starting level 1 values.
+        xThrust = increase
+        xAsteroidSize = decrease
+        xAsteroidSpeed = increase
+        xSaucerSpeedY = increase
+        xSaucerSpeedX = increase
+        MyLog.debug("increase = \(increase), decrease = \(decrease)")
+        
     }
     
     func getLevelBonus(level: Int) -> Int {
@@ -833,7 +857,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var mResetSaucerFlag = false   // set to true to reset the saucer position after being destroid
 
     // Start the Enemy flying saucer
+    
     func startSaucer() {
+        // Has enough time elapsed since the previous saucer was destroied?
+        
+        
+        // Has enough time elapsed since the previous asteroid was destroied?
+        
+        
+        
         mSaucerNode.position.y = self.frame.size.height    // Top of screen
         mSaucerNode.position.x = self.frame.size.width/2  // Center of screen
         mSaucerNode.isHidden = false
