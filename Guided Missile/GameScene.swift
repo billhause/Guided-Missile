@@ -47,6 +47,9 @@ let xScreenBuffer               = 5.0    // How far off the screen does an objec
 let yScreenBuffer               = 5.0    // How far off the screen does an object need to be before appearing on the other side
 let MIN_TIME_BETWEEN_SAUCERS    = 10.0   // Minimum time between saucers at start of game
 let MIN_TIME_BETWEEN_ASTEROID_AND_SAUCER = 4.0 // Minimum time between when the last asteroid was destroid and when the saucer comes out
+var SAUCER_START_SPEED_X_AND_Y  = 0.2    // Start Speed in Both X & Y Direction for Saucer - Bigger is faster
+var SAUCER_X_SPEED              = 0.025  // Start Speed in X Direction for Saucer - Bigger is faster
+
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -114,7 +117,7 @@ struct GameModel {
         xAsteroidSpeed = increase
         xSaucerSpeedY = increase
         xSaucerSpeedX = increase
-        MyLog.debug("increase = \(increase), decrease = \(decrease)")
+//        MyLog.debug("increase = \(increase), decrease = \(decrease)")
         
     }
     
@@ -169,7 +172,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Added by Bill
     // This gets called before the didMove(to:) function gets called.
     override init(size: CGSize) {
-        MyLog.debug("GameScene.init(size:) called")
+//        MyLog.debug("GameScene.init(size:) called")
         super.init(size: size)
         
         self.physicsWorld.contactDelegate = self // IMPORTANT - cant detect colisions without this
@@ -190,7 +193,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //
         theModel.mLevel += 1 // move to next level
         theModel.resetLevel()
-        MyLog.debug("Starting Next Level: \(theModel.mLevel)")
         
         // Reset Shields - the star base node should still be in tact since we beat the level
         mShieldNode.run(SKAction.fadeAlpha(to: 0.8, duration: 1))
@@ -239,7 +241,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // ASTEROID hits STARBASE- Call this when an asteroid and the starbase collide
     // Pass in the Asteroid node.  Since there is only one starbase node we don't need it passed in.
     func handleCollision_Asteroid_and_Starbase(theAsteroidNode: SKShapeNode) {
-        MyLog.debug("Missile hit Starbase")
+//        MyLog.debug("Missile hit Starbase")
         
         // Reduce Starbase shield level
         theModel.mShieldLevel -= 1
@@ -426,6 +428,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 handleCollision_Asteroid_and_Missile(theAsteroidNode: theAsteroidNode)
             } else if secondBody.categoryBitMask == gCategorySaucer { // Hit Enemy Space Ship
                 handleCollision_Saucer_and_Missile()
+            } else if secondBody.categoryBitMask == gCategorySupplyShip { // Missile hit supply ship
+                handleCollision_SupplyShip_and_Missile()
             }
         
         // STARBASE - Check for Starbase Hit
@@ -438,7 +442,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             } else if secondBody.categoryBitMask == gCategorySaucer {
                 // Saucer Hit the Starbase
                 handleCollision_Saucer_and_Starbase()
-                MyLog.debug("Saucer hit Starbase")
+            } else if secondBody.categoryBitMask == gCategorySupplyShip {
+                handleCollision_Starbase_and_SupplyShip()
+                MyLog.debug("Starbase - Supply Ship")
             }
 
         // SUPPLY SHIP - Check for Supply Ship Hit
@@ -446,10 +452,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // Something Hit the Supply Ship
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 // Asteroid Hit the supply ship
-                MyLog.debug("Asteroid hit Supply Ship")
             } else if secondBody.categoryBitMask == gCategorySaucer {
-                // Enemy Ship Hit the Supply Ship
-                MyLog.debug("Enemy Ship hit Supply Ship")
+                // Saucer Hit the Supply Ship
             }
 
         // SAUCER - Check for Enemy Ship Hit
@@ -457,13 +461,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // Something Hit the Enemy Ship
             if secondBody.categoryBitMask == gCategoryAsteroid {
                 // Asteroid Hit the enemy ship
-                MyLog.debug("Asteroid hit Enemy Ship")
                 let theAsteroidNode = secondBody.node as! SKShapeNode
                 handleCollision_Saucer_and_Asteroid(theAsteroidNode: theAsteroidNode)
-
             }
-        } else { // Some other collision that we don't need to handle
+        } else { // Some other collision that we don't need to handle like two asteroids hitting each other
             MyLog.debug("Unhandled collision type of some sort.  No Worries...")
+            //MyLog.debug("Unknown \(firstBody.node?.name) - Unknown \(secondBody.node?.name) Collision")
         }
 
 
@@ -499,7 +502,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var mCurrentTime : Double = 0                   // current Time in seconds
     override func didMove(to view: SKView) {
         setBackground(gameLevelNumber: 4) // Pass a different number for different backgrounds - Best: 4 (space4.jpg) with alpha of 0.5
-        MyLog.debug("GameScene.didMove() called")
+//        MyLog.debug("GameScene.didMove() called")
         
         // Initialize Sound Player - Force singleton load by playing silent sound
         Sound.shared.play(forResource: "silent_sound")
@@ -896,11 +899,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if mSaucerNode.isHidden {return} // Nothing to do
         
         var posY = mSaucerNode.position.y
-        posY -= 0.2 * xSaucerSpeedY // How fast does it move down the screen?  Bigger numbers are faster
+        posY -= SAUCER_START_SPEED_X_AND_Y * xSaucerSpeedY // How fast does it move down the screen?  Bigger numbers are faster
         mSaucerNode.position.y = posY
         
         // Calc X postition
-        let xInput = posY/40  // How fast does it move back and forth - Bigger Denominator is slower
+        let xInput = posY * SAUCER_X_SPEED  // Bigger is faster
         let xOffset = self.frame.size.width / 2 // Center the saucer on the screen
         let xPos = (xOffset * 0.9) * sin(xSaucerSpeedX * xInput/xSaucerSpeedY) + xOffset
         mSaucerNode.position.x = xPos
@@ -948,7 +951,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // Collision Saucer & Missile
     func handleCollision_Saucer_and_Missile() {
-        MyLog.debug("Missile hit Spaceship")
+//        MyLog.debug("Missile hit Spaceship")
         
         if mSaucerNode.isHidden {return} // Nothing to do
         
@@ -957,9 +960,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mResetMissileFlag = true // move missile back to center of starbase later in the frame update
     }
 
+    // Collision Saucer & SupplyShip
+    func handleCollision_SupplyShip_and_Missile() {
+        //MyLog.debug("Missile Hit SupplyShip")
+    }
+
+    // Collision Starbase & SupplyShip
+    func handleCollision_Starbase_and_SupplyShip() {
+        //MyLog.debug("SupplyShip hit Starbase")
+    }
+
     // Collision Saucer & Asteroid
     func handleCollision_Saucer_and_Asteroid(theAsteroidNode: SKShapeNode) {
-        MyLog.debug("Missile hit Asteroid")
+//        MyLog.debug("Missile hit Asteroid")
         
         if mSaucerNode.isHidden {return} // Nothing to do
         
@@ -977,7 +990,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // SAUCER hits STARBASE- Call this when the saucer and the starbase collide
     func handleCollision_Saucer_and_Starbase() {
-        MyLog.debug("Saucer hit Starbase")
+//        MyLog.debug("Saucer hit Starbase")
         if mSaucerNode.isHidden {return} // Nothing to do
 
         // Reduce Starbase shield level
