@@ -175,6 +175,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         theModel.mLevel += 1 // move to next level
         theModel.resetLevel()
 
+        stopSaucer() // reset the saucer for next deployment
+        
         // Reset Saucer Count
         mSaucerCount = 0 // count number of saucers launced on this level
         
@@ -876,7 +878,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //
         // === LAUNCH THE SAUCER ===
         //
-        
         mSaucerCount += 1 // Track how many saucers have been launched on this level
         
         // Random Start Location X
@@ -890,6 +891,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mSaucerNode.position.x = self.frame.size.width/2  // Center of screen
         mSaucerNode.isHidden = false
         Sound.shared.saucerSoundOn()
+    }
+    
+    func stopSaucer() {
+        Sound.shared.saucerSoundOff()
+        mSaucerNode.isHidden = true
+        mResetSaucerFlag = true         // Move back to top later in the frame
+        mLastSaucerTime = mCurrentTime  // Remember when the saucer was destroied
     }
     
     // Update the Saucer one frame
@@ -944,13 +952,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.run(SKAction.wait(forDuration: 2.0)) {
             explosion.removeFromParent() // Remove the explosion after it runs
         }
-        Sound.shared.saucerSoundOff()
         Sound.shared.play(forResource: "ExplosionSaucerSound")
         Haptic.shared.boomVibrate()
-        mSaucerNode.isHidden = true
         
-        mResetSaucerFlag = true         // Move back to top later in the frame
-        mLastSaucerTime = mCurrentTime  // Remember when the saucer was destroied
+        stopSaucer()
     }
 
     // Collision Saucer & Missile
