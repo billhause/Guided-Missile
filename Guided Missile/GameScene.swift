@@ -101,6 +101,7 @@ struct GameModel {
         xAsteroidSpeed = increase
         xSaucerSpeedY = increase
         xSaucerSpeedX = increase
+        xSaucerTime = decrease // Delay between saucer appeareances
     }
     
     func getLevelBonus(level: Int) -> Int {
