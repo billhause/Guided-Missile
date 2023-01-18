@@ -71,6 +71,7 @@ struct GameModel {
     
     // Save game data to disk
     func save() {
+        if mGameOver {return} // Don't save if this was triggered by things that happen after the game is over.
         UserDefaults.standard.set(mHighScore, forKey: "HighScore")
         UserDefaults.standard.set(mLevel, forKey: "Level")
     }
@@ -115,8 +116,6 @@ struct GameModel {
         xSaucerSpeedY = increase
         xSaucerSpeedX = increase
         xSaucerTime = decrease // Delay between saucer appeareances
-        
-        save() // Save model data to disk
     }
     
     func getLevelBonus(level: Int) -> Int {
@@ -134,8 +133,6 @@ struct GameModel {
     func playAgainButton1Bonus() -> Int { return getLevelBonus(level: 1) }  // What point bonus should be displayed for button 1
     func playAgainButton2Bonus() -> Int { return getLevelBonus(level: mLevel/2) } // What point bonus should be displayed for button 2
     func playAgainButton3Bonus() -> Int { return getLevelBonus(level: mLevel) }
-
-    
     
 }
 
@@ -188,6 +185,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     // Call this after we beat the current level and need to move on to the next level
     func initializeNextLevel() {
+        theModel.save()  // Save max level reached.
         theModel.mLevel += 1 // move to next level
         theModel.resetLevel()
 
@@ -277,12 +275,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             theModel.mGameOver = true
             
             // Wait 2 seconds for starbase explosion to finish then show Play Again buttons
-//            updatePlayAgainButtonText()
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 self.displayPlayAgainButtons()
-//                self.mPlayAgainButton1.isHidden = false // show the button
-//                self.mPlayAgainButton2.isHidden = false // show the button
-//                self.mPlayAgainButton3.isHidden = false // show the button
             }
 
             theModel.save()
@@ -603,7 +597,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func touchDown(atPoint pos : CGPoint) {
-        MyLog.debug("GameScene.touchDown() called")
         
         // Check Play Again Buttons
         if !mPlayAgainButton1.isHidden && mPlayAgainButton1.frame.contains(pos) {
@@ -629,7 +622,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func touchMoved(toPoint pos : CGPoint) {
-        MyLog.debug("GameScene.touchMoved() called")
+        //MyLog.debug("GameScene.touchMoved() called")
     }
     
     func touchUp(atPoint pos : CGPoint) {
@@ -1057,7 +1050,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 self.displayPlayAgainButtons()
             }
-
+            
+            theModel.save() // save high score etc.
         }
 
         processDestroidSaucer()
