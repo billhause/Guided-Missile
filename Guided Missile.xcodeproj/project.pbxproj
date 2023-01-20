@@ -28,6 +28,7 @@
 		28A12EB32966453100EF2E5B /* rocket_4_sec.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB22966453100EF2E5B /* rocket_4_sec.wav */; };
 		28A12EB52966477D00EF2E5B /* asteroid_explosion.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */; };
 		28A12EB9296E06E500EF2E5B /* ExplosionSaucer.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */; };
+		28B51A17297A190B004ABF68 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B51A16297A190B004ABF68 /* Reachability.swift */; };
 		28C70BC9294D2C5600ADAC9A /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */; };
 		28C70C0A2952787F00ADAC9A /* ExplosionParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C092952787F00ADAC9A /* ExplosionParticles.sks */; };
 		28C70C0C295CF63F00ADAC9A /* ExplosionStarbase.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */; };
@@ -87,6 +88,7 @@
 		28A12EB22966453100EF2E5B /* rocket_4_sec.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = rocket_4_sec.wav; path = Sounds/rocket_4_sec.wav; sourceTree = SOURCE_ROOT; };
 		28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = asteroid_explosion.wav; sourceTree = "<group>"; };
 		28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionSaucer.sks; sourceTree = "<group>"; };
+		28B51A16297A190B004ABF68 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		28C70C092952787F00ADAC9A /* ExplosionParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionParticles.sks; sourceTree = "<group>"; };
 		28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionStarbase.sks; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 				28D8C6632942AF880067D801 /* Motion.swift */,
 				28A12EA42966222300EF2E5B /* Haptic.swift */,
 				28D8C6612942AF620067D801 /* MyLog.swift */,
+				28B51A16297A190B004ABF68 /* Reachability.swift */,
 				28A12E9829661DC300EF2E5B /* Sound.swift */,
 				28D8C6382942AC150067D801 /* Main.storyboard */,
 				28D8C63D2942AC160067D801 /* LaunchScreen.storyboard */,
@@ -378,6 +381,7 @@
 			files = (
 				28C70BC9294D2C5600ADAC9A /* GameViewModel.swift in Sources */,
 				28D8C6352942AC150067D801 /* GameScene.swift in Sources */,
+				28B51A17297A190B004ABF68 /* Reachability.swift in Sources */,
 				28D8C6372942AC150067D801 /* GameViewController.swift in Sources */,
 				28D8C6622942AF620067D801 /* MyLog.swift in Sources */,
 				28A12EA52966222300EF2E5B /* Haptic.swift in Sources */,

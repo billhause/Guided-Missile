@@ -25,9 +25,9 @@
 import SwiftUI // Needed for Image struct
 import SpriteKit
 import AVFoundation // Sound Player
+import StoreKit // SKStoreReviewController is in this Framework
 //import GameplayKit
 
-let INITIAL_SHIELD_LEVEL = 2
 
 // vvvvvvvvvv  Adjusters  vvvvvvvvvvv
 // These multipliers all start at 1.0 and can be change to adjust difficulty as the game moves along
@@ -40,6 +40,9 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
+let FOR_RELEASE                 = false   // Set to true to turn off debugging and turn on code to request a review
+let REVIEW_THRESHOLD_LEVEL      = 12     // Don't ask for a review unless the user has made it to this level or higher.
+let INITIAL_SHIELD_LEVEL        = 2
 let INCREMENTAL_LEVEL_CHANGE    = 0.02   // How much to change things each leve.  E.g. % faster, smaller etc.
 let TOTAL_ASTEROID_LIMIT        = 12     // Never have more than this many total asteroids in the field
 let MAX_SIMULTANIOUS_ASTEROIDS  = TOTAL_ASTEROID_LIMIT - 2 // Never have more than this many asteroids at the same time
@@ -171,6 +174,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.physicsWorld.contactDelegate = self // IMPORTANT - cant detect colisions without this
         
+        if FOR_RELEASE == true {
+            MyLog.disable() // Turn off debugging if this is a release version
+        }
+        
         theModel.load() // Load saved model data from disk
     }
     
@@ -182,6 +189,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         super.init(coder: aDecoder)
     }
 
+
+    func requestReview() {
+        if FOR_RELEASE == false { return } // Don't request a review if this is not a release version.
+        
+        if theModel.mLevel > REVIEW_THRESHOLD_LEVEL {
+        // NOTE: If not connected to Internet, then requestReview will lock the interface
+            let reachability = try? Reachability() // Return nil if throws an error
+            if reachability?.connection == .wifi {
+                SKStoreReviewController.requestReview()
+            } else if reachability?.connection == .cellular {
+                SKStoreReviewController.requestReview()
+            }
+        }
+    }
 
     // Call this after we beat the current level and need to move on to the next level
     func initializeNextLevel() {
@@ -525,6 +546,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Remove and Add Play Again buttons with proper text for the current level
     func displayPlayAgainButtons() {
+        requestReview() // Request a review if the criteria are met
+        
         let buttonPosition1 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.4)
         let buttonPosition2 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.275)
         let buttonPosition3 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.15)
