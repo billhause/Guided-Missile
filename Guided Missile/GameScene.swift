@@ -52,8 +52,8 @@ let MIN_TIME_BETWEEN_SAUCERS    = 10.0   // Minimum time between saucers at star
 let MIN_TIME_BETWEEN_ASTEROID_AND_SAUCER = 4.0 // Minimum time between when the last asteroid was destroid and when the saucer comes out
 var SAUCER_SPEED                = 0.2    // Start Speed in Both X & Y Direction for Saucer - Bigger is faster
 var SAUCER_X_SPEED              = 0.025  // Start Speed in X Direction for Saucer - Bigger is faster
-var POINTS_SAUCER_HIT           = 2      // Number of points for destroying a Saucer
-var POINTS_ASTEROID_HIT         = 1      // Number of points for destroying an Asteroid
+var POINTS_SAUCER_HIT           = 1      // Number of points for destroying a Saucer
+var POINTS_ASTEROID_HIT         = 0      // Number of points for destroying an Asteroid
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -1005,7 +1005,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func handleCollision_Saucer_and_Missile() {
         if mSaucerNode.isHidden {return} // Nothing to do
         
-        theModel.mScore += POINTS_SAUCER_HIT
+        theModel.mScore += POINTS_SAUCER_HIT * mSaucerCount // More poits for faster saucers.
+        
+        Helper.fadingAlert(scene: self, position: mSaucerNode.position, text: "\(POINTS_SAUCER_HIT * mSaucerCount)pts", fontSize: 25, duration: 1, delay: 0)
+        
         processDestroidSaucer()
         mResetMissileFlag = true // move missile back to center of starbase later in the frame update
     }
