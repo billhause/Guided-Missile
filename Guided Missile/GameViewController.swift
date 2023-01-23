@@ -7,7 +7,8 @@
 
 import UIKit
 import SpriteKit
-import GameplayKit
+//import GameplayKit
+import GameKit // Needed for Leaderboard
 
 class GameViewController: UIViewController {
 
@@ -36,10 +37,8 @@ class GameViewController: UIViewController {
     // We're setting this up in 'viewWillLayoutSubviews()' because we don't know the skView size in viewDidLoad()
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-//        MyLog.debug("viewWillLayoutSubview() called")
         let skView = self.view as! SKView
         if skView.scene == nil { // If the scene is nil, then we need to create our new Game scene
-//            MyLog.debug("viewWillLayoutSubview() creating new scene")
             skView.showsFPS = true
             skView.showsNodeCount = true
             
@@ -48,9 +47,27 @@ class GameViewController: UIViewController {
             gameScene.scaleMode = .aspectFill
             
             skView.presentScene(gameScene)
+
+            // Game Center - Leaderboard - Need to authenticate the user when the game starts up
+//TODO: wdh enable this line            authenticateUser()
         }
     }
 
+    // Game Center - Leaderboard - Need to authenticate the user when the game starts up
+    //
+    func authenticateUser() {
+        let player = GKLocalPlayer.local
+        player.authenticateHandler = { viewController, error in
+            guard error == nil else {
+                print(error?.localizedDescription ?? "")
+                return
+            }
+            
+            if viewController != nil {
+                self.present(viewController!, animated: true, completion: nil)
+            }
+        }
+    }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         if UIDevice.current.userInterfaceIdiom == .phone {

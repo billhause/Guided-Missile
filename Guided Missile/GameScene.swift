@@ -26,6 +26,7 @@ import SwiftUI // Needed for Image struct
 import SpriteKit
 import AVFoundation // Sound Player
 import StoreKit // SKStoreReviewController is in this Framework
+import GameKit  // Needed for Leaderboard
 //import GameplayKit
 
 
@@ -77,8 +78,28 @@ struct GameModel {
         if mGameOver {return} // Don't save if this was triggered by things that happen after the game is over.
         UserDefaults.standard.set(mHighScore, forKey: "HighScore")
         UserDefaults.standard.set(mLevel, forKey: "Level")
+        
+        // Update the Game Center with our new personal best score
+//TODO: wdh enable this line        updateLeaderBoard()
     }
     
+    //  Some Leaderboard Tutorial
+    //    Use this example: https://medium.com/swlh/how-to-integrate-gamekit-ios-794061428197
+    //    Use this Video Tutorial: https://www.google.com/search?q=game+center+leaderboard+swift+tutorial&newwindow=1&sxsrf=ALeKk01Bg1uOrX6PizEaPXXrfCtJHlbZBA:1600966767114&source=lnms&sa=X&ved=0ahUKEwisus37oYLsAhWYXM0KHV0kBV04ChD8BQgKKAA&biw=1688&bih=1236&dpr=2#kpvalbx=_gdBsX-TSAtaDtQaHtpDoBQ42
+    //
+    //   Another Leaderboard Example
+    //     https://code.tutsplus.com/tutorials/game-center-and-leaderboards-for-your-ios-app--cms-27488
+    //
+    func updateLeaderBoard() {
+        if GKLocalPlayer.local.isAuthenticated {
+            let theScore = GKScore(leaderboardIdentifier: "HighScore")
+            theScore.value = Int64(mHighScore)
+            let theScoreArray : [GKScore] = [theScore]
+            GKScore.report(theScoreArray, withCompletionHandler: nil)
+            MyLog.debug("GameData updateLeaderBoard() called with new level of \(mHighScore)")
+        }
+    }
+
     
     func totalAsteroids(level: Int) -> Int {
         switch level {
@@ -141,7 +162,8 @@ struct GameModel {
 
 
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelegate {
+        
     var theModel = GameModel()
     private var mResetMissileFlag = false  // set to true to reset the missile at the starbase
     private var mGameVM = GameViewModel()
@@ -619,6 +641,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         mPlayAgainButton3.isHidden = true
     }
     
+    func togglePause() {
+        // PAUSE / UNPAUSE Game
+        realPaused = !realPaused
+        if realPaused {
+            Sound.shared.thrustSoundOff() // Stop thrust sound
+            Sound.shared.saucerSoundOff()
+        }
+    }
+    
     func touchDown(atPoint pos : CGPoint) {
         
         // Check Play Again Buttons
@@ -634,12 +665,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         // Check Pause / Unpause
         } else {
-            // PAUSE / UNPAUSE Game
-            realPaused = !realPaused
-            if realPaused {
-                Sound.shared.thrustSoundOff() // Stop thrust sound
-                Sound.shared.saucerSoundOff()
-            }
+            togglePause()
         }
 
     }
@@ -1083,4 +1109,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         processDestroidSaucer()
     }
 
+    
+    // MARK: Leaderboard Code
+    // Needed for Leaderboard and GKGameCenterControllerDelegate
+    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+        MyLog.debug("GameScene gameCenterViewControllerDidFinish() called")
+        gameCenterViewController.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    // Call this when the user taps the "Leaderboard" button
+    func handleLeaderboardButtonTap() {
+        // If Authenticated, then show the leader board
+        if GKLocalPlayer.local.isAuthenticated {
+            if !self.realPaused {
+                togglePause()
+            }
+            showLeaderBoard()
+        } else {
+            gameCenterAlertMessage() // Tell user they need Game Center to see the leaderboard
+        }
+    }
+    
+    func showLeaderBoard() { // wdh added
+        let viewController = self.view!.window!.rootViewController
+        let gcvc = GKGameCenterViewController()
+        gcvc.gameCenterDelegate = self
+        viewController?.present(gcvc, animated: true, completion: nil)
+    }
+
+    func gameCenterAlertMessage() {
+        let messageTitle = "Apple Game Center Required"
+        let messageBody = "To View Leaderboards, Restart the game and log into 'Game Center'"
+        let dialogMessage = UIAlertController(title: messageTitle, message: messageBody, preferredStyle: .alert)
+
+        let okButtonText = "OK"
+        let ok = UIAlertAction(title: okButtonText, style: .default, handler: nil)
+        dialogMessage.addAction(ok)
+
+        // Present dialog message to user
+        let rootViewController = self.view!.window!.rootViewController
+        rootViewController!.present(dialogMessage, animated: true, completion: nil)
+    }
+    
 }
