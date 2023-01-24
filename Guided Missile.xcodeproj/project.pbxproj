@@ -89,6 +89,7 @@
 		28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = asteroid_explosion.wav; sourceTree = "<group>"; };
 		28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionSaucer.sks; sourceTree = "<group>"; };
 		28B51A16297A190B004ABF68 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		28B51A18297F51CC004ABF68 /* Guided Missile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Guided Missile.entitlements"; sourceTree = "<group>"; };
 		28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
 		28C70C092952787F00ADAC9A /* ExplosionParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionParticles.sks; sourceTree = "<group>"; };
 		28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionStarbase.sks; sourceTree = "<group>"; };
@@ -184,6 +185,7 @@
 		28D8C62D2942AC150067D801 /* Guided Missile */ = {
 			isa = PBXGroup;
 			children = (
+				28B51A18297F51CC004ABF68 /* Guided Missile.entitlements */,
 				28D8C6302942AC150067D801 /* GameScene.sks */,
 				28D8C6322942AC150067D801 /* Actions.sks */,
 				28C70C092952787F00ADAC9A /* ExplosionParticles.sks */,
@@ -565,6 +567,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Guided Missile/Guided Missile.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
@@ -594,6 +597,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Guided Missile/Guided Missile.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XXF7Y2ZTA7;

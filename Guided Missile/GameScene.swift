@@ -1,6 +1,9 @@
 //
 //  GameScene.swift
-//  Guided Missile
+//  Guided Missile -
+//    Name: Asteroid Pulverizer
+//    SKU:  AsteroidKiller
+//  Asteroid Pulverizer on AppStoreConnect: https://appstoreconnect.apple.com/apps/1667405578/appstore/ios/version/inflight
 //
 //  Created by William Hause on 12/8/22.
 //
@@ -55,6 +58,7 @@ var SAUCER_SPEED                = 0.2    // Start Speed in Both X & Y Direction 
 var SAUCER_X_SPEED              = 0.025  // Start Speed in X Direction for Saucer - Bigger is faster
 var POINTS_SAUCER_HIT           = 1      // Number of points for destroying a Saucer
 var POINTS_ASTEROID_HIT         = 0      // Number of points for destroying an Asteroid
+var MIN_LEADERBOARD_BUTTON_LEVEL = 1     // Level where we start showing the leaderboard button
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -80,7 +84,7 @@ struct GameModel {
         UserDefaults.standard.set(mLevel, forKey: "Level")
         
         // Update the Game Center with our new personal best score
-//TODO: wdh enable this line        updateLeaderBoard()
+        updateLeaderBoard()
     }
     
     //  Some Leaderboard Tutorial
@@ -92,7 +96,7 @@ struct GameModel {
     //
     func updateLeaderBoard() {
         if GKLocalPlayer.local.isAuthenticated {
-            let theScore = GKScore(leaderboardIdentifier: "HighScore")
+            let theScore = GKScore(leaderboardIdentifier: "Scores")
             theScore.value = Int64(mHighScore)
             let theScoreArray : [GKScore] = [theScore]
             GKScore.report(theScoreArray, withCompletionHandler: nil)
@@ -499,6 +503,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var mLabel1 = SKLabelNode(fontNamed: "Courier") // label for debugging
     var mLabel2 = SKLabelNode(fontNamed: "Courier")
     var mLabel3 = SKLabelNode(fontNamed: "Courier")
+    var mLeaderboardButton = SKShapeNode()
     var mPlayAgainButton1 = SKShapeNode()
     var mPlayAgainButton2 = SKShapeNode()
     var mPlayAgainButton3 = SKShapeNode()
@@ -570,6 +575,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     func displayPlayAgainButtons() {
         requestReview() // Request a review if the criteria are met
         
+        let leaderboardButtonPosition = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.8)
         let buttonPosition1 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.4)
         let buttonPosition2 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.275)
         let buttonPosition3 = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height*0.15)
@@ -579,6 +585,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if mPlayAgainButton2.parent != nil { mPlayAgainButton2.removeFromParent() }
         if mPlayAgainButton3.parent != nil { mPlayAgainButton3.removeFromParent() }
         
+        
+        // Play Again Buttons
         self.mPlayAgainButton1 = Helper.makeButton(position: buttonPosition1,
                                                    text: "Play Again\nLevel 1\nBonus: \(theModel.playAgainButton1Bonus())")
         self.addChild(self.mPlayAgainButton1)
@@ -595,6 +603,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             self.addChild(self.mPlayAgainButton3)
             self.mPlayAgainButton3.isHidden = false // Show the button
         }
+        
+
+        // Leaderboard Button
+        if theModel.mLevel >= MIN_LEADERBOARD_BUTTON_LEVEL { // Only show the leaderboard button if they got to this level
+            if mLeaderboardButton.parent != nil { mLeaderboardButton.removeFromParent() }
+            self.mLeaderboardButton = Helper.makeButton(position: leaderboardButtonPosition, text: "View Leaderboard")
+            self.addChild(self.mLeaderboardButton)
+            self.mLeaderboardButton.isHidden = false // show the button
+        }
+
     }
 
     
@@ -639,6 +657,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         mPlayAgainButton1.isHidden = true
         mPlayAgainButton2.isHidden = true
         mPlayAgainButton3.isHidden = true
+        mLeaderboardButton.isHidden = true
     }
     
     func togglePause() {
@@ -662,6 +681,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         } else if !mPlayAgainButton3.isHidden && mPlayAgainButton3.frame.contains(pos) {
             hidePlayAgainButtons()
             resetGame(level: theModel.playAgainButton3Level()) // Reset to highest level achieved
+        } else if !mLeaderboardButton.isHidden && mLeaderboardButton.frame.contains(pos) { // Leaderboard Button Tap
+            handleLeaderboardButtonTap()
             
         // Check Pause / Unpause
         } else {
@@ -1111,6 +1132,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
 
     
     // MARK: Leaderboard Code
+    
+    var LEADERBOARD_ID = "Scores" // What you provided in AppStoreConnect
     // Needed for Leaderboard and GKGameCenterControllerDelegate
     func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
         MyLog.debug("GameScene gameCenterViewControllerDidFinish() called")

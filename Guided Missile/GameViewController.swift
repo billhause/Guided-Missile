@@ -49,7 +49,7 @@ class GameViewController: UIViewController {
             skView.presentScene(gameScene)
 
             // Game Center - Leaderboard - Need to authenticate the user when the game starts up
-//TODO: wdh enable this line            authenticateUser()
+            authenticateUser() // For Leaderboard
         }
     }
 

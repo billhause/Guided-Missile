@@ -55,14 +55,14 @@ class Sound {
         saucerSoundPlayer.setVolume(SAUCER_VOLUME, fadeDuration: 0.0) // no fade in duration
     }
     
-    // Stop rocket thrust sound if it's playing
+    // Stop saucer thrust sound if it's playing
     func saucerSoundOff() {
         if saucerIsPlaying {
             saucerIsPlaying = false
             saucerSoundPlayer.stop()
         }
     }
-    // ^^^^^^^^^^^ ROCKET SOUND ^^^^^^^^^^^^^^^^
+    // ^^^^^^^^^^^ SAUCER SOUND ^^^^^^^^^^^^^^^^
 
     
     // vvvvvvvvvv ROCKET SOUND vvvvvvvvvv
