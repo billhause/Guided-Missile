@@ -552,6 +552,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         displayInstructions()
         
         displayPlayAgainButtons()
+        
+        gamePausedInit()
     }
     
     func displayInstructions() {
@@ -661,6 +663,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
     
     func togglePause() {
+        // NOTE: Must show the Game Paused message BEFORE Pausing
+        if !realPaused {
+            showGamePausedMessage()
+        } else {
+            hideGamePausedMessage()
+        }
+
         // PAUSE / UNPAUSE Game
         realPaused = !realPaused
         if realPaused {
@@ -1131,7 +1140,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
 
     
+    //
     // MARK: Leaderboard Code
+    //
     
     var LEADERBOARD_ID = "Scores" // What you provided in AppStoreConnect
     // Needed for Leaderboard and GKGameCenterControllerDelegate
@@ -1174,5 +1185,54 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         let rootViewController = self.view!.window!.rootViewController
         rootViewController!.present(dialogMessage, animated: true, completion: nil)
     }
+    
+    
+    //
+    // MARK: Game Paused Alert code
+    //
+    var mGamePausedAlertMainNode = SKLabelNode(fontNamed: GAME_FONT)
+    var mGamePausedAlertSmallNode = SKLabelNode(fontNamed: GAME_FONT)
+    
+    func gamePausedInit() {
+        let position = CGPoint(x: self.frame.width/2, y: self.frame.height*0.9)
+        let color = UIColor(cgColor: CGColor(srgbRed: 1.0, green: 0.2, blue: 0.2, alpha: 1.0))
+        
+        mGamePausedAlertMainNode.fontSize = 30.0
+        mGamePausedAlertMainNode.text = "Game Paused"
+        mGamePausedAlertMainNode.isHidden = true // Start out hidden
+        mGamePausedAlertMainNode.lineBreakMode = NSLineBreakMode.byWordWrapping
+        mGamePausedAlertMainNode.numberOfLines = 0
+        mGamePausedAlertMainNode.fontColor = color
+        mGamePausedAlertMainNode.preferredMaxLayoutWidth = self.frame.size.width * 4/5
+        mGamePausedAlertMainNode.position = position
+        if mGamePausedAlertMainNode.parent == nil { // Just in case it somehow was already added
+            self.addChild(mGamePausedAlertMainNode)
+        }
+        
+        mGamePausedAlertSmallNode.fontSize = 15.0
+        mGamePausedAlertSmallNode.text = "Tap Screen To Unpause"
+        mGamePausedAlertSmallNode.isHidden = true // start out hidden
+        mGamePausedAlertSmallNode.lineBreakMode = NSLineBreakMode.byWordWrapping
+        mGamePausedAlertSmallNode.numberOfLines = 0
+        mGamePausedAlertSmallNode.fontColor = color
+        mGamePausedAlertSmallNode.preferredMaxLayoutWidth = self.frame.size.width * 4/5
+        mGamePausedAlertSmallNode.position = position
+        mGamePausedAlertSmallNode.position.y -= mGamePausedAlertSmallNode.frame.height
+        if mGamePausedAlertSmallNode.parent == nil { // Just in case it somehow was already added
+            self.addChild(mGamePausedAlertSmallNode)
+        }
+    }
+    
+    func showGamePausedMessage() {
+        mGamePausedAlertMainNode.isHidden = false
+        mGamePausedAlertSmallNode.isHidden = false
+    }
+    
+    func hideGamePausedMessage() {
+        mGamePausedAlertMainNode.isHidden = true
+        mGamePausedAlertSmallNode.isHidden = true
+    }
+
+
     
 }
