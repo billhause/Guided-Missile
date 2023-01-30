@@ -25,6 +25,11 @@
 //    Use this Video Tutorial: https://www.google.com/search?q=game+center+leaderboard+swift+tutorial&newwindow=1&sxsrf=ALeKk01Bg1uOrX6PizEaPXXrfCtJHlbZBA:1600966767114&source=lnms&sa=X&ved=0ahUKEwisus37oYLsAhWYXM0KHV0kBV04ChD8BQgKKAA&biw=1688&bih=1236&dpr=2#kpvalbx=_gdBsX-TSAtaDtQaHtpDoBQ42
 //   Another Leaderboard Example:  https://code.tutsplus.com/tutorials/game-center-and-leaderboards-for-your-ios-app--cms-27488
 //
+// AdMob Guided Missile Asteroid Pulverizer
+//   App ID: ca-app-pub-2874026631625786~1694134703
+//   Ad Unit ID: ca-app-pub-2874026631625786/1503127663
+//   AdMob Tutorial: https://www.youtube.com/watch?v=TMj_3mQA39g
+
 import SwiftUI // Needed for Image struct
 import SpriteKit
 import AVFoundation // Sound Player

@@ -47,6 +47,9 @@
 		28D8C6642942AF880067D801 /* Motion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6632942AF880067D801 /* Motion.swift */; };
 		28D8C6662942AF930067D801 /* MotionForSpriteKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C6652942AF930067D801 /* MotionForSpriteKit.swift */; };
 		28D8C66A294794EE0067D801 /* ShapeNodeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */; };
+		A2D093EBC028BDA07E236593 /* Pods_Guided_MissileTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE1CDCA0AA9E568C58F083B8 /* Pods_Guided_MissileTests.framework */; };
+		AB40AEED2F6553E0802C6AC5 /* Pods_Guided_Missile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 822B53A1B62E23A4E13F248A /* Pods_Guided_Missile.framework */; };
+		F92B22E8D2E33E8BE618F80A /* Pods_Guided_Missile_Guided_MissileUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D4DFCB8A10C26F8DE946140 /* Pods_Guided_Missile_Guided_MissileUITests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +70,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A5FA4EBD6667BC6233A8289 /* Pods-Guided Missile-Guided MissileUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Guided Missile-Guided MissileUITests.debug.xcconfig"; path = "Target Support Files/Pods-Guided Missile-Guided MissileUITests/Pods-Guided Missile-Guided MissileUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		283DBE4B29873F50001A34EE /* Guided-Missile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Guided-Missile-Info.plist"; sourceTree = SOURCE_ROOT; };
 		28916195296E0B0F008C8C5E /* ExplosionStarbaseSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ExplosionStarbaseSound.wav; sourceTree = "<group>"; };
 		28916199296E0C95008C8C5E /* ExplosionSaucerSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ExplosionSaucerSound.wav; sourceTree = "<group>"; };
 		2891619F296E2B5E008C8C5E /* WarpSound4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = WarpSound4.wav; sourceTree = "<group>"; };
@@ -111,6 +116,14 @@
 		28D8C6632942AF880067D801 /* Motion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Motion.swift; sourceTree = "<group>"; };
 		28D8C6652942AF930067D801 /* MotionForSpriteKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionForSpriteKit.swift; sourceTree = "<group>"; };
 		28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeNodeBuilder.swift; sourceTree = "<group>"; };
+		2D4DFCB8A10C26F8DE946140 /* Pods_Guided_Missile_Guided_MissileUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Guided_Missile_Guided_MissileUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C2D418338B2918AD2183D8E /* Pods-Guided MissileTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Guided MissileTests.debug.xcconfig"; path = "Target Support Files/Pods-Guided MissileTests/Pods-Guided MissileTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5B148ECBDA34257028A43A87 /* Pods-Guided MissileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Guided MissileTests.release.xcconfig"; path = "Target Support Files/Pods-Guided MissileTests/Pods-Guided MissileTests.release.xcconfig"; sourceTree = "<group>"; };
+		822B53A1B62E23A4E13F248A /* Pods_Guided_Missile.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Guided_Missile.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		87265E5263CBD1CCAD4B1C7D /* Pods-Guided Missile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Guided Missile.release.xcconfig"; path = "Target Support Files/Pods-Guided Missile/Pods-Guided Missile.release.xcconfig"; sourceTree = "<group>"; };
+		D75BDE6F56EEC1947033D971 /* Pods-Guided Missile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Guided Missile.debug.xcconfig"; path = "Target Support Files/Pods-Guided Missile/Pods-Guided Missile.debug.xcconfig"; sourceTree = "<group>"; };
+		F306F400E6FFE8B088A1D432 /* Pods-Guided Missile-Guided MissileUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Guided Missile-Guided MissileUITests.release.xcconfig"; path = "Target Support Files/Pods-Guided Missile-Guided MissileUITests/Pods-Guided Missile-Guided MissileUITests.release.xcconfig"; sourceTree = "<group>"; };
+		FE1CDCA0AA9E568C58F083B8 /* Pods_Guided_MissileTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Guided_MissileTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +131,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB40AEED2F6553E0802C6AC5 /* Pods_Guided_Missile.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2D093EBC028BDA07E236593 /* Pods_Guided_MissileTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +147,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F92B22E8D2E33E8BE618F80A /* Pods_Guided_Missile_Guided_MissileUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +185,8 @@
 				28D8C6472942AC160067D801 /* Guided MissileTests */,
 				28D8C6512942AC170067D801 /* Guided MissileUITests */,
 				28D8C62C2942AC150067D801 /* Products */,
+				7C337A8FC25D3F96AEAD4A14 /* Pods */,
+				C8DEACA2B1BEBF23081BAF33 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -185,14 +203,15 @@
 		28D8C62D2942AC150067D801 /* Guided Missile */ = {
 			isa = PBXGroup;
 			children = (
+				283DBE4B29873F50001A34EE /* Guided-Missile-Info.plist */,
 				28B51A18297F51CC004ABF68 /* Guided Missile.entitlements */,
 				28D8C6302942AC150067D801 /* GameScene.sks */,
 				28D8C6322942AC150067D801 /* Actions.sks */,
 				28C70C092952787F00ADAC9A /* ExplosionParticles.sks */,
 				28C70C0B295CF63F00ADAC9A /* ExplosionStarbase.sks */,
 				28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */,
-				28D8C62E2942AC150067D801 /* AppDelegate.swift */,
 				28A12E8D29661B3100EF2E5B /* Sounds */,
+				28D8C62E2942AC150067D801 /* AppDelegate.swift */,
 				28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */,
 				28D8C6342942AC150067D801 /* GameScene.swift */,
 				28D8C669294794EE0067D801 /* ShapeNodeBuilder.swift */,
@@ -228,6 +247,29 @@
 			path = "Guided MissileUITests";
 			sourceTree = "<group>";
 		};
+		7C337A8FC25D3F96AEAD4A14 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D75BDE6F56EEC1947033D971 /* Pods-Guided Missile.debug.xcconfig */,
+				87265E5263CBD1CCAD4B1C7D /* Pods-Guided Missile.release.xcconfig */,
+				1A5FA4EBD6667BC6233A8289 /* Pods-Guided Missile-Guided MissileUITests.debug.xcconfig */,
+				F306F400E6FFE8B088A1D432 /* Pods-Guided Missile-Guided MissileUITests.release.xcconfig */,
+				4C2D418338B2918AD2183D8E /* Pods-Guided MissileTests.debug.xcconfig */,
+				5B148ECBDA34257028A43A87 /* Pods-Guided MissileTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		C8DEACA2B1BEBF23081BAF33 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				822B53A1B62E23A4E13F248A /* Pods_Guided_Missile.framework */,
+				2D4DFCB8A10C26F8DE946140 /* Pods_Guided_Missile_Guided_MissileUITests.framework */,
+				FE1CDCA0AA9E568C58F083B8 /* Pods_Guided_MissileTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -235,9 +277,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 28D8C6582942AC170067D801 /* Build configuration list for PBXNativeTarget "Guided Missile" */;
 			buildPhases = (
+				9DB547A0E685A27B6BA4D04D /* [CP] Check Pods Manifest.lock */,
 				28D8C6272942AC150067D801 /* Sources */,
 				28D8C6282942AC150067D801 /* Frameworks */,
 				28D8C6292942AC150067D801 /* Resources */,
+				E6D2D7EA895CF90F6D6D4C9B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -252,6 +296,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 28D8C65B2942AC170067D801 /* Build configuration list for PBXNativeTarget "Guided MissileTests" */;
 			buildPhases = (
+				D07C61F60B45A3636751E9A3 /* [CP] Check Pods Manifest.lock */,
 				28D8C6402942AC160067D801 /* Sources */,
 				28D8C6412942AC160067D801 /* Frameworks */,
 				28D8C6422942AC160067D801 /* Resources */,
@@ -270,9 +315,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 28D8C65E2942AC170067D801 /* Build configuration list for PBXNativeTarget "Guided MissileUITests" */;
 			buildPhases = (
+				75118D1C78DD2FF1ED770A1A /* [CP] Check Pods Manifest.lock */,
 				28D8C64A2942AC170067D801 /* Sources */,
 				28D8C64B2942AC170067D801 /* Frameworks */,
 				28D8C64C2942AC170067D801 /* Resources */,
+				F14E972E162EC2327A552E9A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -375,6 +422,109 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		75118D1C78DD2FF1ED770A1A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Guided Missile-Guided MissileUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9DB547A0E685A27B6BA4D04D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Guided Missile-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D07C61F60B45A3636751E9A3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Guided MissileTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E6D2D7EA895CF90F6D6D4C9B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Guided Missile/Pods-Guided Missile-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Guided Missile/Pods-Guided Missile-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Guided Missile/Pods-Guided Missile-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F14E972E162EC2327A552E9A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Guided Missile-Guided MissileUITests/Pods-Guided Missile-Guided MissileUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Guided Missile-Guided MissileUITests/Pods-Guided Missile-Guided MissileUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Guided Missile-Guided MissileUITests/Pods-Guided Missile-Guided MissileUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		28D8C6272942AC150067D801 /* Sources */ = {
@@ -564,6 +714,7 @@
 		};
 		28D8C6592942AC170067D801 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D75BDE6F56EEC1947033D971 /* Pods-Guided Missile.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -572,6 +723,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Guided-Missile-Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -594,6 +746,7 @@
 		};
 		28D8C65A2942AC170067D801 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 87265E5263CBD1CCAD4B1C7D /* Pods-Guided Missile.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -602,6 +755,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Guided-Missile-Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -624,6 +778,7 @@
 		};
 		28D8C65C2942AC170067D801 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4C2D418338B2918AD2183D8E /* Pods-Guided MissileTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -644,6 +799,7 @@
 		};
 		28D8C65D2942AC170067D801 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5B148ECBDA34257028A43A87 /* Pods-Guided MissileTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -664,6 +820,7 @@
 		};
 		28D8C65F2942AC170067D801 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A5FA4EBD6667BC6233A8289 /* Pods-Guided Missile-Guided MissileUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -682,6 +839,7 @@
 		};
 		28D8C6602942AC170067D801 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F306F400E6FFE8B088A1D432 /* Pods-Guided Missile-Guided MissileUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
