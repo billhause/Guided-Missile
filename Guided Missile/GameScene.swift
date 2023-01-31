@@ -47,6 +47,7 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
 let FOR_RELEASE                 = false   // Set to true to turn off debugging and turn on code to request a review
 let REVIEW_THRESHOLD_LEVEL      = 12     // Don't ask for a review unless the user has made it to this level or higher.
+let ADMOB_THRESHOLD_LEVEL       = 14     // Don't show ads unless the user has made it to this level before.
 let INITIAL_SHIELD_LEVEL        = 2
 let INCREMENTAL_LEVEL_CHANGE    = 0.02   // How much to change things each leve.  E.g. % faster, smaller etc.
 let TOTAL_ASTEROID_LIMIT        = 12     // Never have more than this many total asteroids in the field
@@ -532,6 +533,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         mSupplyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
         self.addChild(mSupplyShipNode)
+        if FOR_RELEASE { mSupplyShipNode.isHidden = true } // Don't display the supply ship in the release version
 
         mStarbaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         self.addChild(mStarbaseNode)
@@ -1182,7 +1184,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     // Dispaly an AdMob InterstitialAd
     func showInterstitialAdMobAd() {
         MyLog.debug("HighLevel: \(theModel.mHighLevel)")
-        if gInterstitial != nil {
+        
+        // Don't show ads unless the user has made it to the threshold level at some time in the past
+        if theModel.mHighLevel < ADMOB_THRESHOLD_LEVEL {
+            return
+        }
+        
+        if gInterstitial != nil { // Check if an ad has been loaded
             let viewController = self.view!.window!.rootViewController
             if viewController != nil {
                 // Pause Game if Necessary
