@@ -25,10 +25,6 @@
 //    Use this Video Tutorial: https://www.google.com/search?q=game+center+leaderboard+swift+tutorial&newwindow=1&sxsrf=ALeKk01Bg1uOrX6PizEaPXXrfCtJHlbZBA:1600966767114&source=lnms&sa=X&ved=0ahUKEwisus37oYLsAhWYXM0KHV0kBV04ChD8BQgKKAA&biw=1688&bih=1236&dpr=2#kpvalbx=_gdBsX-TSAtaDtQaHtpDoBQ42
 //   Another Leaderboard Example:  https://code.tutsplus.com/tutorials/game-center-and-leaderboards-for-your-ios-app--cms-27488
 //
-// AdMob Guided Missile Asteroid Pulverizer
-//   App ID: ca-app-pub-2874026631625786~1694134703
-//   Ad Unit ID: ca-app-pub-2874026631625786/1503127663
-//   AdMob Tutorial: https://www.youtube.com/watch?v=TMj_3mQA39g
 
 import SwiftUI // Needed for Image struct
 import SpriteKit
@@ -72,21 +68,27 @@ struct GameModel {
     var mAsteroidsRemaining   = 3 // 3 - Number of asteroids that still need to be destroied for the current level
     var mScore                = 0
     var mHighScore            = 0 // Highest score achieved to date
+    var mHighLevel            = 0 // Highest Level achived to date - Used for determining ads and review requests
     var mShieldLevel          = INITIAL_SHIELD_LEVEL
     var mGameOver             = true // Start in Game Over mode
     var mFirstRun             = true // Display instructions if it's the first run.
         
     // Load game data from disk
+    private let HIGH_SCORE_KEY = "HighScore"
+    private let HIGH_LEVEL_KEY = "HighLevel"
+    private let LEVEL_KEY      = "Level"
     mutating func load() {
-        mHighScore = UserDefaults.standard.integer(forKey: "HighScore")
-        mLevel = UserDefaults.standard.integer(forKey: "Level")
+        mHighScore = UserDefaults.standard.integer(forKey: HIGH_SCORE_KEY)
+        mHighLevel = UserDefaults.standard.integer(forKey: HIGH_LEVEL_KEY)
+        mLevel = UserDefaults.standard.integer(forKey:     LEVEL_KEY)
     }
     
     // Save game data to disk
     func save() {
         if mGameOver {return} // Don't save if this was triggered by things that happen after the game is over.
-        UserDefaults.standard.set(mHighScore, forKey: "HighScore")
-        UserDefaults.standard.set(mLevel, forKey: "Level")
+        UserDefaults.standard.set(mHighScore, forKey: HIGH_SCORE_KEY)
+        UserDefaults.standard.set(mHighLevel, forKey: HIGH_LEVEL_KEY)
+        UserDefaults.standard.set(mLevel, forKey:     LEVEL_KEY)
         
         // Update the Game Center with our new personal best score
         updateLeaderBoard()
@@ -626,6 +628,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     // Rest the game when the use clicks Play Again
     func resetGame(level: Int) {
         
+        if theModel.mLevel > theModel.mHighLevel {
+            theModel.mHighLevel = theModel.mLevel
+        }
+        
         if theModel.mScore > theModel.mHighScore {
             theModel.mHighScore = theModel.mScore
         }
@@ -689,12 +695,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if !mPlayAgainButton1.isHidden && mPlayAgainButton1.frame.contains(pos) {
             hidePlayAgainButtons()
             resetGame(level: theModel.playAgainButton1Level()) // Reset to level 1
+            showInterstitialAdMobAd()
         } else if !mPlayAgainButton2.isHidden && mPlayAgainButton2.frame.contains(pos) {
             hidePlayAgainButtons()
             resetGame(level: theModel.playAgainButton2Level()) // Reset to mid level
+            showInterstitialAdMobAd()
         } else if !mPlayAgainButton3.isHidden && mPlayAgainButton3.frame.contains(pos) {
             hidePlayAgainButtons()
             resetGame(level: theModel.playAgainButton3Level()) // Reset to highest level achieved
+            showInterstitialAdMobAd()
         } else if !mLeaderboardButton.isHidden && mLeaderboardButton.frame.contains(pos) { // Leaderboard Button Tap
             handleLeaderboardButtonTap()
             
@@ -1167,6 +1176,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             showLeaderBoard()
         } else {
             gameCenterAlertMessage() // Tell user they need Game Center to see the leaderboard
+        }
+    }
+    
+    // Dispaly an AdMob InterstitialAd
+    func showInterstitialAdMobAd() {
+        MyLog.debug("HighLevel: \(theModel.mHighLevel)")
+        if gInterstitial != nil {
+            let viewController = self.view!.window!.rootViewController
+            if viewController != nil {
+                // Pause Game if Necessary
+                if !self.realPaused { togglePause() }
+                
+                // Show the AdMob Ad
+                gInterstitial!.present(fromRootViewController: viewController!)
+            } else {
+                MyLog.debug("ERROR: AdMob - Unable to get rootViewController in showInterstitialAdMobAd() function")
+            }
+        } else {
+            MyLog.debug("AdMob - Ad wasn't ready")
         }
     }
     
