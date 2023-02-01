@@ -45,7 +45,7 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
-let FOR_RELEASE                 = false   // Set to true to turn off debugging and turn on code to request a review
+let FOR_RELEASE                 = false  // Set to true to turn off debugging, turn on request a review and Real Ads
 let REVIEW_THRESHOLD_LEVEL      = 12     // Don't ask for a review unless the user has made it to this level or higher.
 let ADMOB_THRESHOLD_LEVEL       = 14     // Don't show ads unless the user has made it to this level before.
 let INITIAL_SHIELD_LEVEL        = 2
@@ -570,8 +570,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         // Display instructions if this is the first run of the game.
         let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.85)
-        let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.72)
-        let line3Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.62)
+        let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.76) // 72 to low
+        let line3Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.70) // 62 too low
 
         let instructions1 = "Hold Phone Flat \n\nTilt phone slightly forward to guid missile UP"
         let instructions2 = "Tilt phone slightly back to guid missile down"
@@ -1235,7 +1235,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var mGamePausedAlertSmallNode = SKLabelNode(fontNamed: GAME_FONT)
     
     func gamePausedInit() {
-        let position = CGPoint(x: self.frame.width/2, y: self.frame.height*0.9)
+        let position = CGPoint(x: self.frame.width/2, y: self.frame.height*0.6)
         let color = UIColor(cgColor: CGColor(srgbRed: 1.0, green: 0.2, blue: 0.2, alpha: 1.0))
         
         mGamePausedAlertMainNode.fontSize = 30.0

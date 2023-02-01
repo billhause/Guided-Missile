@@ -162,7 +162,7 @@ struct ShapeNodeBuilder {
     // vvvvvvvvv     Missile      vvvvvvvvvvv
     // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     static func missileNode() -> SKShapeNode {
-        let scale = 0.4 // Change this to change the size of the missile
+        let scale = 0.5 // Change this to change the size of the missile
         let bodyRadius = 37.0/2 * scale
         let bodyOffset = CGPoint(x: 0, y: (25.0-12)/2 * scale) // rocket length is 37 with 25 above center point
         
