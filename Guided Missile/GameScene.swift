@@ -569,12 +569,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if theModel.mLevel > 1 {return} // only show instructions if this is level 1
         
         // Display instructions if this is the first run of the game.
-        let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.85)
-        let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.76) // 72 to low
-        let line3Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.70) // 62 too low
+        let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.81)
+        let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.72) // 72 to low
+        let line3Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.66) // 62 too low
 
-        let instructions1 = "Hold Phone Flat \n\nTilt phone slightly forward to guid missile UP"
-        let instructions2 = "Tilt phone slightly back to guid missile down"
+        let instructions1 = "Guide the missile like you are rolling a marble on the surface of your phone. \n\nTilt phone AWAY from you to guid missile UP"
+        let instructions2 = "Tilt phone TOWARD you to guid missile down"
         let instructions3 = "Destroy all asteroids!"
 
         Helper.fadingAlert(scene: self, position: line1Position, text: instructions1, fontSize: CGFloat(18), duration: 5)
