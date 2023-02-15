@@ -166,7 +166,7 @@ struct GameModel {
     func playAgainButton2Level() -> Int { return mLevel/2} // What level should button 2 take us to?
     func playAgainButton3Level() -> Int { return mLevel}
     
-    func playAgainButton1Bonus() -> Int { return getLevelBonus(level: 1) }  // What point bonus should be displayed for button 1
+//    func playAgainButton1Bonus() -> Int { return getLevelBonus(level: 1) }  // What point bonus should be displayed for button 1
     func playAgainButton2Bonus() -> Int { return getLevelBonus(level: mLevel/2) } // What point bonus should be displayed for button 2
     func playAgainButton3Bonus() -> Int { return getLevelBonus(level: mLevel) }
     
@@ -549,13 +549,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         // Config display lines for debugging
         mLabel1.position = CGPoint(x: self.frame.width/2, y: 10)
-        mLabel1.fontSize = CGFloat(9.0)
+        mLabel1.fontSize = CGFloat(12.0)
         self.addChild(mLabel1)
-        mLabel2.position = CGPoint(x: self.frame.width/2, y: 20)
-        mLabel2.fontSize = CGFloat(9.0)
+        mLabel2.position = CGPoint(x: self.frame.width/2, y: 23)
+        mLabel2.fontSize = CGFloat(12.0)
         self.addChild(mLabel2)
-        mLabel3.position = CGPoint(x: self.frame.width/2, y: 30)
-        mLabel3.fontSize = CGFloat(9.0)
+        mLabel3.position = CGPoint(x: self.frame.width/2, y: 36)
+        mLabel3.fontSize = CGFloat(12.0)
         self.addChild(mLabel3)
 
         displayInstructions()
@@ -573,9 +573,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.72) // 72 to low
         let line3Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.66) // 62 too low
 
-        let instructions1 = "Guide the missile like you are rolling a marble on the surface of your phone. \n\nTilt phone AWAY from you to guid missile UP"
-        let instructions2 = "Tilt phone TOWARD you to guid missile down"
-        let instructions3 = "Destroy all asteroids!"
+        let instructions1 = "Guide the missile by tilting your phone as if you were rolling a marble on the surface of your phone."
+        let instructions2 = "Destroy all asteroids!"
+        let instructions3 = ""
 
         Helper.fadingAlert(scene: self, position: line1Position, text: instructions1, fontSize: CGFloat(18), duration: 5)
         Helper.fadingAlert(scene: self, position: line2Position, text: instructions2, fontSize: CGFloat(18), duration: 5, delay: 5)
@@ -599,18 +599,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         // Play Again Buttons
         self.mPlayAgainButton1 = Helper.makeButton(position: buttonPosition1,
-                                                   text: "Play Again\nLevel 1\nBonus: \(theModel.playAgainButton1Bonus())")
+                                                   text: "Play", fontSize: CGFloat(50))
         self.addChild(self.mPlayAgainButton1)
         self.mPlayAgainButton1.isHidden = false // Show the button
 
         if theModel.mLevel > 4 { // Only show the other two buttons if the level is high enough
             self.mPlayAgainButton2 = Helper.makeButton(position: buttonPosition2,
-                                                       text: "Play Again\nLevel \(theModel.mLevel/2)\nBonus: \(theModel.playAgainButton2Bonus())")
+                                                       text: "Resume Play\nAt Level \(theModel.mLevel/2)\nBonus: \(theModel.playAgainButton2Bonus())")
             self.addChild(self.mPlayAgainButton2)
             self.mPlayAgainButton2.isHidden = false // Show the button
 
             self.mPlayAgainButton3 = Helper.makeButton(position: buttonPosition3,
-                                                       text: "Play Again\nLevel \(theModel.mLevel)\nBonus: \(theModel.playAgainButton3Bonus())")
+                                                       text: "Resume Play\nAt Level \(theModel.mLevel)\nBonus: \(theModel.playAgainButton3Bonus())")
             self.addChild(self.mPlayAgainButton3)
             self.mPlayAgainButton3.isHidden = false // Show the button
         }
@@ -619,7 +619,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         // Leaderboard Button
         if theModel.mLevel >= MIN_LEADERBOARD_BUTTON_LEVEL { // Only show the leaderboard button if they got to this level
             if mLeaderboardButton.parent != nil { mLeaderboardButton.removeFromParent() }
-            self.mLeaderboardButton = Helper.makeButton(position: leaderboardButtonPosition, text: "View Leaderboard")
+            self.mLeaderboardButton = Helper.makeButton(position: leaderboardButtonPosition, text: "Leaderboard", fontSize: 30)
             self.addChild(self.mLeaderboardButton)
             self.mLeaderboardButton.isHidden = false // show the button
         }

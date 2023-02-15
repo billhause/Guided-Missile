@@ -62,8 +62,10 @@ struct Helper {
         buttonFrameNode.lineWidth = 2
         buttonFrameNode.position = position
         buttonFrameNode.strokeColor = UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 1.0)
+        buttonFrameNode.fillColor = UIColor(red: 0.4, green: 0.2, blue: 0.2, alpha: 1.0)
     
         buttonFrameNode.addChild(buttonLabelNode)
+        buttonFrameNode.zPosition = 2 // Above most other stuff
         
         return buttonFrameNode
     }
