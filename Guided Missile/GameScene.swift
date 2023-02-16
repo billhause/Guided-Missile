@@ -73,15 +73,20 @@ struct GameModel {
     var mShieldLevel          = INITIAL_SHIELD_LEVEL
     var mGameOver             = true // Start in Game Over mode
     var mFirstRun             = true // Display instructions if it's the first run.
+    var mHighLevelScoreDict: [String: Int] = [:] // Dictionary with the high score for each level
         
     // Load game data from disk
     private let HIGH_SCORE_KEY = "HighScore"
     private let HIGH_LEVEL_KEY = "HighLevel"
     private let LEVEL_KEY      = "Level"
+    private let HIGH_LEVEL_SCORE_DICT_KEY = "HighLevelScoreDict" // Stores the high score for each level completed
     mutating func load() {
         mHighScore = UserDefaults.standard.integer(forKey: HIGH_SCORE_KEY)
         mHighLevel = UserDefaults.standard.integer(forKey: HIGH_LEVEL_KEY)
         mLevel = UserDefaults.standard.integer(forKey:     LEVEL_KEY)
+        
+        // Load the dict with the high scores for each level
+        mHighLevelScoreDict = UserDefaults.standard.object(forKey: HIGH_LEVEL_SCORE_DICT_KEY) as? [String : Int] ?? [String:Int]()
     }
     
     // Save game data to disk
@@ -90,6 +95,7 @@ struct GameModel {
         UserDefaults.standard.set(mHighScore, forKey: HIGH_SCORE_KEY)
         UserDefaults.standard.set(mHighLevel, forKey: HIGH_LEVEL_KEY)
         UserDefaults.standard.set(mLevel, forKey:     LEVEL_KEY)
+        UserDefaults.standard.set(mHighLevelScoreDict, forKey: HIGH_LEVEL_SCORE_DICT_KEY)
         
         // Update the Game Center with our new personal best score
         updateLeaderBoard()
@@ -112,6 +118,23 @@ struct GameModel {
         }
     }
 
+    // If the score passed in is a new high score for the level then
+    // update the high score for that level.  Otherwise do nothing.
+    // Dictionary Keys are strings that look like this: Level1, Level2, Level132 etc.
+    private let HIGH_LEVEL_SCORE_KEY_PREFIX = "Level"
+    mutating func updateHighScoreForLevel(level: Int, score: Int) {
+        if score <= getHighScoreForLevel(level: level) {
+            return // Nothing to do
+        }
+        mHighLevelScoreDict["\(HIGH_LEVEL_SCORE_KEY_PREFIX)\(level)"] = score
+    }
+    
+    // Return the current high score for the specified level
+    // If no high score exists yet, then return 0
+    func getHighScoreForLevel(level: Int) -> Int {
+        return mHighLevelScoreDict["\(HIGH_LEVEL_SCORE_KEY_PREFIX)\(level)"] ?? 0 // 0 is the default for nil keys
+    }
+    
     
     func totalAsteroids(level: Int) -> Int {
         switch level {
@@ -157,8 +180,8 @@ struct GameModel {
     func getLevelBonus(level: Int) -> Int {
         if level <= 1 { return 0 }
         
-        // Recursively calculate bonus
-        let bonus = POINTS_ASTEROID_HIT*((level-1)+2) + getLevelBonus(level: level-1)
+        // The bonus is the current high score for the preceeding level
+        let bonus = getHighScoreForLevel(level: level-1)
         return bonus
     }
     
@@ -240,6 +263,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
 
     // Call this after we beat the current level and need to move on to the next level
     func initializeNextLevel() {
+        theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
         theModel.save()  // Save max level reached.
         theModel.mLevel += 1 // move to next level
         theModel.resetLevel()
