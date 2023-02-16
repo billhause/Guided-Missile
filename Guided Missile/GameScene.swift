@@ -46,21 +46,22 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
 let FOR_RELEASE                 = false  // Set to true to turn off debugging, turn on request a review and Real Ads
-let REVIEW_THRESHOLD_LEVEL      = 12     // Don't ask for a review unless the user has made it to this level or higher.
-let ADMOB_THRESHOLD_LEVEL       = 14     // Don't show ads unless the user has made it to this level before.
+var LEADERBOARD_BUTTON_THRESHOLD = 5     // If they've ever made it past this level then show the leaderboard button.
+let INSTRUCTIONS_DISPLAY_LEVEL  = 9      // Show instructions if they have never made it past this level
+let REVIEW_THRESHOLD_LEVEL      = 10     // Don't ask for a review unless the user has made it to this level or higher.
+let ADMOB_THRESHOLD_LEVEL       = 13     // Don't show ads unless the user has made it to this level before.
 let INITIAL_SHIELD_LEVEL        = 2
 let INCREMENTAL_LEVEL_CHANGE    = 0.02   // How much to change things each leve.  E.g. % faster, smaller etc.
-let TOTAL_ASTEROID_LIMIT        = 12     // Never have more than this many total asteroids in the field
+let TOTAL_ASTEROID_LIMIT        = 12     // Never have more than this many total asteroids in a level
 let MAX_SIMULTANIOUS_ASTEROIDS  = TOTAL_ASTEROID_LIMIT - 2 // Never have more than this many asteroids at the same time
 let xScreenBuffer               = 5.0    // How far off the screen does an object need to be before appearing on the other side
 let yScreenBuffer               = 5.0    // How far off the screen does an object need to be before appearing on the other side
-let MIN_TIME_BETWEEN_SAUCERS    = 10.0   // Minimum time between saucers at start of game
+let MIN_TIME_BETWEEN_SAUCERS    = 8.0   // Minimum time between saucers at start of game
 let MIN_TIME_BETWEEN_ASTEROID_AND_SAUCER = 4.0 // Minimum time between when the last asteroid was destroid and when the saucer comes out
 var SAUCER_SPEED                = 0.2    // Start Speed in Both X & Y Direction for Saucer - Bigger is faster
 var SAUCER_X_SPEED              = 0.025  // Start Speed in X Direction for Saucer - Bigger is faster
 var POINTS_SAUCER_HIT           = 1      // Number of points for destroying a Saucer
 var POINTS_ASTEROID_HIT         = 0      // Number of points for destroying an Asteroid
-var MIN_LEADERBOARD_BUTTON_LEVEL = 1     // Level where we start showing the leaderboard button
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -553,7 +554,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         Sound.shared.play(forResource: "silent_sound")
         
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0) // Set gravity to 0
+        gamePausedInit()
+
+        let introDelay = displayIntro()
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + introDelay) {
+            self.startTheAction()
+        }
+
+    }
+    
+    
+    func startTheAction() {
         
         mSupplyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
         self.addChild(mSupplyShipNode)
@@ -582,28 +594,54 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         mLabel3.fontSize = CGFloat(12.0)
         self.addChild(mLabel3)
 
-        displayInstructions()
-        
         displayPlayAgainButtons()
         
-        gamePausedInit()
     }
     
-    func displayInstructions() {
-        if theModel.mLevel > 1 {return} // only show instructions if this is level 1
+    // Return the total time in seconds to allow for the Intro
+    let SCRIPTURE_DISPLAY_TIME = 4.0
+    let SPACER_DURATION = 3.0 // Time between Scripture and Instructions
+    let INSTRUCIONS_DISPLAY_TIME = 7.0
+    let INSTRUCTION_DESTROY_ASTEROIDS_DELAY = 2.0
+
+    func displayIntro() -> Double {
+        var totalDisplayTime = SCRIPTURE_DISPLAY_TIME + SPACER_DURATION
+        
+        // Show the scripture
+        let scripturePosition = CGPoint(x: self.size.width/2, y: self.size.height * 0.50) // Position of BOTTOM of text
+        let scriptureText = "In the beginning God created the heavens and the earth..."
+        Helper.fadingAlert(scene: self, position: scripturePosition, text: scriptureText, fontSize: CGFloat(32), duration: SCRIPTURE_DISPLAY_TIME)
+
+        // ONLY Show instructions if the user is a beginner
+        if theModel.mHighLevel > INSTRUCTIONS_DISPLAY_LEVEL {
+            MyLog.debug("totalDisplayTime: \(totalDisplayTime)")
+            return totalDisplayTime
+        }
+        
+        // Show the Game Instructions
+        totalDisplayTime += INSTRUCIONS_DISPLAY_TIME + INSTRUCTION_DESTROY_ASTEROIDS_DELAY
         
         // Display instructions if this is the first run of the game.
-        let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.81)
-        let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.72) // 72 to low
-        let line3Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.66) // 62 too low
+        let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.50)
+        let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.30)
 
         let instructions1 = "Guide the missile by tilting your phone as if you were rolling a marble on the surface of your phone."
         let instructions2 = "Destroy all asteroids!"
-        let instructions3 = ""
 
-        Helper.fadingAlert(scene: self, position: line1Position, text: instructions1, fontSize: CGFloat(18), duration: 5)
-        Helper.fadingAlert(scene: self, position: line2Position, text: instructions2, fontSize: CGFloat(18), duration: 5, delay: 5)
-        Helper.fadingAlert(scene: self, position: line3Position, text: instructions3, fontSize: CGFloat(18), duration: 5, delay: 10)
+        Helper.fadingAlert(scene: self,
+                           position: line1Position,
+                           text: instructions1,
+                           fontSize: CGFloat(24),
+                           duration: INSTRUCIONS_DISPLAY_TIME,
+                           delay: SCRIPTURE_DISPLAY_TIME + SPACER_DURATION) // Wait until the scripture is done displaying
+        Helper.fadingAlert(scene: self,
+                           position: line2Position,
+                           text: instructions2,
+                           fontSize: CGFloat(36),
+                           duration: INSTRUCIONS_DISPLAY_TIME,
+                           delay: SCRIPTURE_DISPLAY_TIME + SPACER_DURATION + INSTRUCTION_DESTROY_ASTEROIDS_DELAY)
+        MyLog.debug("totalDisplayTime: \(totalDisplayTime)")
+        return totalDisplayTime
     }
     
     // Remove and Add Play Again buttons with proper text for the current level
@@ -641,7 +679,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
 
         // Leaderboard Button
-        if theModel.mLevel >= MIN_LEADERBOARD_BUTTON_LEVEL { // Only show the leaderboard button if they got to this level
+        if theModel.mHighLevel >= LEADERBOARD_BUTTON_THRESHOLD { // Only show the leaderboard button if they got to this level
             if mLeaderboardButton.parent != nil { mLeaderboardButton.removeFromParent() }
             self.mLeaderboardButton = Helper.makeButton(position: leaderboardButtonPosition, text: "Leaderboard", fontSize: 30)
             self.addChild(self.mLeaderboardButton)
@@ -673,7 +711,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
 
         theModel.mLevel = level-1 // initializeNextLevel() will increment the level to 1
         initializeNextLevel()
-        displayInstructions() // Display instructions if at level 1
+//        displayInstructions() // Display instructions if at level 1
 
         // Reset the Starbase
         if mStarbaseNode.parent != nil {
@@ -1259,10 +1297,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var mGamePausedAlertSmallNode = SKLabelNode(fontNamed: GAME_FONT)
     
     func gamePausedInit() {
-        let position = CGPoint(x: self.frame.width/2, y: self.frame.height*0.6)
+        let position = CGPoint(x: self.frame.width/2, y: self.frame.height*0.65)
         let color = UIColor(cgColor: CGColor(srgbRed: 1.0, green: 0.2, blue: 0.2, alpha: 1.0))
         
-        mGamePausedAlertMainNode.fontSize = 30.0
+        mGamePausedAlertMainNode.fontSize = 36.0
         mGamePausedAlertMainNode.text = "Game Paused"
         mGamePausedAlertMainNode.isHidden = true // Start out hidden
         mGamePausedAlertMainNode.lineBreakMode = NSLineBreakMode.byWordWrapping
@@ -1274,7 +1312,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             self.addChild(mGamePausedAlertMainNode)
         }
         
-        mGamePausedAlertSmallNode.fontSize = 15.0
+        mGamePausedAlertSmallNode.fontSize = 24.0
         mGamePausedAlertSmallNode.text = "Tap Screen To Unpause"
         mGamePausedAlertSmallNode.isHidden = true // start out hidden
         mGamePausedAlertSmallNode.lineBreakMode = NSLineBreakMode.byWordWrapping
