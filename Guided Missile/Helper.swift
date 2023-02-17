@@ -85,9 +85,7 @@ struct Helper {
         // Use iPhone7 plus screen width (of 375) to normalize
         let fontRatio = Double(scene.frame.size.width)/375.0
         alertLabel.fontSize = fontSize * fontRatio
-        
-        MyLog.debug("Origianl Font Size: \(fontSize), Normalized Font Size = \(alertLabel.fontSize)")
-        
+                
 //        let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 0.1, duration: 1.0),
 //                                                  SKAction.rotate(byAngle: 2*3.141, duration: 1.0),
 //                                                  SKAction.moveTo(y: alertLabel.position.y*2, duration: 1.0),

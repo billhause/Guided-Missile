@@ -61,7 +61,7 @@ let MIN_TIME_BETWEEN_ASTEROID_AND_SAUCER = 4.0 // Minimum time between when the 
 var SAUCER_SPEED                = 0.2    // Start Speed in Both X & Y Direction for Saucer - Bigger is faster
 var SAUCER_X_SPEED              = 0.025  // Start Speed in X Direction for Saucer - Bigger is faster
 var POINTS_SAUCER_HIT           = 1      // Number of points for destroying a Saucer
-var POINTS_ASTEROID_HIT         = 0      // Number of points for destroying an Asteroid
+var POINTS_ASTEROID_HIT         = 1      // Number of points for destroying an Asteroid
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -125,6 +125,8 @@ struct GameModel {
     //     https://code.tutsplus.com/tutorials/game-center-and-leaderboards-for-your-ios-app--cms-27488
     //
     func updateLeaderBoard() {
+        if !FOR_RELEASE {return} // Only update leaderboard in the release version
+        
         if GKLocalPlayer.local.isAuthenticated {
             let theScore = GKScore(leaderboardIdentifier: "Scores")
             theScore.value = Int64(mHighScore)
@@ -323,7 +325,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     func handleCollision_Asteroid_and_Missile(theAsteroidNode: SKShapeNode) {
 //        MyLog.debug("Missile hit Asteroid")
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
-        theModel.mScore += POINTS_ASTEROID_HIT
+        
+        if FOR_RELEASE { // Only award points for asteroids in the FOR_RELEASE version to avoid Leaderboard Inflation
+            theModel.mScore += POINTS_ASTEROID_HIT
+        }
         mResetMissileFlag = true // move missile back to center of starbase later in the frame update
         
         if theModel.mAsteroidsRemaining < 1 {
