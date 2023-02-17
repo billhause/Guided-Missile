@@ -68,14 +68,26 @@ var POINTS_ASTEROID_HIT         = 0      // Number of points for destroying an A
 struct GameModel {
     var mLevel                = 1 // game level - Should be 1
     var mAsteroidsRemaining   = 3 // 3 - Number of asteroids that still need to be destroied for the current level
-    var mScore                = 0
     var mHighScore            = 0 // Highest score achieved to date
     var mHighLevel            = 0 // Highest Level achived to date - Used for determining ads and review requests
     var mShieldLevel          = INITIAL_SHIELD_LEVEL
     var mGameOver             = true // Start in Game Over mode
     var mFirstRun             = true // Display instructions if it's the first run.
     var mHighLevelScoreDict: [String: Int] = [:] // Dictionary with the high score for each level
-        
+    
+    private var _mScore       = 0 // Use setter/getter to set this so that HighScore can be updated
+    var mScore: Int {
+        set {
+            if mGameOver {return} // You can't add more points if the game is over.
+            _mScore = newValue
+            if newValue > mHighScore { // Update the high score if score exceeds the current high score
+                mHighScore = newValue
+            }
+        }
+        get { return _mScore }
+    }
+    
+    
     // Load game data from disk
     private let HIGH_SCORE_KEY = "HighScore"
     private let HIGH_LEVEL_KEY = "HighLevel"
@@ -91,6 +103,9 @@ struct GameModel {
     }
     
     // Save game data to disk
+    // This gets called when the game ends by blowing up the starbase for any reason
+    // Check if the GameOver flag is true since sometimes the base explodes multiple times if the game
+    // keeps running in demo mode.
     func save() {
         if mGameOver {return} // Don't save if this was triggered by things that happen after the game is over.
         UserDefaults.standard.set(mHighScore, forKey: HIGH_SCORE_KEY)
@@ -265,7 +280,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     // Call this after we beat the current level and need to move on to the next level
     func initializeNextLevel() {
         theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
-        theModel.save()  // Save max level reached.
+//        theModel.save()  // Save max level reached. wdhx is this needed?
         theModel.mLevel += 1 // move to next level
         theModel.resetLevel()
 
@@ -335,31 +350,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             // Show NO shields - set alpha to 0
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
         } else {
-            // DESTROIED - if the shields are negative then the starbase is destroide
-            Sound.shared.play(forResource: "ExplosionStarbaseSound")   // Good Starbase Explosion Sound
-            
-            Haptic.shared.longVibrate() // Long vibration like Error vibrate
-            
-            let explosion = SKEmitterNode(fileNamed: "ExplosionStarbase")!
-            explosion.position = mStarbaseNode.position
-            self.addChild(explosion)
-            self.run(SKAction.wait(forDuration: 2.0)) {
-                explosion.removeFromParent() // Remove the explosion after it runs
-            }
-            
-            
-            // REMOVE THE Starbase and the missile
-            mStarbaseNode.removeFromParent()
-            mMissileNode.removeFromParent()
-            Sound.shared.thrustSoundOff() // Stop thrust sound
-            theModel.mGameOver = true
-            
-            // Wait 2 seconds for starbase explosion to finish then show Play Again buttons
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                self.displayPlayAgainButtons()
-            }
-
-            theModel.save()
+            explodeStarbaseAndEndGame()
         }
 
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
@@ -696,9 +687,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             theModel.mHighLevel = theModel.mLevel
         }
         
-        if theModel.mScore > theModel.mHighScore {
-            theModel.mHighScore = theModel.mScore
-        }
+//        if theModel.mScore > theModel.mHighScore { // wdhx TODO: Remove this after making the high score update every time the score changes.
+//            theModel.mHighScore = theModel.mScore
+//        }
         theModel.mScore = theModel.getLevelBonus(level: level)
         
         theModel.mGameOver = false // we're playing agian.
@@ -1189,34 +1180,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             // Show NO shields - set alpha to 0
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
         } else {
-            // DESTROIED - if the shields are negative then the starbase is destroide
-            Sound.shared.play(forResource: "ExplosionStarbaseSound")   // Good Starbase Explosion Sound
-            
-            Haptic.shared.longVibrate() // Long vibration like Error vibrate
-            
-            let explosion = SKEmitterNode(fileNamed: "ExplosionStarbase")!
-            explosion.position = mStarbaseNode.position
-            self.addChild(explosion)
-            self.run(SKAction.wait(forDuration: 2.0)) {
-                explosion.removeFromParent() // Remove the explosion after it runs
-            }
-            
-            
-            // REMOVE THE Starbase and the Saucer
-            mStarbaseNode.removeFromParent()
-            theModel.mGameOver = true
-            
-            // Wait 2 seconds for starbase explosion to finish then show Play Again buttons
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                self.displayPlayAgainButtons()
-            }
-            
-            theModel.save() // save high score etc.
+            explodeStarbaseAndEndGame()
         }
 
         processDestroidSaucer()
     }
 
+    // Call this to blow up the starbase and end the game
+    //   - Blow up the base
+    //   - End the sounds
+    //   - Remove missile and starbase nodes
+    //   - Save scores etc.
+    //       - This will update the Leaderboard if needed
+    //   - Set the Game Over flag
+    //   - Display the play again buttons
+    func explodeStarbaseAndEndGame() {
+        // DESTROIED - if the shields are negative then the starbase is destroide
+        Sound.shared.play(forResource: "ExplosionStarbaseSound")   // Good Starbase Explosion Sound
+        
+        Haptic.shared.longVibrate() // Long vibration like Error vibrate
+        
+        let explosion = SKEmitterNode(fileNamed: "ExplosionStarbase")!
+        explosion.position = mStarbaseNode.position
+        self.addChild(explosion)
+        self.run(SKAction.wait(forDuration: 2.0)) {
+            explosion.removeFromParent() // Remove the explosion after it runs
+        }
+        
+        
+        // REMOVE THE Starbase and the Saucer
+        mStarbaseNode.removeFromParent()
+        mMissileNode.removeFromParent()
+        Sound.shared.thrustSoundOff() // Stop thrust sound
+
+        // Wait 2 seconds for starbase explosion to finish then show Play Again buttons
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.displayPlayAgainButtons()
+        }
+        
+        theModel.save() // save high score etc.
+        theModel.mGameOver = true // Mark game over AFTER saving.  Save does not save if the gameover flag is true.
+    }
     
     //
     // MARK: Leaderboard Code
