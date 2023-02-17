@@ -74,13 +74,19 @@ struct Helper {
     static func fadingAlert(scene: SKScene, position: CGPoint, text: String, fontSize: CGFloat = CGFloat(30), duration: Double = 2.0, delay: Double = 0) {
         let fontSize = CGFloat(fontSize)
         let alertLabel = SKLabelNode(fontNamed: GAME_FONT)
-        alertLabel.fontSize = fontSize
         alertLabel.text = text
         alertLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
         alertLabel.numberOfLines = 0
         alertLabel.fontColor = UIColor(cgColor: CGColor(srgbRed: 0.0, green: 0.8, blue: 1.0, alpha: 1.0))
         alertLabel.preferredMaxLayoutWidth = scene.frame.size.width * 4/5
         alertLabel.position = position
+        
+        // Normalize Font Size so that line breaks happen at the same place on all devices
+        // Use iPhone7 plus screen width (of 375) to normalize
+        let fontRatio = Double(scene.frame.size.width)/375.0
+        alertLabel.fontSize = fontSize * fontRatio
+        
+        MyLog.debug("Origianl Font Size: \(fontSize), Normalized Font Size = \(alertLabel.fontSize)")
         
 //        let shrinkAndFadeAction = SKAction.group([SKAction.scale(to: 0.1, duration: 1.0),
 //                                                  SKAction.rotate(byAngle: 2*3.141, duration: 1.0),

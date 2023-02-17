@@ -309,7 +309,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         // Display Text - Warping To Asteroid Field 2 etc.  ONLY IF Field 2 or greater
         if theModel.mLevel > 1 {
             let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75)
-            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.75 - 20)
+            let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.70)
             Helper.fadingAlert(scene: self, position: line1Position, text: "Warping to")
             Helper.fadingAlert(scene: self, position: line2Position, text: "Asteroid Field \(theModel.mLevel)")
         }
