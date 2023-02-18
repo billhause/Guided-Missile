@@ -1322,8 +1322,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     func gamePausedInit() {
         let position = CGPoint(x: self.frame.width/2, y: self.frame.height*0.65)
         let color = UIColor(cgColor: CGColor(srgbRed: 1.0, green: 0.2, blue: 0.2, alpha: 1.0))
+        let fontRatio = Double(self.frame.size.width)/375.0
         
-        mGamePausedAlertMainNode.fontSize = 36.0
+        mGamePausedAlertMainNode.fontSize = 36.0 * fontRatio
         mGamePausedAlertMainNode.text = "Game Paused"
         mGamePausedAlertMainNode.isHidden = true // Start out hidden
         mGamePausedAlertMainNode.lineBreakMode = NSLineBreakMode.byWordWrapping
@@ -1335,7 +1336,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             self.addChild(mGamePausedAlertMainNode)
         }
         
-        mGamePausedAlertSmallNode.fontSize = 24.0
+        mGamePausedAlertSmallNode.fontSize = 24.0 * fontRatio
         mGamePausedAlertSmallNode.text = "Tap Screen To Unpause"
         mGamePausedAlertSmallNode.isHidden = true // start out hidden
         mGamePausedAlertSmallNode.lineBreakMode = NSLineBreakMode.byWordWrapping
