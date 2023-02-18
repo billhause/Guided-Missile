@@ -78,7 +78,7 @@ struct GameModel {
     private var _mScore       = 0 // Use setter/getter to set this so that HighScore can be updated
     var mScore: Int {
         set {
-            if mGameOver {return} // You can't add more points if the game is over.
+//            if mGameOver {return} // You can't add more points if the game is over.
             _mScore = newValue
             if newValue > mHighScore { // Update the high score if score exceeds the current high score
                 mHighScore = newValue
@@ -97,17 +97,21 @@ struct GameModel {
         mHighScore = UserDefaults.standard.integer(forKey: HIGH_SCORE_KEY)
         mHighLevel = UserDefaults.standard.integer(forKey: HIGH_LEVEL_KEY)
         mLevel = UserDefaults.standard.integer(forKey:     LEVEL_KEY)
+        if mLevel == 0 {mLevel = 1} // First time running the game, no level has been saved yet
         
+        MyLog.debug("Loaded mLevel = \(mLevel)")
+
         // Load the dict with the high scores for each level
         mHighLevelScoreDict = UserDefaults.standard.object(forKey: HIGH_LEVEL_SCORE_DICT_KEY) as? [String : Int] ?? [String:Int]()
     }
     
     // Save game data to disk
     // This gets called when the game ends by blowing up the starbase for any reason
-    // Check if the GameOver flag is true since sometimes the base explodes multiple times if the game
-    // keeps running in demo mode.
     func save() {
-        if mGameOver {return} // Don't save if this was triggered by things that happen after the game is over.
+//        if mGameOver {return} // Don't save if this was triggered by things that happen after the game is over.
+        
+        MyLog.debug("Save mLevel = \(mLevel)")
+
         UserDefaults.standard.set(mHighScore, forKey: HIGH_SCORE_KEY)
         UserDefaults.standard.set(mHighLevel, forKey: HIGH_LEVEL_KEY)
         UserDefaults.standard.set(mLevel, forKey:     LEVEL_KEY)
@@ -141,6 +145,10 @@ struct GameModel {
     // Dictionary Keys are strings that look like this: Level1, Level2, Level132 etc.
     private let HIGH_LEVEL_SCORE_KEY_PREFIX = "Level"
     mutating func updateHighScoreForLevel(level: Int, score: Int) {
+        
+        // Update the highest level achieved if this is a new high
+        if level > mHighLevel { mHighLevel = level }
+        
         if score <= getHighScoreForLevel(level: level) {
             return // Nothing to do
         }
@@ -200,6 +208,7 @@ struct GameModel {
         
         // The bonus is the current high score for the preceeding level
         let bonus = getHighScoreForLevel(level: level-1)
+        MyLog.debug("getLevelBonus(\(level)) = \(bonus)")
         return bonus
     }
     
@@ -220,7 +229,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var theModel = GameModel()
     private var mResetMissileFlag = false  // set to true to reset the missile at the starbase
     private var mGameVM = GameViewModel()
-//    private var mStarbaseSheildLevel = 2 // Start at level 2
     
     
     // vvvvvvvvvvvvvv
@@ -280,10 +288,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
 
     // Call this after we beat the current level and need to move on to the next level
-    func initializeNextLevel() {
-        theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
+    // Increment the level before calling
+    func initializeLevel() {
 //        theModel.save()  // Save max level reached. wdhx is this needed?
-        theModel.mLevel += 1 // move to next level
+//        theModel.mLevel += 1 // move to next level
         theModel.resetLevel()
 
         stopSaucer() // reset the saucer for next deployment
@@ -327,13 +335,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         processDestroidAsteroid(theAsteroidNode: theAsteroidNode)
         
         if FOR_RELEASE { // Only award points for asteroids in the FOR_RELEASE version to avoid Leaderboard Inflation
-            theModel.mScore += POINTS_ASTEROID_HIT
+            if !theModel.mGameOver {
+                theModel.mScore += POINTS_ASTEROID_HIT
+            }
         }
         mResetMissileFlag = true // move missile back to center of starbase later in the frame update
         
         if theModel.mAsteroidsRemaining < 1 {
             // We beat the level so reset and start the next level
-            initializeNextLevel()
+            theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
+            theModel.mLevel += 1 // move to next level
+            MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
+            initializeLevel()
         }
 
     }
@@ -363,7 +376,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         // If this was the last asteroid and the base is not destroid, then we beat the
         // level even though the starbase destroied the last asteroid in the collision
         if (theModel.mAsteroidsRemaining < 1) && (theModel.mShieldLevel >= 0) {
-            initializeNextLevel()
+            theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
+            theModel.mLevel += 1 // move to next level
+            MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
+            initializeLevel()
         }
     }
 
@@ -537,7 +553,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     var mPlayAgainButton2 = SKShapeNode()
     var mPlayAgainButton3 = SKShapeNode()
     let mMissileNode = ShapeNodeBuilder.missileNode()
-    let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
+//    let mSupplyShipNode = ShapeNodeBuilder.supplyShipNode()
     let (mStarbaseNode, mShieldNode) = ShapeNodeBuilder.starBaseNode() // Returns a tuple with the starbase node and the shield node
     let mSaucerNode = ShapeNodeBuilder.SaucerNode()
     var mAsteroidNodeDict = [String: SKShapeNode]() // Dictionary of Asteroids using the node name as key.
@@ -563,9 +579,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     
     func startTheAction() {
         
-        mSupplyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
-        self.addChild(mSupplyShipNode)
-        if FOR_RELEASE { mSupplyShipNode.isHidden = true } // Don't display the supply ship in the release version
+//        mSupplyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
+//        self.addChild(mSupplyShipNode)
+//        if FOR_RELEASE { mSupplyShipNode.isHidden = true } // Don't display the supply ship in the release version
 
         mStarbaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         self.addChild(mStarbaseNode)
@@ -577,7 +593,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         startSaucer()
 
         theModel.mScore = 0
-        initializeNextLevel() // Add asteroids to the scene, increment level, reset shields, score etc.
+        initializeLevel() // Add asteroids to the scene, increment level, reset shields, score etc.
         
         // Config display lines for debugging
         mLabel1.position = CGPoint(x: self.frame.width/2, y: 10)
@@ -688,16 +704,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     // Rest the game when the use clicks Play Again
     func resetGame(level: Int) {
         
-        if theModel.mLevel > theModel.mHighLevel {
-            theModel.mHighLevel = theModel.mLevel
-        }
-        
-//        if theModel.mScore > theModel.mHighScore { // wdhx TODO: Remove this after making the high score update every time the score changes.
-//            theModel.mHighScore = theModel.mScore
+//        if theModel.mLevel > theModel.mHighLevel {
+//            theModel.mHighLevel = theModel.mLevel // Remember the highest level we've reached
 //        }
-        theModel.mScore = theModel.getLevelBonus(level: level)
-        
+        theModel.mLevel = level
         theModel.mGameOver = false // we're playing agian.
+        theModel.mScore = theModel.getLevelBonus(level: level)
         
         // Clear out the Asteroid Dictionary
         for (_, node) in mAsteroidNodeDict {
@@ -705,9 +717,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         }
         mAsteroidNodeDict.removeAll()
 
-        theModel.mLevel = level-1 // initializeNextLevel() will increment the level to 1
-        initializeNextLevel()
-//        displayInstructions() // Display instructions if at level 1
+        initializeLevel()
 
         // Reset the Starbase
         if mStarbaseNode.parent != nil {
@@ -1135,7 +1145,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     func handleCollision_Saucer_and_Missile() {
         if mSaucerNode.isHidden {return} // Nothing to do
         
-        theModel.mScore += POINTS_SAUCER_HIT * mSaucerCount // More poits for faster saucers.
+        if !theModel.mGameOver {
+            theModel.mScore += POINTS_SAUCER_HIT * mSaucerCount // More poits for faster saucers.
+        }
         
         Helper.fadingAlert(scene: self, position: mSaucerNode.position, text: "\(POINTS_SAUCER_HIT * mSaucerCount)pts", fontSize: 25, duration: 1, delay: 0)
         
@@ -1164,7 +1176,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         if theModel.mAsteroidsRemaining < 1 {
             // We beat the level so reset and start the next level
-            initializeNextLevel()
+            theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
+            theModel.mLevel += 1 // move to next level
+            MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
+            initializeLevel()
         }
     }
 
@@ -1222,9 +1237,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.displayPlayAgainButtons()
         }
-        
+
         theModel.save() // save high score etc.
-        theModel.mGameOver = true // Mark game over AFTER saving.  Save does not save if the gameover flag is true.
+        theModel.mGameOver = true
     }
     
     //
@@ -1254,7 +1269,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     
     // Dispaly an AdMob InterstitialAd
     func showInterstitialAdMobAd() {
-        MyLog.debug("HighLevel: \(theModel.mHighLevel)")
         
         // Don't show ads unless the user has made it to the threshold level at some time in the past
         if theModel.mHighLevel < ADMOB_THRESHOLD_LEVEL {
