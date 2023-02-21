@@ -290,8 +290,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     // Call this after we beat the current level and need to move on to the next level
     // Increment the level before calling
     func initializeLevel() {
-//        theModel.save()  // Save max level reached. wdhx is this needed?
-//        theModel.mLevel += 1 // move to next level
         theModel.resetLevel()
 
         stopSaucer() // reset the saucer for next deployment
@@ -344,6 +342,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if theModel.mAsteroidsRemaining < 1 {
             // We beat the level so reset and start the next level
             theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
+            theModel.save() // wdhx
             theModel.mLevel += 1 // move to next level
             MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
             initializeLevel()
@@ -611,10 +610,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
     
     // Return the total time in seconds to allow for the Intro
-    let SCRIPTURE_DISPLAY_TIME = 4.0
-    let SPACER_DURATION = 3.0 // Time between Scripture and Instructions
+    let SCRIPTURE_DISPLAY_TIME = 3.0
+    let SPACER_DURATION = 2.0 // Time between Scripture and Instructions
     let INSTRUCIONS_DISPLAY_TIME = 7.0
-    let INSTRUCTION_DESTROY_ASTEROIDS_DELAY = 2.0
+    let INSTRUCTION_DESTROY_ASTEROIDS_DELAY = 0.0
 
     func displayIntro() -> Double {
         var totalDisplayTime = SCRIPTURE_DISPLAY_TIME + SPACER_DURATION
@@ -637,8 +636,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         let line1Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.50)
         let line2Position = CGPoint(x: self.size.width/2, y: self.size.height * 0.30)
 
-        let instructions1 = "Guide the missile by tilting your phone as if you were rolling a marble on the surface of your phone."
-        let instructions2 = "Destroy all asteroids!"
+        let instructions1 = "Guide the missile by tilting your phone as if you were rolling a marble on the surface of your phone. \nDestroy All Asteroids!"
+        let instructions2 = "" //"Destroy all asteroids!"
 
         Helper.fadingAlert(scene: self,
                            position: line1Position,
@@ -649,7 +648,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         Helper.fadingAlert(scene: self,
                            position: line2Position,
                            text: instructions2,
-                           fontSize: CGFloat(36),
+                           fontSize: CGFloat(24),
                            duration: INSTRUCIONS_DISPLAY_TIME,
                            delay: SCRIPTURE_DISPLAY_TIME + SPACER_DURATION + INSTRUCTION_DESTROY_ASTEROIDS_DELAY)
         MyLog.debug("totalDisplayTime: \(totalDisplayTime)")
@@ -1135,7 +1134,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         self.run(SKAction.wait(forDuration: 2.0)) {
             explosion.removeFromParent() // Remove the explosion after it runs
         }
-        Sound.shared.play(forResource: "ExplosionSaucerSound")
+        Sound.shared.play(forResource: "ExplosionSaucerSound") // wdhx
         Haptic.shared.boomVibrate()
         
         stopSaucer()
@@ -1177,6 +1176,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if theModel.mAsteroidsRemaining < 1 {
             // We beat the level so reset and start the next level
             theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
+            theModel.save() // wdhx
             theModel.mLevel += 1 // move to next level
             MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
             initializeLevel()
@@ -1291,7 +1291,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         }
     }
     
-    func showLeaderBoard() { // wdh added
+    func showLeaderBoard() {
         let viewController = self.view!.window!.rootViewController
         let gcvc = GKGameCenterViewController()
         gcvc.gameCenterDelegate = self
