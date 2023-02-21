@@ -62,6 +62,8 @@ var SAUCER_SPEED                = 0.2    // Start Speed in Both X & Y Direction 
 var SAUCER_X_SPEED              = 0.025  // Start Speed in X Direction for Saucer - Bigger is faster
 var POINTS_SAUCER_HIT           = 1      // Number of points for destroying a Saucer
 var POINTS_ASTEROID_HIT         = 1      // Number of points for destroying an Asteroid
+let SHIELD_ALPHA_1              = 0.35   // Alpha for shield when one shield is remaining
+let SHIELD_ALPHA_2              = 0.8    // Alpha for shield when two shields are remaining
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -342,7 +344,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if theModel.mAsteroidsRemaining < 1 {
             // We beat the level so reset and start the next level
             theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
-            theModel.save() // wdhx
+            theModel.save()
             theModel.mLevel += 1 // move to next level
             MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
             initializeLevel()
@@ -360,9 +362,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         
         if theModel.mShieldLevel >= 2 {
-            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
+            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: SHIELD_ALPHA_2)
         } else if theModel.mShieldLevel == 1 {
-            mShieldNode.run(SKAction.fadeAlpha(to: 0.5, duration: 1))
+            mShieldNode.run(SKAction.fadeAlpha(to: SHIELD_ALPHA_1, duration: 1))
         } else if theModel.mShieldLevel == 0 {
             // Show NO shields - set alpha to 0
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))
@@ -1134,7 +1136,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         self.run(SKAction.wait(forDuration: 2.0)) {
             explosion.removeFromParent() // Remove the explosion after it runs
         }
-        Sound.shared.play(forResource: "ExplosionSaucerSound") // wdhx
+        Sound.shared.play(forResource: "ExplosionSaucerSound") 
         Haptic.shared.boomVibrate()
         
         stopSaucer()
@@ -1176,14 +1178,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if theModel.mAsteroidsRemaining < 1 {
             // We beat the level so reset and start the next level
             theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
-            theModel.save() // wdhx
+            theModel.save()
             theModel.mLevel += 1 // move to next level
             MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
             initializeLevel()
         }
     }
 
-    
     // SAUCER hits STARBASE- Call this when the saucer and the starbase collide
     func handleCollision_Saucer_and_Starbase() {
         if mSaucerNode.isHidden {return} // Nothing to do
@@ -1193,9 +1194,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         
         if theModel.mShieldLevel >= 2 {
-            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
+            mShieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: SHIELD_ALPHA_2)
         } else if theModel.mShieldLevel == 1 {
-            mShieldNode.run(SKAction.fadeAlpha(to: 0.5, duration: 1))
+            mShieldNode.run(SKAction.fadeAlpha(to: SHIELD_ALPHA_1, duration: 1))
         } else if theModel.mShieldLevel == 0 {
             // Show NO shields - set alpha to 0
             mShieldNode.run(SKAction.fadeAlpha(to: 0.0, duration: 1))

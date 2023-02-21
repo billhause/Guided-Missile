@@ -128,7 +128,7 @@ struct ShapeNodeBuilder {
         
         // Add Shield
         let shieldNode = SKShapeNode(circleOfRadius: shieldRad)
-        shieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.8)
+        shieldNode.strokeColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: SHIELD_ALPHA_2)
         shieldNode.glowWidth = 8.0
         shieldNode.lineWidth = 1
         shape.addChild(shieldNode)
