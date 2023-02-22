@@ -46,6 +46,7 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
 let FOR_RELEASE                 = false  // Set to true to turn off debugging, turn on request a review and Real Ads
+let FOR_DEMO                    = true   // Set to true to collect screen shots from the simulators
 var LEADERBOARD_BUTTON_THRESHOLD = 5     // If they've ever made it past this level then show the leaderboard button.
 let INSTRUCTIONS_DISPLAY_LEVEL  = 9      // Show instructions if they have never made it past this level
 let REVIEW_THRESHOLD_LEVEL      = 10     // Don't ask for a review unless the user has made it to this level or higher.
@@ -344,7 +345,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if theModel.mAsteroidsRemaining < 1 {
             // We beat the level so reset and start the next level
             theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
-            theModel.save()
+            if !theModel.mGameOver {
+                theModel.save() // Only save if this happens when the game is not over.
+            }
             theModel.mLevel += 1 // move to next level
             MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
             initializeLevel()
@@ -580,10 +583,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     
     func startTheAction() {
         
-//        mSupplyShipNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height - self.frame.size.height/3)
-//        self.addChild(mSupplyShipNode)
-//        if FOR_RELEASE { mSupplyShipNode.isHidden = true } // Don't display the supply ship in the release version
-
         mStarbaseNode.position = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         self.addChild(mStarbaseNode)
 
@@ -1178,7 +1177,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if theModel.mAsteroidsRemaining < 1 {
             // We beat the level so reset and start the next level
             theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
-            theModel.save()
+            if !theModel.mGameOver {
+                theModel.save() // Only save if this happens when the game is not over.
+            }
             theModel.mLevel += 1 // move to next level
             MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
             initializeLevel()
@@ -1352,6 +1353,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     }
     
     func showGamePausedMessage() {
+        if FOR_DEMO {return} // Don't show the game paused message if taking screen shots
         mGamePausedAlertMainNode.isHidden = false
         mGamePausedAlertSmallNode.isHidden = false
     }
