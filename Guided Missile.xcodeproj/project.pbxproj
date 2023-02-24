@@ -724,6 +724,7 @@
 				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Guided-Missile-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Missile Attack";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -759,6 +760,7 @@
 				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Guided-Missile-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Missile Attack";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

@@ -45,8 +45,8 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
-let FOR_RELEASE                 = false  // Set to true to turn off debugging, turn on request a review and Real Ads
-let FOR_DEMO                    = true   // Set to true to collect screen shots from the simulators
+let FOR_RELEASE                 = true  // Set to true to turn off debugging, turn on request a review and Real Ads
+let FOR_DEMO                    = false   // Set to true to collect screen shots from the simulators
 var LEADERBOARD_BUTTON_THRESHOLD = 5     // If they've ever made it past this level then show the leaderboard button.
 let INSTRUCTIONS_DISPLAY_LEVEL  = 9      // Show instructions if they have never made it past this level
 let REVIEW_THRESHOLD_LEVEL      = 10     // Don't ask for a review unless the user has made it to this level or higher.
@@ -106,6 +106,8 @@ struct GameModel {
 
         // Load the dict with the high scores for each level
         mHighLevelScoreDict = UserDefaults.standard.object(forKey: HIGH_LEVEL_SCORE_DICT_KEY) as? [String : Int] ?? [String:Int]()
+        
+        if FOR_DEMO {mLevel = 10} // Start on higher level when in Demo mode for screen shots and recordings etc.
     }
     
     // Save game data to disk
@@ -186,6 +188,8 @@ struct GameModel {
     // You should set the level variable before calling this function
     // because some of the values may depend on the level.
     mutating func resetLevel() {
+        if FOR_DEMO {mLevel = 10} // Start on higher level when in Demo mode for screen shots and recordings etc.
+
         mAsteroidsRemaining = totalAsteroids(level: mLevel) // Calculated Var that changes based on mLevel
         mShieldLevel = INITIAL_SHIELD_LEVEL
         
@@ -294,6 +298,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     // Increment the level before calling
     func initializeLevel() {
         theModel.resetLevel()
+        
+        if FOR_DEMO { // Provide some thrust in the x direction when running on a simulator for screen shots
+            demo_mode_random_x_thrust = 0.0 //Double.random(in: -1.6...1.6)
+        }
 
         stopSaucer() // reset the saucer for next deployment
         
@@ -596,13 +604,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         initializeLevel() // Add asteroids to the scene, increment level, reset shields, score etc.
         
         // Config display lines for debugging
-        mLabel1.position = CGPoint(x: self.frame.width/2, y: 10)
+        mLabel1.position = CGPoint(x: self.frame.width/2, y: 15)
         mLabel1.fontSize = CGFloat(12.0)
         self.addChild(mLabel1)
-        mLabel2.position = CGPoint(x: self.frame.width/2, y: 23)
+        mLabel2.position = CGPoint(x: self.frame.width/2, y: 28)
         mLabel2.fontSize = CGFloat(12.0)
         self.addChild(mLabel2)
-        mLabel3.position = CGPoint(x: self.frame.width/2, y: 36)
+        mLabel3.position = CGPoint(x: self.frame.width/2, y: 41)
         mLabel3.fontSize = CGFloat(12.0)
         self.addChild(mLabel3)
 
@@ -809,7 +817,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
-    // FRAME UPDATE
+    // MARK: FRAME UPDATE
     // This gets called each frame update
     // Called before each frame is rendered
     var gUpdateCount = 0
@@ -857,7 +865,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         return (newX, newY)
     }
     
-    
+    var demo_mode_random_x_thrust = 0.0 // Used in demo mode to add x thrust for the simulators
     func updateMissileFrame() {
         // NOTES:
         // GravityX and GravityY raw values are between -1.0 and 1.0
@@ -878,9 +886,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
 
         if !theModel.mGameOver {
             // Update Missile Velocity based on phone orientation gravity
-            var dx = Motion.shared.xGravity * THRUST_MULTIPLIER // Change in velocity
+            var dx = Motion.shared.xGravity * THRUST_MULTIPLIER + demo_mode_random_x_thrust // Change in velocity
             var dy = (Motion.shared.yGravity + 0.4) * THRUST_MULTIPLIER // TODO use inverse sine to adjust the angle, then convert back instead of just adding something to the dy
-            
+//            MyLog.debug("dy:\(dy), dx:\(dx)")
             let thrust = sqrt(dx*dx+dy*dy)
             
             // Limit thrust to MAX_THRUST value
@@ -1271,6 +1279,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
     
     // Dispaly an AdMob InterstitialAd
     func showInterstitialAdMobAd() {
+        
+        // Don't show ads when in FOR_DEMO mode because I'm doing recordings and screen shots
+        if FOR_DEMO {return}
         
         // Don't show ads unless the user has made it to the threshold level at some time in the past
         if theModel.mHighLevel < ADMOB_THRESHOLD_LEVEL {
