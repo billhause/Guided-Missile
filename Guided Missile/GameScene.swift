@@ -121,7 +121,7 @@ struct GameModel {
         UserDefaults.standard.set(mHighLevel, forKey: HIGH_LEVEL_KEY)
         UserDefaults.standard.set(mLevel, forKey:     LEVEL_KEY)
         UserDefaults.standard.set(mHighLevelScoreDict, forKey: HIGH_LEVEL_SCORE_DICT_KEY)
-        
+        MyLog.debug("Level Scores: \(mHighLevelScoreDict)")
         // Update the Game Center with our new personal best score
         updateLeaderBoard()
     }
@@ -138,10 +138,10 @@ struct GameModel {
         
         if GKLocalPlayer.local.isAuthenticated {
             let theScore = GKScore(leaderboardIdentifier: "Scores")
-            theScore.value = Int64(mHighScore)
+            theScore.value = Int64(mScore) // Update score.  Leaderboard tracks daily, weekly and overall high scores.
             let theScoreArray : [GKScore] = [theScore]
             GKScore.report(theScoreArray, withCompletionHandler: nil)
-            MyLog.debug("GameData updateLeaderBoard() called with new level of \(mHighScore)")
+            MyLog.debug("GameData updateLeaderBoard() called with new level of \(mScore)")
         }
     }
 
@@ -150,6 +150,8 @@ struct GameModel {
     // Dictionary Keys are strings that look like this: Level1, Level2, Level132 etc.
     private let HIGH_LEVEL_SCORE_KEY_PREFIX = "Level"
     mutating func updateHighScoreForLevel(level: Int, score: Int) {
+        
+        if mGameOver {return} // Only update high scores for the level if the game is still going
         
         // Update the highest level achieved if this is a new high
         if level > mHighLevel { mHighLevel = level }
@@ -355,8 +357,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
             if !theModel.mGameOver {
                 theModel.save() // Only save if this happens when the game is not over.
+                theModel.mLevel += 1 // move to next level if game is not over
             }
-            theModel.mLevel += 1 // move to next level
             MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
             initializeLevel()
         }
@@ -1187,8 +1189,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
             theModel.updateHighScoreForLevel(level: theModel.mLevel, score: theModel.mScore)
             if !theModel.mGameOver {
                 theModel.save() // Only save if this happens when the game is not over.
+                theModel.mLevel += 1 // move to next level
             }
-            theModel.mLevel += 1 // move to next level
             MyLog.debug("incrementing mLevel to \(theModel.mLevel)")
             initializeLevel()
         }
@@ -1296,6 +1298,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                 
                 // Show the AdMob Ad
                 gInterstitial!.present(fromRootViewController: viewController!)
+                MyLog.debug("AdMob - Showing Interstitial Ad")
             } else {
                 MyLog.debug("ERROR: AdMob - Unable to get rootViewController in showInterstitialAdMobAd() function")
             }
