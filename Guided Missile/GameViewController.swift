@@ -151,13 +151,6 @@ class GameViewController: UIViewController, GADFullScreenContentDelegate {
         )
     }
 
-    func DELETE_THIS_NOW_showInterstitialAd() {
-        if gInterstitial != nil {
-          gInterstitial!.present(fromRootViewController: self)
-        } else {
-            MyLog.debug("AdMob - Ad wasn't ready")
-        }
-    }
     
     // ^^^^^^^^^^^ Interstitial Ads ^^^^^^^^^^^^^^^^^
 

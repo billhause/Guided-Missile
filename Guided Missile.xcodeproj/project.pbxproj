@@ -28,6 +28,7 @@
 		28A12EB32966453100EF2E5B /* rocket_4_sec.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB22966453100EF2E5B /* rocket_4_sec.wav */; };
 		28A12EB52966477D00EF2E5B /* asteroid_explosion.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */; };
 		28A12EB9296E06E500EF2E5B /* ExplosionSaucer.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */; };
+		28A1637329D0FEEE005D1299 /* WarpSound3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A1637229D0FEEE005D1299 /* WarpSound3.wav */; };
 		28B51A17297A190B004ABF68 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B51A16297A190B004ABF68 /* Reachability.swift */; };
 		28C70BC9294D2C5600ADAC9A /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */; };
 		28C70C0A2952787F00ADAC9A /* ExplosionParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C092952787F00ADAC9A /* ExplosionParticles.sks */; };
@@ -93,6 +94,7 @@
 		28A12EB22966453100EF2E5B /* rocket_4_sec.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = rocket_4_sec.wav; path = Sounds/rocket_4_sec.wav; sourceTree = SOURCE_ROOT; };
 		28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = asteroid_explosion.wav; sourceTree = "<group>"; };
 		28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionSaucer.sks; sourceTree = "<group>"; };
+		28A1637229D0FEEE005D1299 /* WarpSound3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = WarpSound3.wav; path = Sounds/WarpSound3.wav; sourceTree = SOURCE_ROOT; };
 		28B51A16297A190B004ABF68 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		28B51A18297F51CC004ABF68 /* Guided Missile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Guided Missile.entitlements"; sourceTree = "<group>"; };
 		28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */,
 				28916195296E0B0F008C8C5E /* ExplosionStarbaseSound.wav */,
 				28916199296E0C95008C8C5E /* ExplosionSaucerSound.wav */,
+				28A1637229D0FEEE005D1299 /* WarpSound3.wav */,
 				2891619F296E2B5E008C8C5E /* WarpSound4.wav */,
 				28A12E8E29661B4A00EF2E5B /* Boom1.wav */,
 				28A12E9229661B5D00EF2E5B /* Boom2.wav */,
@@ -379,6 +382,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28A1637329D0FEEE005D1299 /* WarpSound3.wav in Resources */,
 				289161A4296E2B5E008C8C5E /* WarpSound4.wav in Resources */,
 				28A12EA129661E4200EF2E5B /* laser3.wav in Resources */,
 				28A12EB12966406500EF2E5B /* flying_saucer_rumble.wav in Resources */,

@@ -46,8 +46,9 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
 let FOR_RELEASE                 = true  // Set to true to turn off debugging, turn on request a review and Real Ads
+let HIDE_ADS                    = true  // Set to true to NEVER SHOW ADS even if FOR_RELEASE is true
 let FOR_DEMO                    = false   // Set to true to collect screen shots from the simulators
-var LEADERBOARD_BUTTON_THRESHOLD = 5     // If they've ever made it past this level then show the leaderboard button.
+var LEADERBOARD_BUTTON_THRESHOLD = 2     // If they've ever made it past this level then show the leaderboard button.
 let INSTRUCTIONS_DISPLAY_LEVEL  = 9      // Show instructions if they have never made it past this level
 let REVIEW_THRESHOLD_LEVEL      = 10     // Don't ask for a review unless the user has made it to this level or higher.
 let ADMOB_THRESHOLD_LEVEL       = 13     // Don't show ads unless the user has made it to this level before.
@@ -336,7 +337,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         }
 
         warpAnimation() // Show starbase warping out and back in.
-        Sound.shared.play(forResource: "WarpSound4") // WarpSound4 and WarpSound3 are the best.
+//        Sound.shared.play(forResource: "WarpSound4") // WarpSound4 and WarpSound3 are the best.
+        Sound.shared.play(forResource: "WarpSound3") // WarpSound4 and WarpSound3 are the best.
     }
     
     // MISSILE HITS ASTEROID - Call this when an asteroid and the missile collide
@@ -937,7 +939,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
                 exaustBall.run(SKAction.sequence([shrinkAndFadeAction,
                                                  SKAction.removeFromParent()]))
 //                Sound.shared.saucerSoundOn()
-                Sound.shared.thrustSoundOn(volume: Float((thrust-MINIMUM_THRUST)/1.5)) // Thrust louder if stronger.  divide to adjust nominal volume
+                Sound.shared.thrustSoundOn(volume: Float((thrust-MINIMUM_THRUST)/1.0)) // Thrust louder if stronger.  divide to adjust nominal volume
             } else {
                 Sound.shared.thrustSoundOff() // Stop thrust sound if not thrusting
             }
@@ -1284,6 +1286,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         
         // Don't show ads when in FOR_DEMO mode because I'm doing recordings and screen shots
         if FOR_DEMO {return}
+        
+        if HIDE_ADS {return}  // NEVER show ads it the HIDE_ADS flag is true.
         
         // Don't show ads unless the user has made it to the threshold level at some time in the past
         if theModel.mHighLevel < ADMOB_THRESHOLD_LEVEL {
