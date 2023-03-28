@@ -71,7 +71,25 @@ class Sound {
     private var rocketIsPlaying = false
     func thrustSoundInit() {
         do {
-            let urlPathString = Bundle.main.path(forResource: "Thrusters_20_Seconds", ofType: "wav")
+            // Good music sounds:
+            //   MusicActionMusicLoopB+  (Can stand alone as the only tune)
+            //   DrumLoop2 (Only if switching every level)
+            //   DrumLoop4 (Only if switching every level)
+            //   DrumLoop6 (Only if switching every level)
+            //   DrumLoop7 (Only if switching every level)
+            //   DrumLoop9 (Only if switching every level)
+            //   DrumLoop11 (Only if switching every level)
+            //   DrumLoop12 (Probably Only if switching every level)
+            //   DrumLoop13 (Only if switching every level)
+            //   DrumLoop14 (Probably Only if switching every level)
+            //   DrumLoop15 (Probbaly Only if switching every level)
+            //   DrumLoop17 (Probably Only if switching every level)
+
+            //
+            
+            
+//            let urlPathString = Bundle.main.path(forResource: "Thrusters_20_Seconds", ofType: "wav")
+            let urlPathString = Bundle.main.path(forResource: "MusicActionMusicLoopB+", ofType: "wav") // GOOD
             rocketSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
             rocketSoundPlayer.numberOfLoops = -1 // -1 means loop forever
             rocketSoundPlayer.prepareToPlay()

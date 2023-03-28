@@ -29,6 +29,18 @@
 		28A12EB52966477D00EF2E5B /* asteroid_explosion.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */; };
 		28A12EB9296E06E500EF2E5B /* ExplosionSaucer.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */; };
 		28A1637329D0FEEE005D1299 /* WarpSound3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A1637229D0FEEE005D1299 /* WarpSound3.wav */; };
+		28A1638329D23DCD005D1299 /* MusicActionMusicLoopB+.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A1638229D23DCD005D1299 /* MusicActionMusicLoopB+.wav */; };
+		28A1640A29D24FEF005D1299 /* DrumLoop6.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A163F829D24FEC005D1299 /* DrumLoop6.wav */; };
+		28A1640B29D24FEF005D1299 /* DrumLoop12.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A163F929D24FEC005D1299 /* DrumLoop12.wav */; };
+		28A1640C29D24FEF005D1299 /* DrumLoop11.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A163FA29D24FEC005D1299 /* DrumLoop11.wav */; };
+		28A1640F29D24FEF005D1299 /* DrumLoop9.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A163FD29D24FED005D1299 /* DrumLoop9.wav */; };
+		28A1641029D24FEF005D1299 /* DrumLoop2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A163FE29D24FED005D1299 /* DrumLoop2.wav */; };
+		28A1641129D24FEF005D1299 /* DrumLoop4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A163FF29D24FED005D1299 /* DrumLoop4.wav */; };
+		28A1641329D24FEF005D1299 /* DrumLoop17.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A1640129D24FEE005D1299 /* DrumLoop17.wav */; };
+		28A1641429D24FEF005D1299 /* DrumLoop15.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A1640229D24FEE005D1299 /* DrumLoop15.wav */; };
+		28A1641529D24FEF005D1299 /* DrumLoop7.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A1640329D24FEE005D1299 /* DrumLoop7.wav */; };
+		28A1641629D24FEF005D1299 /* DrumLoop13.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A1640429D24FEE005D1299 /* DrumLoop13.wav */; };
+		28A1641B29D24FEF005D1299 /* DrumLoop14.wav in Resources */ = {isa = PBXBuildFile; fileRef = 28A1640929D24FEF005D1299 /* DrumLoop14.wav */; };
 		28B51A17297A190B004ABF68 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B51A16297A190B004ABF68 /* Reachability.swift */; };
 		28C70BC9294D2C5600ADAC9A /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */; };
 		28C70C0A2952787F00ADAC9A /* ExplosionParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 28C70C092952787F00ADAC9A /* ExplosionParticles.sks */; };
@@ -95,6 +107,18 @@
 		28A12EB42966477D00EF2E5B /* asteroid_explosion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = asteroid_explosion.wav; sourceTree = "<group>"; };
 		28A12EB8296E06E500EF2E5B /* ExplosionSaucer.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplosionSaucer.sks; sourceTree = "<group>"; };
 		28A1637229D0FEEE005D1299 /* WarpSound3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = WarpSound3.wav; path = Sounds/WarpSound3.wav; sourceTree = SOURCE_ROOT; };
+		28A1638229D23DCD005D1299 /* MusicActionMusicLoopB+.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "MusicActionMusicLoopB+.wav"; sourceTree = "<group>"; };
+		28A163F829D24FEC005D1299 /* DrumLoop6.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop6.wav; sourceTree = "<group>"; };
+		28A163F929D24FEC005D1299 /* DrumLoop12.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop12.wav; sourceTree = "<group>"; };
+		28A163FA29D24FEC005D1299 /* DrumLoop11.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop11.wav; sourceTree = "<group>"; };
+		28A163FD29D24FED005D1299 /* DrumLoop9.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop9.wav; sourceTree = "<group>"; };
+		28A163FE29D24FED005D1299 /* DrumLoop2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop2.wav; sourceTree = "<group>"; };
+		28A163FF29D24FED005D1299 /* DrumLoop4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop4.wav; sourceTree = "<group>"; };
+		28A1640129D24FEE005D1299 /* DrumLoop17.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop17.wav; sourceTree = "<group>"; };
+		28A1640229D24FEE005D1299 /* DrumLoop15.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop15.wav; sourceTree = "<group>"; };
+		28A1640329D24FEE005D1299 /* DrumLoop7.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop7.wav; sourceTree = "<group>"; };
+		28A1640429D24FEE005D1299 /* DrumLoop13.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop13.wav; sourceTree = "<group>"; };
+		28A1640929D24FEF005D1299 /* DrumLoop14.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = DrumLoop14.wav; sourceTree = "<group>"; };
 		28B51A16297A190B004ABF68 /* Reachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		28B51A18297F51CC004ABF68 /* Guided Missile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Guided Missile.entitlements"; sourceTree = "<group>"; };
 		28C70BC8294D2C5600ADAC9A /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
@@ -159,6 +183,18 @@
 		28A12E8D29661B3100EF2E5B /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				28A163FE29D24FED005D1299 /* DrumLoop2.wav */,
+				28A163FF29D24FED005D1299 /* DrumLoop4.wav */,
+				28A163F829D24FEC005D1299 /* DrumLoop6.wav */,
+				28A1640329D24FEE005D1299 /* DrumLoop7.wav */,
+				28A163FD29D24FED005D1299 /* DrumLoop9.wav */,
+				28A163FA29D24FEC005D1299 /* DrumLoop11.wav */,
+				28A163F929D24FEC005D1299 /* DrumLoop12.wav */,
+				28A1640429D24FEE005D1299 /* DrumLoop13.wav */,
+				28A1640929D24FEF005D1299 /* DrumLoop14.wav */,
+				28A1640229D24FEE005D1299 /* DrumLoop15.wav */,
+				28A1640129D24FEE005D1299 /* DrumLoop17.wav */,
+				28A1638229D23DCD005D1299 /* MusicActionMusicLoopB+.wav */,
 				28A12EAA29663CB000EF2E5B /* Thrusters_20_Seconds.wav */,
 				28A12EAC29663E6700EF2E5B /* deep_rumble_1_sec.wav */,
 				28A12EB22966453100EF2E5B /* rocket_4_sec.wav */,
@@ -387,22 +423,34 @@
 				28A12EA129661E4200EF2E5B /* laser3.wav in Resources */,
 				28A12EB12966406500EF2E5B /* flying_saucer_rumble.wav in Resources */,
 				28A12E9329661B5D00EF2E5B /* Boom3.wav in Resources */,
+				28A1640A29D24FEF005D1299 /* DrumLoop6.wav in Resources */,
+				28A1641429D24FEF005D1299 /* DrumLoop15.wav in Resources */,
+				28A1638329D23DCD005D1299 /* MusicActionMusicLoopB+.wav in Resources */,
+				28A1641129D24FEF005D1299 /* DrumLoop4.wav in Resources */,
+				28A1641B29D24FEF005D1299 /* DrumLoop14.wav in Resources */,
+				28A1641029D24FEF005D1299 /* DrumLoop2.wav in Resources */,
 				28C70C0C295CF63F00ADAC9A /* ExplosionStarbase.sks in Resources */,
 				2891619A296E0C95008C8C5E /* ExplosionSaucerSound.wav in Resources */,
 				28D8C63A2942AC150067D801 /* Main.storyboard in Resources */,
 				28C70C0A2952787F00ADAC9A /* ExplosionParticles.sks in Resources */,
 				28A12E9429661B5D00EF2E5B /* Explosion1.wav in Resources */,
+				28A1640B29D24FEF005D1299 /* DrumLoop12.wav in Resources */,
 				28A12E8F29661B4A00EF2E5B /* Boom1.wav in Resources */,
 				28A12EA329661E4B00EF2E5B /* GameOver.wav in Resources */,
 				28D8C6312942AC150067D801 /* GameScene.sks in Resources */,
+				28A1641529D24FEF005D1299 /* DrumLoop7.wav in Resources */,
 				28A12E9D29661E2600EF2E5B /* silent_sound.wav in Resources */,
 				28A12EAB29663CB000EF2E5B /* Thrusters_20_Seconds.wav in Resources */,
+				28A1641629D24FEF005D1299 /* DrumLoop13.wav in Resources */,
 				28A12E9B29661E1500EF2E5B /* TrekKlaxon.wav in Resources */,
 				28916197296E0B0F008C8C5E /* ExplosionStarbaseSound.wav in Resources */,
+				28A1641329D24FEF005D1299 /* DrumLoop17.wav in Resources */,
 				28A12E9529661B5D00EF2E5B /* Boom2.wav in Resources */,
 				28A12EAD29663E6700EF2E5B /* deep_rumble_1_sec.wav in Resources */,
 				28D8C63C2942AC160067D801 /* Assets.xcassets in Resources */,
 				28D8C63F2942AC160067D801 /* LaunchScreen.storyboard in Resources */,
+				28A1640C29D24FEF005D1299 /* DrumLoop11.wav in Resources */,
+				28A1640F29D24FEF005D1299 /* DrumLoop9.wav in Resources */,
 				28A12EB32966453100EF2E5B /* rocket_4_sec.wav in Resources */,
 				28A12EB52966477D00EF2E5B /* asteroid_explosion.wav in Resources */,
 				28D8C6332942AC150067D801 /* Actions.sks in Resources */,
@@ -724,7 +772,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Guided Missile/Guided Missile.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Guided-Missile-Info.plist";
@@ -740,7 +788,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.TinyPurpleGrapes.Guided-Missile";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -760,7 +808,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Guided Missile/Guided Missile.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = XXF7Y2ZTA7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Guided-Missile-Info.plist";
@@ -776,7 +824,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.TinyPurpleGrapes.Guided-Missile";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
