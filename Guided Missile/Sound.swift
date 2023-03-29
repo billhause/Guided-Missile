@@ -141,7 +141,7 @@ class Sound {
             case 3:
                 let urlPathString = Bundle.main.path(forResource: "DrumLoop6", ofType: "wav") // Too Quiet
                 musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
-                musicSoundPlayer.setVolume(2.0, fadeDuration: 0.0) // no fade in duration
+                musicSoundPlayer.setVolume(3.0, fadeDuration: 0.0) // no fade in duration
             case 4:
                 let urlPathString = Bundle.main.path(forResource: "DrumLoop7", ofType: "wav") // Too Loud
                 musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
@@ -157,7 +157,7 @@ class Sound {
             case 7:
                 let urlPathString = Bundle.main.path(forResource: "DrumLoop12", ofType: "wav") // fine
                 musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
-                musicSoundPlayer.setVolume(1.0, fadeDuration: 0.0) // no fade in duration
+                musicSoundPlayer.setVolume(1.5, fadeDuration: 0.0) // no fade in duration
             case 8:
                 let urlPathString = Bundle.main.path(forResource: "DrumLoop13", ofType: "wav") // fine but boaring
                 musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
@@ -173,7 +173,7 @@ class Sound {
             case 11:
                 let urlPathString = Bundle.main.path(forResource: "DrumLoop15", ofType: "wav") // Too Quiet
                 musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
-                musicSoundPlayer.setVolume(2.0, fadeDuration: 0.0) // no fade in duration
+                musicSoundPlayer.setVolume(2.6, fadeDuration: 0.0) // no fade in duration
             case 12:
                 let urlPathString = Bundle.main.path(forResource: "DrumLoop17", ofType: "wav") // Fine
                 musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
