@@ -44,7 +44,7 @@ class Sound {
     
     // Start saucer sound if it's not already playing
     func saucerSoundOn() {
-        let SAUCER_VOLUME: Float = 10.0
+        let SAUCER_VOLUME: Float = 20.0
         if !saucerIsPlaying {
             saucerIsPlaying = true
             DispatchQueue.global().async { // play in background
@@ -71,25 +71,7 @@ class Sound {
     private var rocketIsPlaying = false
     func thrustSoundInit() {
         do {
-            // Good music sounds:
-            //   MusicActionMusicLoopB+  (Can stand alone as the only tune)
-            //   DrumLoop2 (Only if switching every level)
-            //   DrumLoop4 (Only if switching every level)
-            //   DrumLoop6 (Only if switching every level)
-            //   DrumLoop7 (Only if switching every level)
-            //   DrumLoop9 (Only if switching every level)
-            //   DrumLoop11 (Only if switching every level)
-            //   DrumLoop12 (Probably Only if switching every level)
-            //   DrumLoop13 (Only if switching every level)
-            //   DrumLoop14 (Probably Only if switching every level)
-            //   DrumLoop15 (Probbaly Only if switching every level)
-            //   DrumLoop17 (Probably Only if switching every level)
-
-            //
-            
-            
-//            let urlPathString = Bundle.main.path(forResource: "Thrusters_20_Seconds", ofType: "wav")
-            let urlPathString = Bundle.main.path(forResource: "MusicActionMusicLoopB+", ofType: "wav") // GOOD
+            let urlPathString = Bundle.main.path(forResource: "Thrusters_20_Seconds", ofType: "wav")
             rocketSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
             rocketSoundPlayer.numberOfLoops = -1 // -1 means loop forever
             rocketSoundPlayer.prepareToPlay()
@@ -119,6 +101,121 @@ class Sound {
         }
     }
     // ^^^^^^^^^^^ ROCKET SOUND ^^^^^^^^^^^^^^^^
+
+    
+    // vvvvvvvvvv MUSIC SOUND vvvvvvvvvv
+    // Load the rocket thrust sound and prepare to play it.
+    private var musicSoundPlayer = AVAudioPlayer()
+    private var musicIsPlaying = false
+    func musicSoundInit(level: Int) {
+        do {
+            // Good music sounds:
+            //   DrumLoop1  (Can stand alone as the only tune)
+            //   DrumLoop2 (Only if switching every level)
+            //   DrumLoop4 (Only if switching every level)
+            //   DrumLoop6 (Only if switching every level)
+            //   DrumLoop7 (Only if switching every level)
+            //   DrumLoop9 (Only if switching every level)
+            //   DrumLoop11 (Only if switching every level)
+            //   DrumLoop12 (Probably Only if switching every level)
+            //   DrumLoop13 (Only if switching every level)
+            //   DrumLoop14 (Probably Only if switching every level)
+            //   DrumLoop15 (Probbaly Only if switching every level)
+            //   DrumLoop17 (Probably Only if switching every level)
+            
+            let loopIndex = level % 13
+            MyLog.debug("wdhx Music loopIndex: \(loopIndex)")
+            switch loopIndex {
+            case 0:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop2", ofType: "wav") // Fine but boring
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(1.0, fadeDuration: 0.0) // no fade in duration
+            case 1:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop1", ofType: "wav") // Fine
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(1.0, fadeDuration: 0.0) // no fade in duration
+            case 2:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop4", ofType: "wav") // Fine
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(1.0, fadeDuration: 0.0) // no fade in duration
+            case 3:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop6", ofType: "wav") // Too Quiet
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(2.0, fadeDuration: 0.0) // no fade in duration
+            case 4:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop7", ofType: "wav") // Too Loud
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(0.6, fadeDuration: 0.0) // no fade in duration
+            case 5:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop9", ofType: "wav") // Fine
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(1.0, fadeDuration: 0.0) // no fade in duration
+            case 6:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop11", ofType: "wav") // A little too quite and boaring
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(2.0, fadeDuration: 0.0) // no fade in duration
+            case 7:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop12", ofType: "wav") // fine
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(1.0, fadeDuration: 0.0) // no fade in duration
+            case 8:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop13", ofType: "wav") // fine but boaring
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(1.0, fadeDuration: 0.0) // no fade in duration
+            case 9:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop14", ofType: "wav") // too quiet
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(2.0, fadeDuration: 0.0) // no fade in duration
+            case 10:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop7", ofType: "wav") // Too Loud
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(0.6, fadeDuration: 0.0) // no fade in duration
+            case 11:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop15", ofType: "wav") // Too Quiet
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(2.0, fadeDuration: 0.0) // no fade in duration
+            case 12:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop17", ofType: "wav") // Fine
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(1.0, fadeDuration: 0.0) // no fade in duration
+            default:
+                let urlPathString = Bundle.main.path(forResource: "DrumLoop2", ofType: "wav") // Fine
+                musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+                musicSoundPlayer.setVolume(1.0, fadeDuration: 0.0) // no fade in duration
+            }
+            
+//            let urlPathString = Bundle.main.path(forResource: "DrumLoop1", ofType: "wav")
+//            musicSoundPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: urlPathString!))
+            musicSoundPlayer.numberOfLoops = -1 // -1 means loop forever
+            musicSoundPlayer.prepareToPlay()
+            musicIsPlaying = false
+        } catch {
+            print(error)
+        }
+    }
+    
+    // Start music sound if it's not already playing
+    //func musicSoundOn(volume: Float = 1.0) {
+    func musicSoundOn() {
+        if !musicIsPlaying {
+            musicIsPlaying = true
+            DispatchQueue.global().async { // play in background
+                self.musicSoundPlayer.play()
+            }
+        }
+        // Adjust the volume of the sound
+//        musicSoundPlayer.setVolume(volume, fadeDuration: 0.0) // no fade in duration
+    }
+    
+    // Stop music sound if it's playing
+    func musicSoundOff() {
+        if musicIsPlaying {
+            musicIsPlaying = false
+            musicSoundPlayer.stop()
+        }
+    }
+    // ^^^^^^^^^^^ MUSIC SOUND ^^^^^^^^^^^^^^^^
+
     
     private init() {
         sounds1 = [String: AVAudioPlayer]()
@@ -163,6 +260,7 @@ class Sound {
         
         thrustSoundInit() // init rocket thrust sound player
         saucerSoundInit()
+        musicSoundInit(level: 1)
     }
 
     func play(forResource name: String) {

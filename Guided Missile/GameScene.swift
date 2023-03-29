@@ -45,7 +45,7 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
-let FOR_RELEASE                 = true  // Set to true to turn off debugging, turn on request a review and Real Ads
+let FOR_RELEASE                 = false  // Set to true to turn off debugging, turn on request a review and Real Ads
 let HIDE_ADS                    = true  // Set to true to NEVER SHOW ADS even if FOR_RELEASE is true
 let FOR_DEMO                    = false   // Set to true to collect screen shots from the simulators
 var LEADERBOARD_BUTTON_THRESHOLD = 2     // If they've ever made it past this level then show the leaderboard button.
@@ -339,6 +339,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         warpAnimation() // Show starbase warping out and back in.
 //        Sound.shared.play(forResource: "WarpSound4") // WarpSound4 and WarpSound3 are the best.
         Sound.shared.play(forResource: "WarpSound3") // WarpSound4 and WarpSound3 are the best.
+        
+        // Start Music Loop
+        Sound.shared.musicSoundInit(level: theModel.mLevel)
+        Sound.shared.musicSoundOn() // wdhx
     }
     
     // MISSILE HITS ASTEROID - Call this when an asteroid and the missile collide
@@ -768,6 +772,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate, GKGameCenterControllerDelega
         if realPaused {
             Sound.shared.thrustSoundOff() // Stop thrust sound
             Sound.shared.saucerSoundOff()
+            Sound.shared.musicSoundOff()
+        } else {
+            Sound.shared.musicSoundOn()
         }
     }
     
