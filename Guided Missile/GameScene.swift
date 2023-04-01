@@ -45,10 +45,11 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
-let FOR_RELEASE                 = true  // Set to true to turn off debugging, turn on request a review and Real Ads
+let FOR_RELEASE                 = false  // Set to true to turn off debugging, turn on request a review and Real Ads
+let MAKE_LEADERBOARD_UPDATES    = true   // Set to false to stop updating the deaderboard during testing and development
 let HIDE_ADS                    = true  // Set to true to NEVER SHOW ADS even if FOR_RELEASE is true
 let FOR_DEMO                    = false   // Set to true to collect screen shots from the simulators
-var LEADERBOARD_BUTTON_THRESHOLD = 2     // If they've ever made it past this level then show the leaderboard button.
+var LEADERBOARD_BUTTON_THRESHOLD = 0     // If they've ever made it past this level then show the leaderboard button.
 let INSTRUCTIONS_DISPLAY_LEVEL  = 9      // Show instructions if they have never made it past this level
 let REVIEW_THRESHOLD_LEVEL      = 10     // Don't ask for a review unless the user has made it to this level or higher.
 let ADMOB_THRESHOLD_LEVEL       = 13     // Don't show ads unless the user has made it to this level before.
@@ -135,7 +136,7 @@ struct GameModel {
     //     https://code.tutsplus.com/tutorials/game-center-and-leaderboards-for-your-ios-app--cms-27488
     //
     func updateLeaderBoard() {
-        if !FOR_RELEASE {return} // Only update leaderboard in the release version
+        if !MAKE_LEADERBOARD_UPDATES {return} // Only update leaderboard in the release version
         
         if GKLocalPlayer.local.isAuthenticated {
             let theScore = GKScore(leaderboardIdentifier: "Scores")
