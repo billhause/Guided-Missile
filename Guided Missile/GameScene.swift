@@ -47,7 +47,7 @@ var xSaucerTime         = 1.0     // How long do we wait between saucers
 // vvvvvvvvv  GAME CONSTANTS vvvvvvvvvv
 let FOR_RELEASE                 = false  // Set to true to turn off debugging, turn on request a review and Real Ads
 let MAKE_LEADERBOARD_UPDATES    = true   // Set to false to stop updating the deaderboard during testing and development
-let HIDE_ADS                    = true  // Set to true to NEVER SHOW ADS even if FOR_RELEASE is true
+var HIDE_ADS                    = true  // Set to true to NEVER SHOW ADS even if FOR_RELEASE is true
 let FOR_DEMO                    = false   // Set to true to collect screen shots from the simulators
 var LEADERBOARD_BUTTON_THRESHOLD = 0     // If they've ever made it past this level then show the leaderboard button.
 let INSTRUCTIONS_DISPLAY_LEVEL  = 9      // Show instructions if they have never made it past this level
@@ -97,6 +97,7 @@ struct GameModel {
     private let HIGH_SCORE_KEY = "HighScore"
     private let HIGH_LEVEL_KEY = "HighLevel"
     private let LEVEL_KEY      = "Level"
+    private let HIDE_ADS_KEY   = "HideAdsKey" // Once the user has an ad-free version, never show ads again even if updated to ad version.
     private let HIGH_LEVEL_SCORE_DICT_KEY = "HighLevelScoreDict" // Stores the high score for each level completed
     mutating func load() {
         mHighScore = UserDefaults.standard.integer(forKey: HIGH_SCORE_KEY)
@@ -110,6 +111,13 @@ struct GameModel {
         mHighLevelScoreDict = UserDefaults.standard.object(forKey: HIGH_LEVEL_SCORE_DICT_KEY) as? [String : Int] ?? [String:Int]()
         
         if FOR_DEMO {mLevel = 10} // Start on higher level when in Demo mode for screen shots and recordings etc.
+        
+        if HIDE_ADS == false {
+            // If the user ever runs a version that hides ads, then we should never show
+            // ads to that user even if they later download an update that shows ads.
+            // Therefore load HIDE_ADS if it's 'false' in case it's ever been 'true' in the past.
+            HIDE_ADS = UserDefaults.standard.bool(forKey: HIDE_ADS_KEY) // Returns 'false' if this has never beren saved before
+        }
     }
     
     // Save game data to disk
@@ -123,6 +131,14 @@ struct GameModel {
         UserDefaults.standard.set(mHighLevel, forKey: HIGH_LEVEL_KEY)
         UserDefaults.standard.set(mLevel, forKey:     LEVEL_KEY)
         UserDefaults.standard.set(mHighLevelScoreDict, forKey: HIGH_LEVEL_SCORE_DICT_KEY)
+        
+        if HIDE_ADS == true {
+            // If the user ever runs a version that hides ads, then we should never show
+            // ads to that user even if they later download an update that shows ads.
+            // Therefore save HIDE_ADS if it's 'true' but never overwrite it with a 'false' value
+            UserDefaults.standard.set(HIDE_ADS, forKey: HIDE_ADS_KEY) // Save HIDE_ADS only if it's 'true'
+        }
+        
         MyLog.debug("Level Scores: \(mHighLevelScoreDict)")
         // Update the Game Center with our new personal best score
         updateLeaderBoard()
